@@ -34,6 +34,19 @@
       }
     }
   ],
+  "redirects": [
+    {
+      "source": "/",
+      "missing": [
+        {
+          "type": "query",
+          "key": "userId"
+        }
+      ],
+      "destination": "/login/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
