@@ -5,6 +5,7 @@ import { AdminLogin } from "@/components/admin-login"
 import { AdminDashboard } from "@/components/admin-dashboard"
 import { UpdateNotesPopup } from "@/components/update-notes-popup"
 import { useRouter } from "next/navigation"
+import { API_BASE_URL } from "@/lib/constants"
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -13,24 +14,44 @@ export default function AdminPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Cek session storage apakah admin sudah login
-    const authenticated = sessionStorage.getItem("admin_authenticated")
-    const storedAdminId = sessionStorage.getItem("admin_id")
-    if (authenticated === "true" && storedAdminId) {
-      setIsAuthenticated(true)
-      setAdminId(storedAdminId)
+    const checkAdminAuth = async () => {
+      const authenticated = sessionStorage.getItem("admin_authenticated")
+      const storedAdminId = sessionStorage.getItem("admin_id")
+      if (authenticated === "true" && storedAdminId) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/admin/verify`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ admin_id: storedAdminId }),
+          })
+          if (!res.ok) {
+            sessionStorage.removeItem("admin_authenticated")
+            sessionStorage.removeItem("admin_id")
+          } else {
+            setIsAuthenticated(true)
+            setAdminId(storedAdminId)
+            document.cookie = `admin_auth_token=1; path=/; max-age=86400; SameSite=Lax`
+          }
+        } catch {
+          sessionStorage.removeItem("admin_authenticated")
+          sessionStorage.removeItem("admin_id")
+        }
+      }
+      setIsLoading(false)
     }
-    setIsLoading(false)
+    checkAdminAuth()
   }, [])
 
   const handleLogin = (id: string) => {
     setIsAuthenticated(true)
     setAdminId(id)
+    document.cookie = `admin_auth_token=1; path=/; max-age=86400; SameSite=Lax`
   }
 
   const handleLogout = () => {
     sessionStorage.removeItem("admin_authenticated")
     sessionStorage.removeItem("admin_id")
+    document.cookie = "admin_auth_token=; path=/; max-age=0"
     setIsAuthenticated(false)
     setAdminId("")
   }

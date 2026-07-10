@@ -145,7 +145,8 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
     // --- FETCH MASTER DATA ---
     const fetchMasterData = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/master-data`);
+            const url = currentUser?.id ? `${API_BASE_URL}/master-data?user_id=${encodeURIComponent(currentUser.id)}` : `${API_BASE_URL}/master-data`
+            const response = await fetch(url)
             if (response.ok) {
                 const result = await response.json();
                 if (result.pic_ve) setListPicVe(result.pic_ve);

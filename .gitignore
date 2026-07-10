@@ -24,6 +24,9 @@ __pycache__/
 # Vercel
 .vercel
 
+# Session tracking (local AI context)
+.opencode/
+
 # Generated docs
 **/generated_docs/
 

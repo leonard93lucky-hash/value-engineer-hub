@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import LoginScreen from './components/LoginScreen.jsx';
 import FAQDashboard from './components/FAQDashboard.jsx';
 import FAQModal from './components/FAQModal.jsx';
@@ -48,6 +48,7 @@ function App() {
   const [isLogOpen, setIsLogOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [toast, setToast] = useState(null);
+  const [sowMounted, setSowMounted] = useState(false);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
@@ -99,6 +100,7 @@ function App() {
     setUserName(result.name);
     setUserPosition(result.position || '');
     setIsAuthenticated(true);
+    setCurrentScreen('faq');
     // Persist session so navigating back from SOW generator doesn't log out
     sessionStorage.setItem('ve_hub_user', JSON.stringify({
       userId: result.userId,
@@ -247,13 +249,14 @@ function App() {
         userPosition={userPosition}
         onNavigate={(screen) => {
           if (screen === 'send-questionnaire' && !isAuthorizedForQuestionnaire) return;
+          if (screen === 'sow') setSowMounted(true);
           setCurrentScreen(screen);
         }}
         onLogout={handleLogout}
       />
 
-      {currentScreen === 'sow' && (
-        <div className="sow-iframe-container">
+      {sowMounted && (
+        <div className="sow-iframe-container" style={{ display: currentScreen === 'sow' ? 'block' : 'none' }}>
           <iframe
             src={`${SOW_ORIGIN}/?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}`}
             className="sow-iframe"

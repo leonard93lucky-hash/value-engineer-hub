@@ -344,9 +344,16 @@ def bg_send_generate_email(email_to, merchant_name, nomor_surat, enterprise_name
 # =========================================================
 
 @api_router.get("/master-data")
-def get_master_data():
+def get_master_data(user_id: Optional[str] = None, x_admin_id: Optional[str] = Header(None, alias="X-Admin-Id")):
     try:
         data = sheets_client.get_master_data()
+        if x_admin_id and verify_admin_id(x_admin_id):
+            return {"status": "success", "pic_ve": data.get("pic_ve", []), "pic_bd": data.get("pic_bd", [])}
+        if user_id:
+            pic_ve_list = data.get("pic_ve", [])
+            user = next((u for u in pic_ve_list if str(u.get("privy_id", "")).lower() == user_id.strip().lower()), None)
+            if not user:
+                raise HTTPException(status_code=401, detail="ID tidak valid.")
         return {"status": "success", "pic_ve": data.get("pic_ve", []), "pic_bd": data.get("pic_bd", [])}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -368,9 +375,11 @@ def save_draft(data: DraftRequest, bg_tasks: BackgroundTasks):
     try:
         master_data = sheets_client.get_master_data()
         pic_ve = next((u for u in master_data.get("pic_ve", []) if str(u.get('privy_id', '')).lower() == str(data.pic_ve_id).lower()), None)
+        if not pic_ve:
+            raise HTTPException(status_code=401, detail="PIC VE ID tidak valid.")
         pic_bd = next((u for u in master_data.get("pic_bd", []) if str(u.get('name', '')).lower() == str(data.pic_bd_id).lower()), None)
         
-        pic_ve_name = pic_ve['name'] if pic_ve else "UNKNOWN"
+        pic_ve_name = pic_ve['name']
         pic_bd_name = pic_bd['name'] if pic_bd else "UNKNOWN"
 
         draft_payload = data.model_dump()
@@ -868,7 +877,9 @@ def credential_submit(data: CredentialSubmitRequest, bg_tasks: BackgroundTasks):
              if str(u.get("privy_id", "")).lower() == str(data.pic_ve_id).lower()),
             None
         )
-        pic_ve_name = pic_ve["name"] if pic_ve else "UNKNOWN"
+        if not pic_ve:
+            raise HTTPException(status_code=401, detail="PIC VE ID tidak valid.")
+        pic_ve_name = pic_ve["name"]
 
         payload = {
             "pic_ve_id": data.pic_ve_id,

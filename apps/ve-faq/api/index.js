@@ -605,6 +605,11 @@ app.get('/faq-api/logs', async (req, res) => {
 
 // ===== DIAGNOSTICS =====
 app.get('/faq-api/debug', async (req, res) => {
+  const isDev = process.env.NODE_ENV !== 'production'
+  const adminKey = req.query.key || req.headers['x-admin-key']
+  if (!isDev && adminKey !== process.env.ADMIN_SECRET_KEY) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
   try {
     console.log('🔍 Running diagnostics...');
     const report = await gsheets.testConnection();
