@@ -1,6 +1,6 @@
 "use client"
 
-import { Smartphone, Code2, ChevronRight, Lock } from "lucide-react"
+import { Smartphone, Code2, ChevronRight, Lock, Award, History } from "lucide-react"
 
 interface LandingPageProps {
   currentUser: { name: string; id: number }
@@ -10,6 +10,12 @@ interface LandingPageProps {
 
 export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingPageProps) {
   const isIframe = typeof window !== "undefined" && window !== window.top
+
+  const openInParent = (action: string) => {
+    if (isIframe && window.parent) {
+      window.parent.postMessage(action, "*")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
@@ -22,6 +28,37 @@ export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingP
       {!isIframe && (
         <header className="border-b border-gray-200 px-6 py-3 flex items-center bg-white/70 backdrop-blur-md relative z-10">
           <span className="text-sm font-semibold text-gray-800 tracking-wide">SOW Generator</span>
+        </header>
+      )}
+
+      {/* Iframe header with Leaderboard & Activity Log */}
+      {isIframe && (
+        <header className="border-b border-gray-200 px-4 py-2 flex items-center justify-between bg-white/80 backdrop-blur-md relative z-10">
+          <div className="flex items-center gap-2">
+            <img
+              src="https://privy.id/_nuxt/Privy_Logo_Red.BXNsidzu.png"
+              alt="Privy"
+              className="h-5 object-contain"
+            />
+            <span className="w-px h-4 bg-gray-300" />
+            <span className="text-xs font-semibold text-gray-800">SOW Generator</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => openInParent("open-leaderboard")}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-red-50 hover:text-red-600 rounded-lg border border-gray-200 hover:border-red-200 transition-all cursor-pointer"
+            >
+              <Award className="w-3.5 h-3.5" />
+              <span>Leaderboard</span>
+            </button>
+            <button
+              onClick={() => openInParent("open-activity-log")}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-red-50 hover:text-red-600 rounded-lg border border-gray-200 hover:border-red-200 transition-all cursor-pointer"
+            >
+              <History className="w-3.5 h-3.5" />
+              <span>Activity Log</span>
+            </button>
+          </div>
         </header>
       )}
 

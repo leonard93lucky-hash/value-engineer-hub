@@ -93,6 +93,16 @@ function App() {
     }
   }, [isAuthenticated, loadData]);
 
+  // Listen for postMessage from SOW iframe
+  useEffect(() => {
+    const handleMessage = (e) => {
+      if (e.data === 'open-activity-log') setIsLogOpen(true);
+      if (e.data === 'open-leaderboard') setIsStatsOpen(true);
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
   // --- Handlers ---
   // LoginScreen fully handles authentication steps and calls onLogin with the resolved user
   const handleLogin = (result) => {
@@ -289,6 +299,7 @@ function App() {
           onDelete={handleDeleteFaq}
           onShowLogs={() => setIsLogOpen(true)}
           onShowStats={() => setIsStatsOpen(true)}
+          onRefresh={loadData}
           isLoading={loading}
           onRate={handleRate}
           onAddRelated={handleAddRelated}

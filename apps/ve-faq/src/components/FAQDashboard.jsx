@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   FiSearch, FiPlus, FiChevronDown, FiEdit2, FiTrash2,
-  FiClock, FiUser, FiFilter, FiX,
-  FiArrowUp, FiArrowDown, FiAward, FiStar, FiLink, FiAlertTriangle, FiTrendingUp
+  FiClock, FiUser, FiFilter, FiX, FiRefreshCw,
+  FiArrowUp, FiArrowDown, FiAward, FiStar, FiLink, FiAlertTriangle, FiTrendingUp, FiBarChart2
 } from 'react-icons/fi';
 
 // Default category list as fallback
@@ -54,6 +54,7 @@ export default function FAQDashboard({
   onDelete,
   onShowLogs,
   onShowStats,
+  onRefresh,
   isLoading,
   onRate,
   onAddRelated,
@@ -248,6 +249,25 @@ export default function FAQDashboard({
   return (
     <div className="dashboard-container animate-fade-in">
       
+      {/* Sub-header bar */}
+      <div className="faq-subheader glass">
+        <div className="faq-subheader-left">
+          <FiClock size={14} />
+          <span>FAQ Knowledge Base</span>
+        </div>
+        <div className="faq-subheader-right">
+          <button className="icon-btn-text" onClick={onShowStats} title="Contributor Leaderboard">
+            <FiBarChart2 /> Leaderboard
+          </button>
+          <button className="icon-btn-text" onClick={onShowLogs} title="Activity Log">
+            <FiClock /> Activity Log
+          </button>
+          <button className="icon-btn" onClick={onRefresh} title="Refresh data" disabled={isLoading}>
+            <FiRefreshCw className={isLoading ? 'spin' : ''} />
+          </button>
+        </div>
+      </div>
+
       <div className="hero-section">
         <h2>How can we help you?</h2>
         <p>Search through our frequently asked questions or add new knowledge</p>

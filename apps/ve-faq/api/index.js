@@ -768,7 +768,7 @@ app.post('/faq-api/questionnaires/send', async (req, res) => {
     const origin = req.headers.referer || req.headers.origin || `http://localhost:${PORT}`;
     // Construct base path (removing trailing slash or extra segments)
     let baseUrl = new URL(origin).origin;
-    const questionnaireLink = `${baseUrl}/privy-officer-performance-questionnaire?id=${logId}`;
+    const questionnaireLink = `${baseUrl}/login/privy-officer-performance-questionnaire?id=${logId}`;
 
     const emailSubject = `[Privy] Integration Officer Performance Evaluation`;
     const emailHtml = `

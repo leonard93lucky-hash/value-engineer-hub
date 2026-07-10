@@ -98,6 +98,19 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
 .field-error { color: var(--error); font-size: 0.8rem; margin-top: 0.25rem; display: block; }
 .error-msg { color: var(--error); font-size: 0.875rem; margin-top: 0.5rem; text-align: center; }
 
+/* FAQ Sub-header */
+.faq-subheader {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1.25rem; margin-bottom: 1.25rem;
+}
+.faq-subheader-left {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+}
+.faq-subheader-right {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
 /* Animations */
 @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 @keyframes scaleIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
