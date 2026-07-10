@@ -230,7 +230,7 @@ export async function sendQuestionnaire(payload) {
   currentLogs.unshift(mockLog);
   sessionStorage.setItem('mock_q_logs', JSON.stringify(currentLogs));
 
-  const link = `${window.location.origin}/privy-officer-performance-questionnaire?id=${mockLog.logId}`;
+  const link = `${window.location.origin}/login/privy-officer-performance-questionnaire?id=${mockLog.logId}`;
   console.log('✉️ Mock send success. Link:', link);
   return { success: true, logId: mockLog.logId, link };
 }

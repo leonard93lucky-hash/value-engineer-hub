@@ -13,7 +13,7 @@ export default function HubDashboard({
   if (userId) queryParams.append('userId', userId);
   if (userName) queryParams.append('userName', userName);
   
-  const sowGeneratorUrl = `http://localhost:3000${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+  const sowGeneratorUrl = `/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
 
   return (
     <div className="hub-container animate-fade-in">

@@ -215,7 +215,7 @@ function App() {
   // --- Render ---
   
   // Public-facing route: Client evaluation form
-  if (window.location.pathname === '/privy-officer-performance-questionnaire') {
+  if (window.location.pathname.includes('/privy-officer-performance-questionnaire')) {
     return (
       <>
         <ClientQuestionnaire />
@@ -253,7 +253,7 @@ function App() {
       {currentScreen === 'sow' && (
         <div className="sow-iframe-container">
           <iframe
-            src={`http://localhost:3000?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}`}
+            src={`/?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}`}
             className="sow-iframe"
             title="SOW Generator"
             allow="clipboard-read; clipboard-write"
