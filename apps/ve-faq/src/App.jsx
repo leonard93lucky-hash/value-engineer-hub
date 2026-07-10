@@ -101,6 +101,7 @@ function App() {
     setUserPosition(result.position || '');
     setIsAuthenticated(true);
     setCurrentScreen('faq');
+    setSowMounted(true);
     // Persist session so navigating back from SOW generator doesn't log out
     sessionStorage.setItem('ve_hub_user', JSON.stringify({
       userId: result.userId,
