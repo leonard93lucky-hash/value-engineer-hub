@@ -27,7 +27,11 @@
     },
     {
       "src": "apps/ve-faq/api/index.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1024,
+        "maxDuration": 15
+      }
     }
   ],
   "rewrites": [
