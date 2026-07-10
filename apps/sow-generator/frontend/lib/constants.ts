@@ -1,5 +1,5 @@
 // 1. API & ASSETS
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://ve-document-generator.vercel.app/api";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 export const LOGO_HEADER = "/privy_sow_side.png";
 export const LOGO_URL = "/Privy_Logo_Red.png";
 

@@ -75,7 +75,7 @@ export function AppWrapper() {
 
   if (!isAuthenticated) {
     if (typeof window !== "undefined") {
-      window.location.href = "http://localhost:5173"
+      window.location.href = "/"
     }
     return null
   }

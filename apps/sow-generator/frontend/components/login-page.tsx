@@ -7,8 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lock, FileText, Shield, AlertCircle } from "lucide-react"
 
-// Ganti URL ini jika backend sudah deploy (misal ke Render)
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://ve-document-generator.vercel.app/api";
+import { API_BASE_URL } from "@/lib/constants"
 
 interface LoginPageProps {
   onLogin: (userName: string, userId: number) => void // Updated to pass ID too

@@ -9,8 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-// Gunakan URL Backend Python
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { API_BASE_URL } from "@/lib/constants"
 
 // --- HELPERS ---
 const getRomanMonth = (dateStr: string) => {

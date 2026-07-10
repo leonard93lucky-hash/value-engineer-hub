@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "apps/ve-faq/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "apps/sow-generator/frontend/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "apps/sow-generator/backend/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxDuration": 60,
+        "includeFiles": [
+          "apps/sow-generator/backend/template_sow.docx",
+          "apps/sow-generator/backend/template_privypass.docx",
+          "apps/sow-generator/backend/template_credential.docx",
+          "apps/sow-generator/backend/google_sheets_client.py"
+        ]
+      }
+    },
+    {
+      "src": "apps/ve-faq/api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "apps/sow-generator/backend/main.py"
+    },
+    {
+      "source": "/faq-api/(.*)",
+      "destination": "apps/ve-faq/api/index.js"
+    },
+    {
+      "source": "/app(/.*)?",
+      "destination": "apps/sow-generator/frontend$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "apps/ve-faq/$1"
+    }
+  ]
+}

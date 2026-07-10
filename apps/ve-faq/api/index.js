@@ -188,7 +188,7 @@ function saveUserLocal(userId, pin, email) {
 }
 
 // ===== AUTH =====
-app.post('/api/auth', async (req, res) => {
+app.post('/faq-api/auth', async (req, res) => {
   const { identifier, pin, email } = req.body;
 
   if (!identifier || !identifier.trim()) {
@@ -280,7 +280,7 @@ app.post('/api/auth', async (req, res) => {
 });
 
 // ===== FAQs =====
-app.get('/api/faqs', async (req, res) => {
+app.get('/faq-api/faqs', async (req, res) => {
   try {
     if (useSheets) {
       const faqs = await gsheets.getFAQs();
@@ -293,7 +293,7 @@ app.get('/api/faqs', async (req, res) => {
   }
 });
 
-app.post('/api/faqs', async (req, res) => {
+app.post('/faq-api/faqs', async (req, res) => {
   try {
     const { userId, ...faqData } = req.body;
     const userName = await resolveUserName(userId);
@@ -322,7 +322,7 @@ app.post('/api/faqs', async (req, res) => {
   }
 });
 
-app.put('/api/faqs/:id', async (req, res) => {
+app.put('/faq-api/faqs/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { userId, ...faqData } = req.body;
@@ -357,7 +357,7 @@ app.put('/api/faqs/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/faqs/:id', async (req, res) => {
+app.delete('/faq-api/faqs/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
@@ -386,7 +386,7 @@ app.delete('/api/faqs/:id', async (req, res) => {
 // ===== RATINGS =====
 
 // GET /api/ratings — aggregated rating data for all FAQs
-app.get('/api/ratings', async (req, res) => {
+app.get('/faq-api/ratings', async (req, res) => {
   try {
      if (useSheets) {
        const ratings = await gsheets.getRatings();
@@ -409,7 +409,7 @@ app.get('/api/ratings', async (req, res) => {
 });
 
 // POST /api/faqs/:id/rate — cast, update or cancel (vote=0) a rating
-app.post('/api/faqs/:id/rate', async (req, res) => {
+app.post('/faq-api/faqs/:id/rate', async (req, res) => {
   try {
     const { id } = req.params;
     const { userId, vote } = req.body;
@@ -455,7 +455,7 @@ app.post('/api/faqs/:id/rate', async (req, res) => {
 // ===== RELATED FAQs =====
 
 // GET /api/related — all related links
-app.get('/api/related', async (req, res) => {
+app.get('/faq-api/related', async (req, res) => {
   try {
     if (useSheets) {
       const related = await gsheets.getRelated();
@@ -469,7 +469,7 @@ app.get('/api/related', async (req, res) => {
 });
 
 // POST /api/faqs/:id/related — link two FAQs
-app.post('/api/faqs/:id/related', async (req, res) => {
+app.post('/faq-api/faqs/:id/related', async (req, res) => {
   try {
     const { id } = req.params;
     const { userId, relatedFaqId, note } = req.body;
@@ -502,7 +502,7 @@ app.post('/api/faqs/:id/related', async (req, res) => {
 });
 
 // DELETE /api/faqs/:id/related/:relatedId — unlink two FAQs
-app.delete('/api/faqs/:id/related/:relatedId', async (req, res) => {
+app.delete('/faq-api/faqs/:id/related/:relatedId', async (req, res) => {
   try {
     const { id, relatedId } = req.params;
     const { userId } = req.body || {}; // Attempt to capture userId if provided
@@ -531,7 +531,7 @@ app.delete('/api/faqs/:id/related/:relatedId', async (req, res) => {
 });
 
 // ===== CATEGORIES =====
-app.get('/api/categories', async (req, res) => {
+app.get('/faq-api/categories', async (req, res) => {
   try {
     if (useSheets) {
       const cats = await gsheets.getCategories();
@@ -543,7 +543,7 @@ app.get('/api/categories', async (req, res) => {
   }
 });
 
-app.post('/api/categories', async (req, res) => {
+app.post('/faq-api/categories', async (req, res) => {
   try {
     const { name } = req.body;
     if (useSheets) {
@@ -556,7 +556,7 @@ app.post('/api/categories', async (req, res) => {
   }
 });
 
-app.delete('/api/categories/:name', async (req, res) => {
+app.delete('/faq-api/categories/:name', async (req, res) => {
   try {
     const { name } = req.params;
     if (useSheets) {
@@ -570,7 +570,7 @@ app.delete('/api/categories/:name', async (req, res) => {
 });
 
 // ===== LOGS =====
-app.get('/api/logs', async (req, res) => {
+app.get('/faq-api/logs', async (req, res) => {
   try {
     const { userId } = req.query;
     const resolvedName = userId ? (await resolveUserName(userId)) : null;
@@ -604,7 +604,7 @@ app.get('/api/logs', async (req, res) => {
 });
 
 // ===== DIAGNOSTICS =====
-app.get('/api/debug', async (req, res) => {
+app.get('/faq-api/debug', async (req, res) => {
   try {
     console.log('🔍 Running diagnostics...');
     const report = await gsheets.testConnection();
@@ -617,7 +617,7 @@ app.get('/api/debug', async (req, res) => {
 // ===== QUESTIONNAIRE API ENDPOINTS =====
 
 // GET /api/officers — reads directly from Users sheet, filtered by position=Officer
-app.get('/api/officers', async (req, res) => {
+app.get('/faq-api/officers', async (req, res) => {
   try {
     // Always fetch fresh from Sheets so we never rely on the in-memory cache
     const sheetUsers = await gsheets.getUsers();
@@ -643,7 +643,7 @@ app.get('/api/officers', async (req, res) => {
 });
 
 // GET /api/questionnaire-templates
-app.get('/api/questionnaire-templates', async (req, res) => {
+app.get('/faq-api/questionnaire-templates', async (req, res) => {
   try {
     const { category } = req.query;
     const questions = await gsheets.getQuestionnaireQuestions(category);
@@ -654,7 +654,7 @@ app.get('/api/questionnaire-templates', async (req, res) => {
 });
 
 // GET /api/questionnaires/logs
-app.get('/api/questionnaires/logs', async (req, res) => {
+app.get('/faq-api/questionnaires/logs', async (req, res) => {
   try {
     const { senderId } = req.query;
     if (useSheets) {
@@ -672,7 +672,7 @@ app.get('/api/questionnaires/logs', async (req, res) => {
 });
 
 // GET /api/questionnaires/details/:logId (Public details load for form)
-app.get('/api/questionnaires/details/:logId', async (req, res) => {
+app.get('/faq-api/questionnaires/details/:logId', async (req, res) => {
   try {
     const { logId } = req.params;
     let logDetail = null;
@@ -715,7 +715,7 @@ app.get('/api/questionnaires/details/:logId', async (req, res) => {
 });
 
 // POST /api/questionnaires/send
-app.post('/api/questionnaires/send', async (req, res) => {
+app.post('/faq-api/questionnaires/send', async (req, res) => {
   try {
     const { senderId, receiverEmail, officerName, selectedQuestions } = req.body;
     if (!senderId || !receiverEmail || !officerName || !selectedQuestions || !Array.isArray(selectedQuestions) || selectedQuestions.length === 0) {
@@ -831,7 +831,7 @@ app.post('/api/questionnaires/send', async (req, res) => {
 });
 
 // POST /api/questionnaires/submit
-app.post('/api/questionnaires/submit', async (req, res) => {
+app.post('/faq-api/questionnaires/submit', async (req, res) => {
   try {
     const { logId, receiverEmail, officerName, category, answers, advice } = req.body;
     if (!receiverEmail || !officerName || !answers) {
@@ -907,7 +907,7 @@ app.post('/api/questionnaires/submit', async (req, res) => {
 });
 
 // GET /api/questionnaires/submissions — for VP/Manager results dashboard
-app.get('/api/questionnaires/submissions', async (req, res) => {
+app.get('/faq-api/questionnaires/submissions', async (req, res) => {
   try {
     const { officerName, dateFrom, dateTo } = req.query;
     if (useSheets) {
@@ -953,7 +953,7 @@ app.get('/api/questionnaires/submissions', async (req, res) => {
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`🚀 VE FAQ Server running on http://localhost:${PORT}`);
-    console.log(`   API endpoints: http://localhost:${PORT}/api/faqs`);
+    console.log(`   API endpoints: http://localhost:${PORT}/faq-api/faqs`);
   });
 }
 
