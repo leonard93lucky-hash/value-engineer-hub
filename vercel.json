@@ -41,6 +41,10 @@
         {
           "type": "query",
           "key": "userId"
+        },
+        {
+          "type": "query",
+          "key": "form"
         }
       ],
       "destination": "/login/",
