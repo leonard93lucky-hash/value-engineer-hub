@@ -92,6 +92,15 @@ export function AppWrapper() {
     )
   }
 
+  if (typeof window !== "undefined") {
+    const isLocal = window.location.hostname === "localhost"
+    const isInIframe = window !== window.top
+    if (!isLocal && !isInIframe) {
+      window.location.href = "/login/"
+      return null
+    }
+  }
+
   if (!isAuthenticated) {
     if (typeof window !== "undefined") {
       const isLocal = window.location.hostname === "localhost"
