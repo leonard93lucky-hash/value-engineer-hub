@@ -40,8 +40,8 @@
       "destination": "apps/ve-faq/api/index.js"
     },
     {
-      "source": "/login/assets/(.*)",
-      "destination": "apps/ve-faq/assets/$1"
+      "source": "/login/(.*\\.\\w+)",
+      "destination": "apps/ve-faq/$1"
     },
     {
       "source": "/login(/.*)?",
