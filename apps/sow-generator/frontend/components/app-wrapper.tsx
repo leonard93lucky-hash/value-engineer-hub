@@ -75,7 +75,8 @@ export function AppWrapper() {
 
   if (!isAuthenticated) {
     if (typeof window !== "undefined") {
-      window.location.href = "/login/"
+      const isLocal = window.location.hostname === "localhost"
+      window.location.href = isLocal ? "http://localhost:5173/login/" : "/login/"
     }
     return null
   }

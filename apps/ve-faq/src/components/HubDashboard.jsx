@@ -1,5 +1,7 @@
 import { FiBookOpen, FiFileText, FiPenTool } from 'react-icons/fi';
 
+const SOW_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3000';
+
 export default function HubDashboard({
   userId,
   userName,
@@ -13,7 +15,7 @@ export default function HubDashboard({
   if (userId) queryParams.append('userId', userId);
   if (userName) queryParams.append('userName', userName);
   
-  const sowGeneratorUrl = `/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+  const sowGeneratorUrl = `${SOW_ORIGIN}/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
 
   return (
     <div className="hub-container animate-fade-in">
