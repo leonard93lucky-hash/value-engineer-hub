@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import FormValueEngineer from "@/components/form-value-engineer"
 import FormApiPrivypass from "@/components/form-api-privypass"
 import FormCredential from "@/components/form-credential"
@@ -10,13 +10,12 @@ import { UpdateNotesPopup } from "@/components/update-notes-popup"
 import { API_BASE_URL } from "@/lib/constants"
 
 export function AppWrapper() {
-  const router = useRouter()
   const searchParams = useSearchParams()
-  const selectedProduct = searchParams.get("form") as "SDK" | "API" | "CREDENTIAL" | null
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedProduct, setSelectedProduct] = useState<"SDK" | "API" | "CREDENTIAL" | null>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -71,17 +70,15 @@ export function AppWrapper() {
     document.cookie = "ve_auth_token=; path=/; max-age=0"
     setIsAuthenticated(false)
     setCurrentUser(null)
-    router.push("/")
+    setSelectedProduct(null)
   }
 
   const handleSelectProduct = (product: "SDK" | "API" | "CREDENTIAL") => {
-    // Navigasi dengan router push menghasilkan event history yang mendukung Back Button
-    router.push(`/?form=${product}`)
+    setSelectedProduct(product)
   }
 
   const handleBack = () => {
-    // Kembali bisa menggunakan router.back() jika ada history, atau paksa ke root
-    router.push("/")
+    setSelectedProduct(null)
   }
 
   if (isLoading) {
