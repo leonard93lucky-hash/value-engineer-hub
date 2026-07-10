@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxDuration": 60,
+        "includeFiles": [
+          "backend/template_sow.docx",
+          "backend/template_privypass.docx",
+          "backend/template_credential.docx",
+          "backend/google_sheets_client.py"
+        ]
+      }
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "backend/main.py"
+    },
+    {
+      "source": "/:path*",
+      "destination": "frontend/$1"
+    }
+  ]
+}

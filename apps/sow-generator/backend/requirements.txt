@@ -1,0 +1,18 @@
+fastapi
+uvicorn
+python-dotenv
+docxtpl
+pydantic
+python-docx
+requests
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+pypdf
+docx2pdf
+
+
+# python3 -m venv venv (buat virtual environment)
+# source venv/bin/activate (aktifasi virtual environment)
+# pip3 install -r requirements.txt
+# python3 -m uvicorn main:app --reload

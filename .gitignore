@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+.next/
+dist/
+venv/
+__pycache__/
+*.pyc
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Vercel
+.vercel
+
+# Generated docs
+**/generated_docs/
+
+# Scratch files
+**/scratch/
+scratch/
+
+# Project-specific
+apps/sow-generator/backend/token.json
+apps/sow-generator/backend/credentials.json
+apps/sow-generator/frontend/.env
+apps/sow-generator/frontend/.env.local
+
+# Scratch files
+scratch/

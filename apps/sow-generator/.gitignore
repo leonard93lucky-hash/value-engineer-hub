@@ -1,0 +1,11 @@
+# Mengabaikan env di folder frontend
+frontend/.env
+frontend/.env.local
+
+# Mengabaikan env di folder backend
+backend/.env
+backend/venv/
+backend/token.json
+backend/credentials.json
+backend/__pycache__/
+.vercel
