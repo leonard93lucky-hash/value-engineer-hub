@@ -62,11 +62,11 @@
     },
     {
       "source": "/login/(.*\\.\\w+)",
-      "destination": "apps/ve-faq/dist/$1"
+      "destination": "apps/ve-faq/$1"
     },
     {
       "source": "/login(/.*)?",
-      "destination": "apps/ve-faq/dist/index.html"
+      "destination": "apps/ve-faq/index.html"
     },
     {
       "source": "/(.*)",
