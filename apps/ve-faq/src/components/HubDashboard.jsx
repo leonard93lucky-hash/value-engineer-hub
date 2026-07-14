@@ -16,7 +16,12 @@ export default function HubDashboard({
   if (userName) queryParams.append('userName', userName);
   
   const sowGeneratorUrl = `${SOW_ORIGIN}/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
-  const adminUrl = `${SOW_ORIGIN}/admin`;
+
+  const adminParams = new URLSearchParams();
+  if (userId) adminParams.append('userId', userId);
+  if (userName) adminParams.append('userName', userName);
+  if (userPosition) adminParams.append('position', userPosition);
+  const adminUrl = `${SOW_ORIGIN}/admin${adminParams.toString() ? '?' + adminParams.toString() : ''}`;
 
   return (
     <div className="hub-container animate-fade-in">

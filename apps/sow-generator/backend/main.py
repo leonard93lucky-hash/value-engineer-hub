@@ -27,6 +27,8 @@ import base64
 import secrets
 import io
 import sys
+import hmac
+import hashlib
 
 # Tambahkan path folder 'backend' ke sys.path agar Vercel bisa mengenali file lokal
 sys.path.append(os.path.dirname(__file__))
@@ -42,8 +44,13 @@ EMAIL_TO = os.getenv("EMAIL_TO", "")
 _raw_admin_ids = os.getenv("ADMIN_SECRET_IDS", "")
 ADMIN_SECRET_IDS = set(aid.strip().lower() for aid in _raw_admin_ids.split(",") if aid.strip())
 
-# Runtime set for hub-authenticated admin users (added dynamically)
-HUB_ADMIN_ACCESS: set = set()
+# Secret untuk menandatangani admin_id yang diterbitkan lewat hub (support-role).
+# Stateless by design: harus tetap valid di serverless instance manapun (Vercel),
+# tidak boleh disimpan di in-memory set karena tiap instance punya memory terpisah.
+HUB_ADMIN_SECRET = os.getenv("HUB_ADMIN_SECRET", "privy-ve-hub-fallback-secret")
+
+def sign_hub_admin_id(user_id: str) -> str:
+    return hmac.new(HUB_ADMIN_SECRET.encode(), user_id.upper().encode(), hashlib.sha256).hexdigest()[:16]
 
 # Scopes untuk Gmail + Drive API
 SCOPES = [
@@ -213,11 +220,16 @@ def format_tgl_indo(val_str):
         return str(val_str)
 
 def verify_admin_id(admin_id: str) -> bool:
-    key = admin_id.strip().lower()
-    if key in ADMIN_SECRET_IDS:
+    raw = (admin_id or "").strip()
+    if raw.lower() in ADMIN_SECRET_IDS:
         return True
-    if key in HUB_ADMIN_ACCESS:
-        return True
+    # Token dari hub: "HUB_<USERID>.<signature>" — divalidasi ulang tiap request,
+    # tidak bergantung pada state yang tersimpan di memory instance tertentu.
+    if raw.upper().startswith("HUB_") and "." in raw:
+        base, _, sig = raw.rpartition(".")
+        user_id = base[4:]
+        expected = sign_hub_admin_id(user_id)
+        return hmac.compare_digest(sig.lower(), expected)
     return False
 
 # =========================================================
@@ -441,12 +453,16 @@ def admin_verify(request: AdminVerifyRequest):
 
 @api_router.post("/admin/verify-hub")
 def admin_verify_hub(data: dict):
-    position = (data.get("position") or "").strip().lower()
-    if position == "support":
-        user_id = (data.get("userId") or "").strip().upper()
-        hub_admin_id = f"HUB_{user_id}"
-        HUB_ADMIN_ACCESS.add(hub_admin_id.lower())
+    raw_position = data.get("position")
+    raw_user_id = data.get("userId")
+    position = (raw_position or "").strip().lower()
+    user_id = (raw_user_id or "").strip().upper()
+    print(f"[verify-hub] received userId={raw_user_id!r} position={raw_position!r} -> normalized userId={user_id!r} position={position!r}")
+    if position == "support" and user_id:
+        hub_admin_id = f"HUB_{user_id}.{sign_hub_admin_id(user_id)}"
+        print(f"[verify-hub] GRANTED admin_id={hub_admin_id}")
         return {"status": "success", "message": "Akses diterima.", "admin_id": hub_admin_id}
+    print(f"[verify-hub] DENIED — position must be exactly 'support' (got {position!r})")
     raise HTTPException(status_code=401, detail="Akses Admin Ditolak")
 
 @api_router.get("/admin/submissions")
