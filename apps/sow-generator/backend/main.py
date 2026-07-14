@@ -32,8 +32,8 @@ import sys
 sys.path.append(os.path.dirname(__file__))
 from google_sheets_client import GoogleSheetsClient
 
-# Load file .env
-load_dotenv(override=True)
+# Load file .env (explicit path for Vercel compatibility)
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'), override=True)
 
 # --- INITIAL SETUP ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -170,7 +170,7 @@ def send_telegram_msg(message: str):
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     raw_chat_ids = os.getenv("TELEGRAM_CHAT_ID", "")
     chat_ids = [cid.strip() for cid in raw_chat_ids.split(",") if cid.strip()]
-    
+
     if not token or not chat_ids:
         print("[Telegram] Skipped — missing token or chat_ids")
         return
@@ -179,7 +179,12 @@ def send_telegram_msg(message: str):
     for chat_id in chat_ids:
         payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
         try:
-            requests.post(url, json=payload, timeout=10)
+            resp = requests.post(url, json=payload, timeout=10)
+            resp_data = resp.json()
+            if not resp_data.get("ok"):
+                print(f"[Telegram] API error (chat {chat_id}): {resp_data.get('description', resp.text)}")
+            else:
+                print(f"[Telegram] Sent to chat {chat_id}")
         except Exception as e:
             print(f"[Telegram] Error: {e}")
 

@@ -21,7 +21,8 @@
           "apps/sow-generator/backend/template_sow.docx",
           "apps/sow-generator/backend/template_privypass.docx",
           "apps/sow-generator/backend/template_credential.docx",
-          "apps/sow-generator/backend/google_sheets_client.py"
+          "apps/sow-generator/backend/google_sheets_client.py",
+          "apps/sow-generator/backend/.env"
         ]
       }
     },
