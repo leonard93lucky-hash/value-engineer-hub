@@ -61,12 +61,12 @@
       "destination": "apps/ve-faq/api/index.js"
     },
     {
-      "source": "/login/(.*\\.\\w+)",
-      "destination": "apps/ve-faq/$1"
+      "source": "/login/(.*)",
+      "destination": "apps/ve-faq/dist/$1"
     },
     {
       "source": "/login(/.*)?",
-      "destination": "apps/ve-faq/index.html"
+      "destination": "apps/ve-faq/dist/index.html"
     },
     {
       "source": "/(.*)",

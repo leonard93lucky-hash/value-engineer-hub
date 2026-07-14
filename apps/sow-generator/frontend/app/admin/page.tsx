@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { AdminLogin } from "@/components/admin-login"
 import { AdminDashboard } from "@/components/admin-dashboard"
 import { UpdateNotesPopup } from "@/components/update-notes-popup"
 import { useRouter, useSearchParams } from "next/navigation"
 import { API_BASE_URL } from "@/lib/constants"
 
-export default function AdminPage() {
+function AdminPageInner() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [adminId, setAdminId] = useState("")
   const [isLoading, setIsLoading] = useState(true)
@@ -118,5 +118,13 @@ export default function AdminPage() {
       />
       <UpdateNotesPopup />
     </>
+  )
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-900 flex items-center justify-center"><div className="text-white/40 text-sm animate-pulse">Loading...</div></div>}>
+      <AdminPageInner />
+    </Suspense>
   )
 }
