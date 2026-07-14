@@ -8,5 +8,6 @@
   "RIZK72": { "name": "Rizki Aji Pramono", "pin": "", "email": "", "position": "Officer" },
   "LC3357": { "name": "Lucky Leonard", "pin": "123456", "email": "lucky.leonard@privy.id", "position": "VP" },
   "KA3989": { "name": "Ika Ambarwati", "pin": "", "email": "", "position": "Manager" },
-  "SUN4662": { "name": "Sungguh Indra Malaon", "pin": "", "email": "", "position": "VP" }
+  "SUN4662": { "name": "Sungguh Indra Malaon", "pin": "", "email": "", "position": "VP" },
+  "ADM001": { "name": "Admin Support", "pin": "123456", "email": "admin.support@privy.id", "position": "Support" }
 }

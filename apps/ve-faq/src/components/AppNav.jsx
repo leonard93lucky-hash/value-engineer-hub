@@ -1,4 +1,4 @@
-import { FiBookOpen, FiFileText, FiPenTool, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiBookOpen, FiFileText, FiPenTool, FiShield, FiLogOut, FiUser } from 'react-icons/fi';
 
 export default function AppNav({
   currentScreen,
@@ -9,6 +9,7 @@ export default function AppNav({
 }) {
   const role = (userPosition || '').toLowerCase();
   const isAuthorizedForQuestionnaire = role.includes('vp') || role.includes('manager');
+  const isAuthorizedForAdmin = role === 'support';
 
   return (
     <header className="app-nav glass">
@@ -48,6 +49,16 @@ export default function AppNav({
           <FiPenTool size={15} />
           <span>SOW Generator</span>
         </button>
+
+        {isAuthorizedForAdmin && (
+          <button
+            className={`app-nav-tab ${currentScreen === 'sow-admin' ? 'active' : ''}`}
+            onClick={() => onNavigate('sow-admin')}
+          >
+            <FiShield size={15} />
+            <span>Admin</span>
+          </button>
+        )}
       </div>
 
       <div className="app-nav-right">

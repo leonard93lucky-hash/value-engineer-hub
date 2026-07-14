@@ -49,6 +49,7 @@ function App() {
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [sowMounted, setSowMounted] = useState(false);
+  const [adminMounted, setAdminMounted] = useState(false);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
@@ -261,6 +262,7 @@ function App() {
         onNavigate={(screen) => {
           if (screen === 'send-questionnaire' && !isAuthorizedForQuestionnaire) return;
           if (screen === 'sow') setSowMounted(true);
+          if (screen === 'sow-admin') setAdminMounted(true);
           setCurrentScreen(screen);
         }}
         onLogout={handleLogout}
@@ -272,6 +274,17 @@ function App() {
             src={`${SOW_ORIGIN}/?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}`}
             className="sow-iframe"
             title="SOW Generator"
+            allow="clipboard-read; clipboard-write"
+          />
+        </div>
+      )}
+
+      {adminMounted && (
+        <div className="sow-iframe-container" style={{ display: currentScreen === 'sow-admin' ? 'block' : 'none' }}>
+          <iframe
+            src={`${SOW_ORIGIN}/admin?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&position=${encodeURIComponent(userPosition)}`}
+            className="sow-iframe"
+            title="Admin Panel"
             allow="clipboard-read; clipboard-write"
           />
         </div>

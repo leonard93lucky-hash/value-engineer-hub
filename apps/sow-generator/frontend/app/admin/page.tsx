@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { AdminLogin } from "@/components/admin-login"
 import { AdminDashboard } from "@/components/admin-dashboard"
 import { UpdateNotesPopup } from "@/components/update-notes-popup"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { API_BASE_URL } from "@/lib/constants"
 
 export default function AdminPage() {
@@ -12,9 +12,40 @@ export default function AdminPage() {
   const [adminId, setAdminId] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   useEffect(() => {
     const checkAdminAuth = async () => {
+      // Check if arriving from hub with pre-auth
+      const urlUserId = searchParams.get("userId")
+      const urlPosition = searchParams.get("position")
+
+      if (urlUserId && urlPosition) {
+        try {
+          const res = await fetch(`${API_BASE_URL}/admin/verify-hub`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: urlUserId, position: urlPosition }),
+          })
+          if (res.ok) {
+            const data = await res.json()
+            const hubAdminId = data.admin_id
+            sessionStorage.setItem("admin_authenticated", "true")
+            sessionStorage.setItem("admin_id", hubAdminId)
+            document.cookie = `admin_auth_token=1; path=/; max-age=86400; SameSite=Lax`
+            setIsAuthenticated(true)
+            setAdminId(hubAdminId)
+            const currentUrl = new URL(window.location.href)
+            currentUrl.searchParams.delete("userId")
+            currentUrl.searchParams.delete("userName")
+            currentUrl.searchParams.delete("position")
+            window.history.replaceState({}, document.title, currentUrl.pathname + currentUrl.search)
+            setIsLoading(false)
+            return
+          }
+        } catch { /* fall through to normal auth check */ }
+      }
+
       const authenticated = sessionStorage.getItem("admin_authenticated")
       const storedAdminId = sessionStorage.getItem("admin_id")
       if (authenticated === "true" && storedAdminId) {
@@ -40,7 +71,7 @@ export default function AdminPage() {
       setIsLoading(false)
     }
     checkAdminAuth()
-  }, [])
+  }, [searchParams])
 
   const handleLogin = (id: string) => {
     setIsAuthenticated(true)

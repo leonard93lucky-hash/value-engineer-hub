@@ -42,6 +42,9 @@ EMAIL_TO = os.getenv("EMAIL_TO", "")
 _raw_admin_ids = os.getenv("ADMIN_SECRET_IDS", "")
 ADMIN_SECRET_IDS = set(aid.strip().lower() for aid in _raw_admin_ids.split(",") if aid.strip())
 
+# Runtime set for hub-authenticated admin users (added dynamically)
+HUB_ADMIN_ACCESS: set = set()
+
 # Scopes untuk Gmail + Drive API
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.send',
@@ -169,6 +172,7 @@ def send_telegram_msg(message: str):
     chat_ids = [cid.strip() for cid in raw_chat_ids.split(",") if cid.strip()]
     
     if not token or not chat_ids:
+        print("[Telegram] Skipped — missing token or chat_ids")
         return
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
@@ -177,7 +181,7 @@ def send_telegram_msg(message: str):
         try:
             requests.post(url, json=payload, timeout=10)
         except Exception as e:
-            print(f"Telegram Error: {e}")
+            print(f"[Telegram] Error: {e}")
 
 # =========================================================
 # HELPERS
@@ -204,7 +208,12 @@ def format_tgl_indo(val_str):
         return str(val_str)
 
 def verify_admin_id(admin_id: str) -> bool:
-    return admin_id.strip().lower() in ADMIN_SECRET_IDS
+    key = admin_id.strip().lower()
+    if key in ADMIN_SECRET_IDS:
+        return True
+    if key in HUB_ADMIN_ACCESS:
+        return True
+    return False
 
 # =========================================================
 # DATA MODELS
@@ -424,6 +433,16 @@ def admin_verify(request: AdminVerifyRequest):
     if not verify_admin_id(request.admin_id): 
         raise HTTPException(status_code=401, detail="ID Admin salah.")
     return {"status": "success", "message": "Akses diterima."}
+
+@api_router.post("/admin/verify-hub")
+def admin_verify_hub(data: dict):
+    position = (data.get("position") or "").strip().lower()
+    if position == "support":
+        user_id = (data.get("userId") or "").strip().upper()
+        hub_admin_id = f"HUB_{user_id}"
+        HUB_ADMIN_ACCESS.add(hub_admin_id.lower())
+        return {"status": "success", "message": "Akses diterima.", "admin_id": hub_admin_id}
+    raise HTTPException(status_code=401, detail="Akses Admin Ditolak")
 
 @api_router.get("/admin/submissions")
 def admin_get_submissions(x_admin_id: Optional[str] = Header(None, alias="X-Admin-Id")):

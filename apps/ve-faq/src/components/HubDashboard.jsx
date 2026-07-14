@@ -1,4 +1,4 @@
-import { FiBookOpen, FiFileText, FiPenTool } from 'react-icons/fi';
+import { FiBookOpen, FiFileText, FiPenTool, FiShield } from 'react-icons/fi';
 
 const SOW_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3000';
 
@@ -16,6 +16,7 @@ export default function HubDashboard({
   if (userName) queryParams.append('userName', userName);
   
   const sowGeneratorUrl = `${SOW_ORIGIN}/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+  const adminUrl = `${SOW_ORIGIN}/admin`;
 
   return (
     <div className="hub-container animate-fade-in">
@@ -66,6 +67,19 @@ export default function HubDashboard({
           </p>
           <button className="btn-primary" style={{ background: '#8B5CF6' }}>
             Open SOW Generator
+          </button>
+        </div>
+
+        <div className="hub-card" onClick={() => window.open(adminUrl, '_blank')}>
+          <div className="hub-card-icon" style={{ background: 'rgba(239, 68, 68, 0.15)' }}>
+            <FiShield size={28} color="#EF4444" />
+          </div>
+          <h2>Admin Panel</h2>
+          <p>
+            Manage, edit, and generate SOW &amp; Credential documents. Admin ID required.
+          </p>
+          <button className="btn-primary" style={{ background: '#EF4444' }}>
+            Open Admin
           </button>
         </div>
       </div>

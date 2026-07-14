@@ -535,8 +535,6 @@ export function AdminDashboard({ adminId, onLogout, onAddNew }: AdminDashboardPr
       {/* TOP BAR */}
       <header className="border-b border-gray-200 px-3 sm:px-6 py-3 flex items-center justify-between bg-white sticky top-0 z-40 shadow-sm gap-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <img src={LOGO_URL} alt="Privy" className="h-6 object-contain shrink-0" />
-          <div className="hidden sm:block w-px h-4 bg-gray-300" />
           <span className="hidden sm:inline text-sm font-semibold text-gray-800 truncate">Admin VE Support</span>
           <Badge className="hidden sm:inline-flex bg-red-50 text-red-500 border-red-200 text-[10px]">Dashboard</Badge>
         </div>
@@ -552,10 +550,6 @@ export function AdminDashboard({ adminId, onLogout, onAddNew }: AdminDashboardPr
             className="text-gray-400 hover:text-red-500 hover:bg-red-50 h-8 w-8 cursor-pointer shrink-0"
             title="Manage Update Notes">
             <Megaphone className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={onLogout}
-            className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 h-8 w-8 cursor-pointer shrink-0">
-            <LogOut className="w-4 h-4" />
           </Button>
         </div>
       </header>

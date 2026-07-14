@@ -108,8 +108,9 @@ if (useSheets) {
       try {
         const sheetUsers = await gsheets.getUsers();
         if (Object.keys(sheetUsers).length > 0) {
-          validUsers = sheetUsers;
-          console.log(`👥 Synchronized ${Object.keys(validUsers).length} users from Google Sheets`);
+          // Merge sheet users on top of local registry so local test users are preserved
+          validUsers = { ...validUsers, ...sheetUsers };
+          console.log(`👥 Synchronized ${Object.keys(sheetUsers).length} users from Google Sheets (total: ${Object.keys(validUsers).length})`);
         }
       } catch (err) {
         console.error('Failed to sync users at startup:', err.message);
@@ -201,7 +202,7 @@ app.post('/faq-api/auth', async (req, res) => {
       console.log('🔄 Fetching latest user registry from Google Sheets...');
       const sheetUsers = await gsheets.getUsers();
       if (Object.keys(sheetUsers).length > 0) {
-        validUsers = sheetUsers;
+        validUsers = { ...validUsers, ...sheetUsers };
       }
     } catch (err) {
       console.warn('⚠️ Could not refresh users from Google Sheets during auth:', err.message);
