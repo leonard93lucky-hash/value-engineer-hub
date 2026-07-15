@@ -4,7 +4,6 @@ import {
   FiClock, FiUser, FiFilter, FiX, FiRefreshCw,
   FiArrowUp, FiArrowDown, FiAward, FiStar, FiLink, FiAlertTriangle, FiTrendingUp, FiBarChart2
 } from 'react-icons/fi';
-
 // Default category list as fallback
 const DEFAULT_CATEGORIES = [
   'General',
@@ -49,6 +48,7 @@ export default function FAQDashboard({
   categories = DEFAULT_CATEGORIES,
   ratings = {},
   related = [],
+  scrollToFaqId,
   onAdd,
   onEdit,
   onDelete,
@@ -149,6 +149,17 @@ export default function FAQDashboard({
     setCurrentPage(1);
   }, [searchQuery, activeCategory, activeContributor, itemsPerPage, showLowRated, sortOrder]);
 
+  useEffect(() => {
+    if (!scrollToFaqId) return;
+    setOpenFaqId(scrollToFaqId);
+    setActiveCategory('All');
+    setSearchQuery('');
+    setTimeout(() => {
+      const el = document.getElementById(`faq-item-${scrollToFaqId}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
+  }, [scrollToFaqId]);
+
   const totalPages = Math.ceil(sortedFaqs.length / itemsPerPage);
 
   const paginatedFaqs = useMemo(() => {
@@ -247,8 +258,14 @@ export default function FAQDashboard({
   };
 
   return (
-    <div className="dashboard-container animate-fade-in">
-      
+    <div className="dashboard-container ro-theme animate-fade-in">
+
+      {/* RO Background decorations */}
+      <div className="ro-bg-orb ro-bg-orb-1" />
+      <div className="ro-bg-orb ro-bg-orb-2" />
+      <div className="ro-bg-orb ro-bg-orb-3" />
+      <div className="ro-bg-orb ro-bg-orb-4" />
+
       {/* Sub-header bar */}
       <div className="faq-subheader glass">
         <div className="faq-subheader-left">
@@ -269,8 +286,8 @@ export default function FAQDashboard({
       </div>
 
       <div className="hero-section">
-        <h2>How can we help you?</h2>
-        <p>Search through our frequently asked questions or add new knowledge</p>
+        <h2 className="ro-hero-title">How can we help you?</h2>
+        <p className="ro-hero-sub">Search through our frequently asked questions or add new knowledge</p>
         <div className="search-bar">
           <FiSearch className="search-icon" />
           <input

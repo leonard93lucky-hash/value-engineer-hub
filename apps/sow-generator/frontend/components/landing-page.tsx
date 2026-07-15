@@ -9,6 +9,8 @@ interface LandingPageProps {
 }
 
 export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingPageProps) {
+  const isIframe = typeof window !== "undefined" && window !== window.top
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
       
@@ -16,10 +18,12 @@ export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingP
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-red-100 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-red-50 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* TOP BAR */}
-      <header className="border-b border-gray-200 px-6 py-3 flex items-center bg-white/70 backdrop-blur-md relative z-10">
-        <span className="text-sm font-semibold text-gray-800 tracking-wide">SOW Generator</span>
-      </header>
+      {/* TOP BAR - hidden when in iframe (parent AppNav already shows it) */}
+      {!isIframe && (
+        <header className="border-b border-gray-200 px-6 py-3 flex items-center bg-white/70 backdrop-blur-md relative z-10">
+          <span className="text-sm font-semibold text-gray-800 tracking-wide">SOW Generator</span>
+        </header>
+      )}
 
       {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10 w-full max-w-5xl mx-auto -mt-10">

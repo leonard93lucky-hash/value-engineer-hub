@@ -11,6 +11,7 @@ import Toast from './components/Toast.jsx';
 import SendQuestionnaire from './components/SendQuestionnaire.jsx';
 import ClientQuestionnaire from './components/ClientQuestionnaire.jsx';
 import AppNav from './components/AppNav.jsx';
+import FAQChatbot from './components/FAQChatbot.jsx';
 import { 
   fetchFAQs, addFAQ, updateFAQ, deleteFAQ, fetchLogs, 
   fetchCategories, addCategory, deleteCategory,
@@ -50,6 +51,7 @@ function App() {
   const [toast, setToast] = useState(null);
   const [sowMounted, setSowMounted] = useState(false);
   const [adminMounted, setAdminMounted] = useState(false);
+  const [scrollToFaqId, setScrollToFaqId] = useState(null);
 
   const showToast = useCallback((message, type = 'success') => {
     setToast({ message, type });
@@ -299,25 +301,29 @@ function App() {
       )}
 
       {currentScreen === 'faq' && (
-        <FAQDashboard
-          faqs={faqs}
-          userName={userName}
-          userId={userId}
-          userPosition={userPosition}
-          categories={categories}
-          ratings={ratings}
-          related={related}
-          onAdd={handleAddFaq}
-          onEdit={handleEditFaq}
-          onDelete={handleDeleteFaq}
-          onShowLogs={() => setIsLogOpen(true)}
-          onShowStats={() => setIsStatsOpen(true)}
-          onRefresh={loadData}
-          isLoading={loading}
-          onRate={handleRate}
-          onAddRelated={handleAddRelated}
-          onRemoveRelated={handleRemoveRelated}
-        />
+        <>
+          <FAQDashboard
+            faqs={faqs}
+            userName={userName}
+            userId={userId}
+            userPosition={userPosition}
+            categories={categories}
+            ratings={ratings}
+            related={related}
+            scrollToFaqId={scrollToFaqId}
+            onAdd={handleAddFaq}
+            onEdit={handleEditFaq}
+            onDelete={handleDeleteFaq}
+            onShowLogs={() => setIsLogOpen(true)}
+            onShowStats={() => setIsStatsOpen(true)}
+            onRefresh={loadData}
+            isLoading={loading}
+            onRate={handleRate}
+            onAddRelated={handleAddRelated}
+            onRemoveRelated={handleRemoveRelated}
+          />
+          <FAQChatbot faqs={faqs} onScrollToFaq={setScrollToFaqId} />
+        </>
       )}
 
       <FAQModal

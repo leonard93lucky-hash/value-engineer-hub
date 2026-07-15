@@ -620,6 +620,155 @@ app.get('/faq-api/debug', async (req, res) => {
   }
 });
 
+// ===== CHATBOT =====
+
+const STOP_WORDS = new Set([
+  'a','an','the','is','are','was','were','be','been','being','have','has','had',
+  'do','does','did','will','would','can','could','shall','should','may','might',
+  'i','you','he','she','it','we','they','me','him','her','us','them',
+  'my','your','his','its','our','their','this','that','these','those',
+  'in','on','at','to','for','of','with','by','from','as','into','through',
+  'and','but','or','nor','not','so','yet','if','then','else','when',
+  'what','which','who','whom','why','how','all','each','every','both',
+  'no','nor','only','same','very','just','about','up','out','over',
+  'after','before','between','under','again','further','once','here',
+  'there','where','during','without','within','along','because',
+]);
+
+function tokenize(text) {
+  return (text || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(t => t.length > 1 && !STOP_WORDS.has(t));
+}
+
+function scoreFaqRelevance(faq, queryTokens) {
+  const qTokens = tokenize(faq.question);
+  const aTokens = tokenize(faq.answer);
+  const catTokens = tokenize(faq.category);
+
+  let score = 0;
+  const phrase = queryTokens.join(' ');
+
+  // Exact phrase match in question = very high score
+  if (faq.question.toLowerCase().includes(phrase)) score += 50;
+  // Exact phrase match in answer = high score
+  if (faq.answer.toLowerCase().includes(phrase)) score += 30;
+
+  // Token matches in question (weighted 3x)
+  for (const t of queryTokens) {
+    const count = qTokens.filter(qt => qt === t || qt.startsWith(t) || t.startsWith(qt)).length;
+    score += count * 3;
+  }
+
+  // Token matches in answer (weighted 1x)
+  for (const t of queryTokens) {
+    const count = aTokens.filter(at => at === t || at.startsWith(t) || t.startsWith(at)).length;
+    score += count;
+  }
+
+  // Category match
+  for (const t of queryTokens) {
+    if (catTokens.some(ct => ct === t || ct.startsWith(t) || t.startsWith(ct))) {
+      score += 5;
+    }
+  }
+
+  return score;
+}
+
+app.post('/faq-api/chatbot', async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // Fetch FAQ data
+    let faqData;
+    if (useSheets) {
+      faqData = await gsheets.getFAQs();
+    } else {
+      faqData = localFaqs;
+    }
+
+    const queryTokens = tokenize(message);
+
+    // Score and rank FAQs by relevance
+    const scored = faqData.map(f => ({
+      faq: f,
+      score: scoreFaqRelevance(f, queryTokens),
+    }));
+
+    scored.sort((a, b) => b.score - a.score);
+    const topFaqs = scored.filter(s => s.score > 0).slice(0, 10);
+
+    // Build context from top relevant FAQs
+    let faqContext;
+    if (topFaqs.length > 0) {
+      faqContext = topFaqs.map(s =>
+        `Q: ${s.faq.question}\nA: ${s.faq.answer}${s.faq.category ? `\nCategory: ${s.faq.category}` : ''}`
+      ).join('\n\n');
+    } else {
+      // Fallback: include a few recent FAQs as general context
+      faqContext = faqData.slice(0, 5).map(f =>
+        `Q: ${f.question}\nA: ${f.answer}${f.category ? `\nCategory: ${f.category}` : ''}`
+      ).join('\n\n');
+    }
+
+    const systemPrompt = `You are a helpful FAQ assistant for Privy ID's Value Engineering team called "FAQ Poring". 
+Answer questions based ONLY on the FAQ entries provided below. 
+If the question is clearly unrelated to Privy ID or the FAQ database (e.g., asking about taxis, weather, or general knowledge), say "Nyaa~ I'm just a FAQ Poring! I can only answer questions about Privy ID from our FAQ database! 🎀 Try asking me something about Privy ID, Digital-ID, Liveness SDK, or our services!"
+If the user's question relates to a topic in the FAQ database but the specific answer isn't found, say "I couldn't find a specific answer to that in our FAQ database. Try rephrasing or ask about a different topic!"
+Be concise, friendly, and use a playful anime-inspired kawaii tone with occasional "Nyaa~" and emojis.
+
+Relevant FAQ Database:
+${faqContext || '(No FAQs available yet)'}`;
+
+    const apiKey = process.env.DEEPSEEK_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'DeepSeek API key not configured' });
+    }
+
+    const deepseekRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message },
+        ],
+        max_tokens: 1024,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!deepseekRes.ok) {
+      const errText = await deepseekRes.text();
+      console.error('DeepSeek API error:', deepseekRes.status, errText);
+      return res.status(502).json({ error: 'DeepSeek API request failed' });
+    }
+
+    const data = await deepseekRes.json();
+    const reply = data.choices?.[0]?.message?.content || 'No response from AI.';
+
+    const references = topFaqs.slice(0, 3).map(s => ({
+      id: s.faq.id,
+      question: s.faq.question,
+    }));
+
+    res.json({ reply, references });
+  } catch (err) {
+    console.error('Chatbot error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ===== QUESTIONNAIRE API ENDPOINTS =====
 
 // GET /api/officers — reads directly from Users sheet, filtered by position=Officer
