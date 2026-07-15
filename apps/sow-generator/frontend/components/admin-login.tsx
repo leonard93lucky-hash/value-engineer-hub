@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +15,11 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
   const [adminId, setAdminId] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isIframe, setIsIframe] = useState(false)
+
+  useEffect(() => {
+    setIsIframe(window !== window.top)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,6 +56,7 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
+      {!isIframe && (
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center gap-3">
           <img src={LOGO_URL} alt="Privy" className="h-7 object-contain" />
@@ -58,7 +64,7 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
           <span className="text-sm font-medium text-gray-500">Admin VE Support Panel</span>
         </div>
       </header>
-
+      )}
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-3 sm:p-6">
         <div className="w-full max-w-5xl grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-16 items-center">

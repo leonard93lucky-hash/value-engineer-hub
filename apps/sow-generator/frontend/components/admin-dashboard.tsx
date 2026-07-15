@@ -131,6 +131,12 @@ function parseJsonField<T>(val: T | string | undefined): T | null {
 
 // ----- COMPONENT -----
 export function AdminDashboard({ adminId, onLogout, onAddNew }: AdminDashboardProps) {
+  const [isIframe, setIsIframe] = useState(false)
+
+  useEffect(() => {
+    setIsIframe(window !== window.top)
+  }, [])
+
   const [submissions, setSubmissions] = useState<Submission[]>([])
   const [pendingSubmissions, setPendingSubmissions] = useState<Submission[]>([]) // SOW & API
   const [pendingCredentialSubmissions, setPendingCredentialSubmissions] = useState<Submission[]>([]) // CREDENTIAL
@@ -533,6 +539,7 @@ export function AdminDashboard({ adminId, onLogout, onAddNew }: AdminDashboardPr
   return (
     <div className="h-screen bg-gray-50 flex flex-col font-sans overflow-hidden">
       {/* TOP BAR */}
+      {!isIframe && (
       <header className="border-b border-gray-200 px-3 sm:px-6 py-3 flex items-center justify-between bg-white sticky top-0 z-40 shadow-sm gap-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <span className="hidden sm:inline text-sm font-semibold text-gray-800 truncate">Admin VE Support</span>
@@ -553,7 +560,7 @@ export function AdminDashboard({ adminId, onLogout, onAddNew }: AdminDashboardPr
           </Button>
         </div>
       </header>
-
+      )}
       {/* MAIN — flex-col, overflow-hidden, fill remaining height */}
       <main className="flex-1 p-3 sm:p-4 lg:p-6 w-full max-w-full overflow-hidden flex flex-col min-h-0">
         {/* 1. STATS — 1 row, 3 kolom */}

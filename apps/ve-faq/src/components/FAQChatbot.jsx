@@ -5,7 +5,7 @@ const ANGELING = '/login/ro_angeling.webp';
 
 const WELCOME_MSG = {
   role: 'bot',
-  text: 'Kyaa~! The Angeling has descended! 🎀✨ Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our FAQ book! 💖',
+  text: 'Hey there! I\'m your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
 };
 
 
@@ -53,7 +53,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'bot',
-        text: `Eep! Something went wrong... ${err.message} ⚠️`,
+        text: `Something went wrong: ${err.message} Try again in a moment.`,
       }]);
     } finally {
       setIsLoading(false);
@@ -103,7 +103,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               </div>
               <div>
                 <div className="ro-chat-title">FAQ Angeling</div>
-                <div className="ro-chat-status">Online ~kyaa! ✨</div>
+                <div className="ro-chat-status">Online</div>
               </div>
             </div>
             <button className="ro-chat-close" onClick={() => setIsOpen(false)}>

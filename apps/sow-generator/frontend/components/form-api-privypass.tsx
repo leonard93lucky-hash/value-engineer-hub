@@ -130,6 +130,11 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
     const [listPicBd, setListPicBd] = useState<any[]>([]);
     const [zoom, setZoom] = useState(0.9);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isIframe, setIsIframe] = useState(false);
+
+    useEffect(() => {
+        setIsIframe(window !== window.top);
+    }, []);
 
     useEffect(() => {
         if (data.envType === "Staging") {
@@ -305,6 +310,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
     return (
         <div className="flex h-screen bg-neutral-100 font-sans overflow-hidden">
             <div className="w-full md:w-[45%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 shadow-xl h-full">
+                {!isIframe && (
                 <div className="p-5 border-b bg-white flex items-center gap-3">
                     {onBack && (
                         <button
@@ -319,6 +325,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                         <FileText className="w-6 h-6 text-[#F8001A]" /> SOW API Privypass
                     </h2>
                 </div>
+                )}
 
                 <div className="flex-1 overflow-hidden flex flex-col px-6 w-full max-w-2xl mx-auto">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">

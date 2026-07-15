@@ -469,7 +469,7 @@ export default function FAQDashboard({
                             disabled={ratingInFlight[faq.id]}
                             title={`${star} Star${star > 1 ? 's' : ''}${userVote === star ? ' (Click to cancel)' : ''}`}
                           >
-                            ★
+                            ✦
                           </button>
                         );
                       })}

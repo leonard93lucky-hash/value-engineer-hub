@@ -689,6 +689,8 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
   font-size: 0.85rem;
   transition: all 0.2s ease;
   border: 1px solid var(--surface-border);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .contributor-tag:hover {
@@ -713,6 +715,9 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
 .contributor-name {
   font-weight: 600;
   color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
 .contributor-count {
@@ -1319,15 +1324,25 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
   cursor: pointer;
   padding: 0;
   line-height: 1;
-  transition: transform 0.1s, color 0.15s;
+  transition: transform 0.15s, color 0.15s;
 }
 .star-rating-btn:hover {
-  transform: scale(1.2);
+  transform: scale(1.3);
 }
 .star-rating-btn.selected,
 .star-rating-btn.hovered {
-  color: #FBBF24; /* Amber star color */
-  text-shadow: 0 0 4px rgba(251, 191, 36, 0.3);
+  color: #F59E0B;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  animation: starPop 0.3s ease;
+}
+.star-rating-btn:active {
+  transform: scale(0.9);
+}
+
+@keyframes starPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
 }
 .user-rating-tip {
   margin-left: 0.5rem;
@@ -3141,7 +3156,8 @@ body:has(.ro-theme) {
 .ro-theme .star-rating-btn.selected,
 .ro-theme .star-rating-btn.hovered {
   color: #ffd700 !important;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.6) !important;
+  animation: starPop 0.3s ease !important;
 }
 
 .ro-theme .rating-preview.positive {

@@ -644,35 +644,38 @@ function tokenize(text) {
 }
 
 function scoreFaqRelevance(faq, queryTokens) {
-  const qTokens = tokenize(faq.question);
-  const aTokens = tokenize(faq.answer);
-  const catTokens = tokenize(faq.category);
+  const questionLower = faq.question.toLowerCase();
+  const answerLower = faq.answer.toLowerCase();
+  const categoryLower = (faq.category || '').toLowerCase();
 
   let score = 0;
   const phrase = queryTokens.join(' ');
 
   // Exact phrase match in question = very high score
-  if (faq.question.toLowerCase().includes(phrase)) score += 50;
+  if (questionLower.includes(phrase)) score += 50;
   // Exact phrase match in answer = high score
-  if (faq.answer.toLowerCase().includes(phrase)) score += 30;
+  if (answerLower.includes(phrase)) score += 30;
 
-  // Token matches in question (weighted 3x)
+  // Exact word-boundary token matches (avoids "api" matching "apiculture")
   for (const t of queryTokens) {
-    const count = qTokens.filter(qt => qt === t || qt.startsWith(t) || t.startsWith(qt)).length;
-    score += count * 3;
+    if (t.length < 2) continue;
+    const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const wordRegex = new RegExp('\\b' + escaped + '\\b', 'gi');
+
+    const qMatches = (questionLower.match(wordRegex) || []).length;
+    score += qMatches * 3;
+
+    const aMatches = (answerLower.match(wordRegex) || []).length;
+    score += aMatches;
+
+    if (categoryLower.includes(t)) score += 5;
   }
 
-  // Token matches in answer (weighted 1x)
-  for (const t of queryTokens) {
-    const count = aTokens.filter(at => at === t || at.startsWith(t) || t.startsWith(at)).length;
-    score += count;
-  }
-
-  // Category match
-  for (const t of queryTokens) {
-    if (catTokens.some(ct => ct === t || ct.startsWith(t) || t.startsWith(ct))) {
-      score += 5;
-    }
+  // Bigram matching — check adjacent token pairs as phrases
+  for (let i = 0; i < queryTokens.length - 1; i++) {
+    const bigram = queryTokens[i] + ' ' + queryTokens[i + 1];
+    if (questionLower.includes(bigram)) score += 15;
+    if (answerLower.includes(bigram)) score += 8;
   }
 
   return score;
@@ -708,20 +711,22 @@ app.post('/faq-api/chatbot', async (req, res) => {
     let faqContext;
     if (topFaqs.length > 0) {
       faqContext = topFaqs.map(s =>
-        `Q: ${s.faq.question}\nA: ${s.faq.answer}${s.faq.category ? `\nCategory: ${s.faq.category}` : ''}`
+        `[ID: ${s.faq.id}]\nQ: ${s.faq.question}\nA: ${s.faq.answer}${s.faq.category ? `\nCategory: ${s.faq.category}` : ''}`
       ).join('\n\n');
     } else {
       // Fallback: include a few recent FAQs as general context
       faqContext = faqData.slice(0, 5).map(f =>
-        `Q: ${f.question}\nA: ${f.answer}${f.category ? `\nCategory: ${f.category}` : ''}`
+        `[ID: ${f.id}]\nQ: ${f.question}\nA: ${f.answer}${f.category ? `\nCategory: ${f.category}` : ''}`
       ).join('\n\n');
     }
 
-    const systemPrompt = `You are a helpful FAQ assistant for Privy ID's Value Engineering team called "FAQ Poring". 
+    const systemPrompt = `You are a helpful FAQ assistant for Privy ID's Value Engineering team. 
 Answer questions based ONLY on the FAQ entries provided below. 
-If the question is clearly unrelated to Privy ID or the FAQ database (e.g., asking about taxis, weather, or general knowledge), say "Nyaa~ I'm just a FAQ Poring! I can only answer questions about Privy ID from our FAQ database! 🎀 Try asking me something about Privy ID, Digital-ID, Liveness SDK, or our services!"
+If the question is clearly unrelated to Privy ID or the FAQ database (e.g., asking about taxis, weather, or general knowledge), say "I can only answer questions about Privy ID from our FAQ database. Try asking about Privy ID, Digital-ID, Liveness SDK, or our services."
 If the user's question relates to a topic in the FAQ database but the specific answer isn't found, say "I couldn't find a specific answer to that in our FAQ database. Try rephrasing or ask about a different topic!"
-Be concise, friendly, and use a playful anime-inspired kawaii tone with occasional "Nyaa~" and emojis.
+Be concise, friendly, and casual — like a helpful teammate. Keep responses short and to the point.
+
+Below each FAQ entry is labeled with its ID in [ID: ...] format. After your answer, append a line '---REFS:' followed by the IDs of the FAQs you actually used/referenced in your answer, comma-separated. Only include IDs you directly referenced. For example: ---REFS: faq-1, faq-5
 
 Relevant FAQ Database:
 ${faqContext || '(No FAQs available yet)'}`;
@@ -755,12 +760,30 @@ ${faqContext || '(No FAQs available yet)'}`;
     }
 
     const data = await deepseekRes.json();
-    const reply = data.choices?.[0]?.message?.content || 'No response from AI.';
+    let reply = data.choices?.[0]?.message?.content || 'No response from AI.';
 
-    const references = topFaqs.slice(0, 3).map(s => ({
-      id: s.faq.id,
-      question: s.faq.question,
-    }));
+    // Parse LLM-identified references from ---REFS: line
+    let references = [];
+    const refsMatch = reply.match(/---REFS:\s*(.+?)(?:\n|$)/);
+    if (refsMatch) {
+      const refIds = refsMatch[1].split(',').map(s => s.trim()).filter(Boolean);
+      reply = reply.replace(/---REFS:.*$/m, '').trim();
+      // Map IDs back to { id, question } objects
+      references = refIds
+        .map(id => {
+          const faq = faqData.find(f => String(f.id) === String(id));
+          return faq ? { id: faq.id, question: faq.question } : null;
+        })
+        .filter(Boolean);
+    }
+
+    // Fallback: use top 3 scored FAQs if LLM didn't identify any
+    if (references.length === 0) {
+      references = topFaqs.slice(0, 3).map(s => ({
+        id: s.faq.id,
+        question: s.faq.question,
+      }));
+    }
 
     res.json({ reply, references });
   } catch (err) {

@@ -132,8 +132,11 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
     const [listPicBd, setListPicBd] = useState<any[]>([]);
     const [zoom, setZoom] = useState(0.9);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isIframe, setIsIframe] = useState(false);
 
-    // --- LOGIKA REVISION NUMBER OTOMATIS ---
+    useEffect(() => {
+        setIsIframe(window !== window.top);
+    }, []);
     useEffect(() => {
         if (data.envType === "Staging") {
             setData(prev => ({ ...prev, revisionNumber: "00" }));
@@ -377,6 +380,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
             {/* --- LEFT PANEL: FORM INPUT --- */}
             <div className="w-full md:w-[40%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 shadow-xl">
+                {!isIframe && (
                 <div className="p-5 border-b bg-white flex items-center gap-3">
                     {onBack && (
                         <button
@@ -391,6 +395,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                         <FileText className="w-6 h-6 text-[#F8001A]" /> SOW SDK Liveness
                     </h2>
                 </div>
+                )}
 
                 <div className="flex-1 overflow-hidden flex flex-col px-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">

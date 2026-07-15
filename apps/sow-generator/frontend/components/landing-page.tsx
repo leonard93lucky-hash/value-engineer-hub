@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Smartphone, Code2, ChevronRight, Lock } from "lucide-react"
 
 interface LandingPageProps {
@@ -9,7 +10,11 @@ interface LandingPageProps {
 }
 
 export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingPageProps) {
-  const isIframe = typeof window !== "undefined" && window !== window.top
+  const [isIframe, setIsIframe] = useState(false)
+
+  useEffect(() => {
+    setIsIframe(window !== window.top)
+  }, [])
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
