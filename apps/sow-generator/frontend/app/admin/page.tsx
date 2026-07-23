@@ -87,11 +87,6 @@ function AdminPageInner() {
     setAdminId("")
   }
 
-  const handleAddNew = () => {
-    // Arahkan ke halaman utama (form VE) di tab baru
-    window.open("/", "_blank")
-  }
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -114,7 +109,6 @@ function AdminPageInner() {
       <AdminDashboard
         adminId={adminId}
         onLogout={handleLogout}
-        onAddNew={handleAddNew}
       />
       <UpdateNotesPopup />
     </>
