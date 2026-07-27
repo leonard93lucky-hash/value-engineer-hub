@@ -40,6 +40,18 @@ apps/sow-generator/backend/credentials.json
 apps/sow-generator/frontend/.env
 apps/sow-generator/frontend/.env.local
 
+# Team Fund
+apps/teamfundsheets/.env
+apps/teamfundsheets/gen-lang-client-*.json
+apps/teamfundsheets/pnpm-lock.yaml
+apps/teamfundsheets/next-env.d.ts
+apps/teamfundsheets/*.zip
+apps/teamfundsheets/*.csv
+apps/teamfundsheets/deploy.bat
+apps/teamfundsheets/import_csv.bat
+apps/teamfundsheets/install_and_run.bat
+apps/teamfundsheets/test_connection.bat
+
 # Scratch files
 scratch/
 favicon.zip

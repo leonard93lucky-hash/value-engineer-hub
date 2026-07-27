@@ -5,6 +5,7 @@ import FAQModal from './components/FAQModal.jsx';
 import ActivityLog from './components/ActivityLog.jsx';
 
 const SOW_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3000';
+const TEAM_FUND_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3002';
 import StatsDashboard from './components/StatsDashboard.jsx';
 import ConfirmDialog from './components/ConfirmDialog.jsx';
 import Toast from './components/Toast.jsx';
@@ -51,6 +52,7 @@ function App() {
   const [toast, setToast] = useState(null);
   const [sowMounted, setSowMounted] = useState(false);
   const [adminMounted, setAdminMounted] = useState(false);
+  const [teamFundMounted, setTeamFundMounted] = useState(false);
   const [scrollToFaqId, setScrollToFaqId] = useState(null);
 
   const showToast = useCallback((message, type = 'success') => {
@@ -265,6 +267,7 @@ function App() {
           if (screen === 'send-questionnaire' && !isAuthorizedForQuestionnaire) return;
           if (screen === 'sow') setSowMounted(true);
           if (screen === 'sow-admin') setAdminMounted(true);
+          if (screen === 'team-fund') setTeamFundMounted(true);
           setCurrentScreen(screen);
         }}
         onLogout={handleLogout}
@@ -287,6 +290,17 @@ function App() {
             src={`${SOW_ORIGIN}/admin?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&position=${encodeURIComponent(userPosition)}`}
             className="sow-iframe"
             title="Admin Panel"
+            allow="clipboard-read; clipboard-write"
+          />
+        </div>
+      )}
+
+      {teamFundMounted && (
+        <div className="sow-iframe-container" style={{ display: currentScreen === 'team-fund' ? 'block' : 'none' }}>
+          <iframe
+            src={`${TEAM_FUND_ORIGIN}/?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&position=${encodeURIComponent(userPosition)}`}
+            className="sow-iframe"
+            title="Team Fund Tracker"
             allow="clipboard-read; clipboard-write"
           />
         </div>
