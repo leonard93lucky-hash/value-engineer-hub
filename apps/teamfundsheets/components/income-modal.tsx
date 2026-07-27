@@ -30,7 +30,7 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
 
   useEffect(() => {
     if (!isOpen) return
-    fetch("http://localhost:3001/faq-api/users")
+    fetch("/faq-api/users")
       .then(res => res.json())
       .then(data => {
         const sorted = (data as UserOption[]).sort((a, b) => a.name.localeCompare(b.name))
