@@ -19,7 +19,7 @@ export default function TargetsConfig({ isOpen, onClose, onSaved }: TargetsConfi
   useEffect(() => {
     if (!isOpen) return
     setLoading(true)
-    fetch(`api/targets?year=${year}`)
+    fetch(`/api/targets?year=${year}`)
       .then(res => res.json())
       .then(data => setMonthlyTarget(data.monthlyTarget || 600000))
       .catch(err => console.error("Failed to load target:", err))
@@ -29,7 +29,7 @@ export default function TargetsConfig({ isOpen, onClose, onSaved }: TargetsConfi
   const handleSave = async () => {
     setLoading(true)
     try {
-      await fetch("api/targets", {
+      await fetch("/api/targets", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ year, monthlyTarget }),
