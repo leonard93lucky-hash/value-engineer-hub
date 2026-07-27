@@ -79,8 +79,8 @@
       "destination": "apps/ve-faq/index.html"
     },
     {
-      "source": "/fund/(.*)",
-      "destination": "apps/teamfundsheets/$1"
+      "source": "/fund(/.*)?",
+      "destination": "apps/teamfundsheets$1"
     },
     {
       "source": "/(.*)",
