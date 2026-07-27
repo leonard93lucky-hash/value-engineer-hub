@@ -6,13 +6,13 @@ let doc: GoogleSpreadsheet | null = null;
 let docPromise: Promise<GoogleSpreadsheet> | null = null;
 
 async function initDoc(): Promise<GoogleSpreadsheet> {
-    const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
-    const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY;
+    const spreadsheetId = process.env.TF_GOOGLE_SPREADSHEET_ID;
+    const clientEmail = process.env.TF_GOOGLE_SERVICE_ACCOUNT_EMAIL;
+    const privateKey = process.env.TF_GOOGLE_PRIVATE_KEY;
 
     if (!spreadsheetId || !clientEmail || !privateKey) {
         throw new Error(
-            'Missing Google Sheets credentials. Check GOOGLE_SPREADSHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, and GOOGLE_PRIVATE_KEY in .env.local'
+            'Missing Google Sheets credentials. Check TF_GOOGLE_SPREADSHEET_ID, TF_GOOGLE_SERVICE_ACCOUNT_EMAIL, and TF_GOOGLE_PRIVATE_KEY'
         );
     }
 
