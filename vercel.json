@@ -27,7 +27,7 @@
       }
     },
     {
-      "src": "apps/ve-faq/api/index.cjs",
+      "src": "apps/ve-faq/api/index.js",
       "use": "@vercel/node",
       "config": {
         "memory": 1024,
@@ -59,7 +59,7 @@
     },
     {
       "source": "/faq-api/(.*)",
-      "destination": "apps/ve-faq/api/index.cjs"
+      "destination": "apps/ve-faq/api/index.js"
     },
     {
       "source": "/login/(.*\\.\\w+)",

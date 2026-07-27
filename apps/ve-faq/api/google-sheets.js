@@ -1,10 +1,12 @@
-const dotenv = require('dotenv');
-const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
+import dotenv from 'dotenv';
+import { google } from 'googleapis';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_ID;
 const FAQ_SHEET = 'FAQ_Data';
@@ -65,7 +67,7 @@ async function getSheetsClient() {
   return sheets;
 }
 
-async function initializeSheet(initialFaqs = []) {
+export async function initializeSheet(initialFaqs = []) {
   const client = await getSheetsClient();
   if (!client) return;
 
@@ -379,7 +381,7 @@ async function initializeSheet(initialFaqs = []) {
 }
 
 // ===== MIGRATION: Backfill SenderName for existing submissions =====
-async function backfillSenderNames() {
+export async function backfillSenderNames() {
   const client = await getSheetsClient();
   if (!client) return;
   
@@ -451,7 +453,7 @@ async function backfillSenderNames() {
 
 // ===== FAQ CRUD =====
 
-async function getFAQs() {
+export async function getFAQs() {
   const client = await getSheetsClient();
   const res = await client.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
@@ -472,7 +474,7 @@ async function getFAQs() {
   }));
 }
 
-async function addFAQ(faq, reporterName) {
+export async function addFAQ(faq, reporterName) {
   const client = await getSheetsClient();
   const id = `faq-${Date.now()}`;
   const now = new Date().toISOString();
@@ -501,7 +503,7 @@ async function addFAQ(faq, reporterName) {
   return { id, ...faq, date, reporter: reporterName || faq.reporter, createdAt: now, updatedAt: now, lastEditor: '' };
 }
 
-async function updateFAQ(targetId, faq, editorName) {
+export async function updateFAQ(targetId, faq, editorName) {
   const client = await getSheetsClient();
   // Find the row with matching ID and get current data to preserve metadata
   const res = await client.spreadsheets.values.get({
@@ -566,7 +568,7 @@ async function updateFAQ(targetId, faq, editorName) {
   };
 }
 
-async function deleteFAQ(targetId, deletedByName) {
+export async function deleteFAQ(targetId, deletedByName) {
   const client = await getSheetsClient();
   console.log(`🗑️ Attempting to delete FAQ with ID: ${targetId} by ${deletedByName}`);
   
@@ -631,7 +633,7 @@ async function deleteFAQ(targetId, deletedByName) {
 
 // ===== CATEGORY MANAGEMENT =====
 
-async function getCategories() {
+export async function getCategories() {
   const client = await getSheetsClient();
   const res = await client.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
@@ -640,7 +642,7 @@ async function getCategories() {
   return (res.data.values || []).map(row => row[0]).filter(Boolean);
 }
 
-async function addCategory(name) {
+export async function addCategory(name) {
   const client = await getSheetsClient();
   await client.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
@@ -651,7 +653,7 @@ async function addCategory(name) {
   return { name };
 }
 
-async function deleteCategory(name) {
+export async function deleteCategory(name) {
   const client = await getSheetsClient();
   const res = await client.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
@@ -684,7 +686,7 @@ async function deleteCategory(name) {
 
 // ===== ACTIVITY LOG =====
 
-async function getLogs() {
+export async function getLogs() {
   const client = await getSheetsClient();
   const res = await client.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
@@ -700,7 +702,7 @@ async function getLogs() {
   })).reverse(); // newest first
 }
 
-async function addLog(log) {
+export async function addLog(log) {
   const client = await getSheetsClient();
   await client.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
@@ -719,7 +721,7 @@ async function addLog(log) {
   return { success: true };
 }
 
-function isConfigured() {
+export function isConfigured() {
   const hasId = !!process.env.GOOGLE_SHEETS_ID && !process.env.GOOGLE_SHEETS_ID.includes('your_');
   const hasEmail = !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const hasKey = !!process.env.GOOGLE_PRIVATE_KEY;
@@ -735,7 +737,7 @@ function isConfigured() {
  * Attempts to connect to Google Sheets with a timeout.
  * Returns a diagnostic report.
  */
-async function testConnection() {
+export async function testConnection() {
   const report = {
     timestamp: new Date().toISOString(),
     config: {
@@ -789,7 +791,7 @@ async function testConnection() {
   return report;
 }
 
-async function getUsers() {
+export async function getUsers() {
   const client = await getSheetsClient();
   if (!client) return {};
   try {
@@ -816,7 +818,7 @@ async function getUsers() {
   }
 }
 
-async function saveUserCredentials(userId, pin, email) {
+export async function saveUserCredentials(userId, pin, email) {
   const client = await getSheetsClient();
   if (!client) throw new Error('Google Sheets not configured');
   try {
@@ -852,7 +854,7 @@ async function saveUserCredentials(userId, pin, email) {
  * Fetch all rating rows from FAQ_Ratings and aggregate per FAQ.
  * Returns: { [faqId]: { thumbsUp, thumbsDown, score, voters: [{userId, vote}] } }
  */
-async function getRatings() {
+export async function getRatings() {
   const client = await getSheetsClient();
   if (!client) return {};
   try {
@@ -886,7 +888,7 @@ async function getRatings() {
  * Upsert a vote: if [faqId, userId] row exists, update Vote + RatedAt; else append.
  * vote: 1 = helpful, -1 = not helpful
  */
-async function upsertRating(faqId, userId, vote) {
+export async function upsertRating(faqId, userId, vote) {
   const client = await getSheetsClient();
   if (!client) throw new Error('Google Sheets not configured');
 
@@ -931,7 +933,7 @@ async function upsertRating(faqId, userId, vote) {
 /**
  * Delete a vote row when user cancels rating.
  */
-async function deleteRating(faqId, userId) {
+export async function deleteRating(faqId, userId) {
   const client = await getSheetsClient();
   if (!client) throw new Error('Google Sheets not configured');
 
@@ -981,7 +983,7 @@ async function deleteRating(faqId, userId) {
  * Fetch all related-link rows.
  * Returns: [{ faqIdA, faqIdB, linkedBy, linkedAt, note }]
  */
-async function getRelated() {
+export async function getRelated() {
   const client = await getSheetsClient();
   if (!client) return [];
   try {
@@ -1008,7 +1010,7 @@ async function getRelated() {
 /**
  * Add a related-link between two FAQs (bi-directional: stored once, resolved both ways).
  */
-async function addRelated(faqIdA, faqIdB, linkedBy, note = '') {
+export async function addRelated(faqIdA, faqIdB, linkedBy, note = '') {
   const client = await getSheetsClient();
   if (!client) throw new Error('Google Sheets not configured');
   const now = new Date().toISOString();
@@ -1033,7 +1035,7 @@ async function addRelated(faqIdA, faqIdB, linkedBy, note = '') {
 /**
  * Remove a related-link between two FAQs (checks both directions).
  */
-async function removeRelated(faqIdA, faqIdB) {
+export async function removeRelated(faqIdA, faqIdB) {
   const client = await getSheetsClient();
   if (!client) throw new Error('Google Sheets not configured');
 
@@ -1071,7 +1073,7 @@ async function removeRelated(faqIdA, faqIdB) {
 
 // ===== QUESTIONNAIRE FUNCTIONS =====
 
-async function getOfficers() {
+export async function getOfficers() {
   const client = await getSheetsClient();
   if (!client) {
     // Local mock officers fallback
@@ -1107,7 +1109,7 @@ async function getOfficers() {
   }
 }
 
-async function getQuestionnaireQuestions(category) {
+export async function getQuestionnaireQuestions(category) {
   const client = await getSheetsClient();
   const defaultQuestions = [
     { id: 'Q1', category: 'Privy Integration Officer Performance Questionnaire', questionText: 'The integration team clearly explained the integration process and technical requirements', order: 1 },
@@ -1138,7 +1140,7 @@ async function getQuestionnaireQuestions(category) {
   }
 }
 
-async function getQuestionnaireLogs(senderId = null) {
+export async function getQuestionnaireLogs(senderId = null) {
   const client = await getSheetsClient();
   if (!client) return [];
   try {
@@ -1164,7 +1166,7 @@ async function getQuestionnaireLogs(senderId = null) {
   }
 }
 
-async function addQuestionnaireLog(log) {
+export async function addQuestionnaireLog(log) {
   const client = await getSheetsClient();
   if (!client) return { success: true };
   try {
@@ -1192,7 +1194,7 @@ async function addQuestionnaireLog(log) {
   }
 }
 
-async function updateQuestionnaireLogStatus(logId, status) {
+export async function updateQuestionnaireLogStatus(logId, status) {
   const client = await getSheetsClient();
   if (!client) return { success: true };
   try {
@@ -1224,7 +1226,7 @@ async function updateQuestionnaireLogStatus(logId, status) {
   }
 }
 
-async function getQuestionnaireLogById(logId) {
+export async function getQuestionnaireLogById(logId) {
   const client = await getSheetsClient();
   if (!client) return null;
   try {
@@ -1251,7 +1253,7 @@ async function getQuestionnaireLogById(logId) {
   }
 }
 
-async function submitQuestionnaire(sub) {
+export async function submitQuestionnaire(sub) {
   const client = await getSheetsClient();
   if (!client) return { success: true };
   try {
@@ -1308,7 +1310,7 @@ async function submitQuestionnaire(sub) {
   }
 }
 
-async function getSubmissions(officerName = null, dateFrom = null, dateTo = null) {
+export async function getSubmissions(officerName = null, dateFrom = null, dateTo = null) {
   const client = await getSheetsClient();
   if (!client) return [];
   try {
@@ -1396,35 +1398,3 @@ async function getSubmissions(officerName = null, dateFrom = null, dateTo = null
   }
 }
 
-
-module.exports = {
-  initializeSheet,
-  backfillSenderNames,
-  getFAQs,
-  addFAQ,
-  updateFAQ,
-  deleteFAQ,
-  getCategories,
-  addCategory,
-  deleteCategory,
-  getLogs,
-  addLog,
-  isConfigured,
-  testConnection,
-  getUsers,
-  saveUserCredentials,
-  getRatings,
-  upsertRating,
-  deleteRating,
-  getRelated,
-  addRelated,
-  removeRelated,
-  getOfficers,
-  getQuestionnaireQuestions,
-  getQuestionnaireLogs,
-  addQuestionnaireLog,
-  updateQuestionnaireLogStatus,
-  getQuestionnaireLogById,
-  submitQuestionnaire,
-  getSubmissions,
-};
