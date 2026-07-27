@@ -28,9 +28,19 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
     amount: 50000,
   })
 
+  const [usersApi, setUsersApi] = useState("")
+
   useEffect(() => {
-    if (!isOpen) return
-    fetch("/faq-api/users")
+    setUsersApi(
+      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:3001/faq-api/users"
+        : "/faq-api/users"
+    )
+  }, [])
+
+  useEffect(() => {
+    if (!isOpen || !usersApi) return
+    fetch(usersApi)
       .then(res => res.json())
       .then(data => {
         const sorted = (data as UserOption[]).sort((a, b) => a.name.localeCompare(b.name))
