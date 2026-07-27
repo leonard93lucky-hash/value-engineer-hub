@@ -22,11 +22,13 @@ export default function HomeContent() {
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showTargetsConfig, setShowTargetsConfig] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const { isSupport } = useAuth()
 
   const currentYear = new Date().getFullYear()
 
   const fetchData = async () => {
+    setRefreshing(true)
     try {
       console.log("[v0] Fetching payments and expenses from API...")
       const [paymentsRes, expensesRes, targetsRes] = await Promise.all([
@@ -59,6 +61,7 @@ export default function HomeContent() {
       console.error("[v0] Unexpected error fetching data:", error)
     } finally {
       setLoading(false)
+      setRefreshing(false)
     }
   }
 
@@ -214,6 +217,8 @@ export default function HomeContent() {
         onIncomeClick={handleIncomeClick}
         onExpenseClick={handleExpenseClick}
         onExportClick={handleExportCSV}
+        onRefresh={fetchData}
+        refreshing={refreshing}
       />
       <div className="px-4 py-8 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
         <SummaryCards
