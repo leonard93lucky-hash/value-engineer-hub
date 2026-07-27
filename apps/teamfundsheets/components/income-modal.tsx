@@ -28,6 +28,8 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
     amount: 50000,
   })
 
+  const hubUrl = process.env.NEXT_PUBLIC_HUB_URL || ""
+
   const [usersApi, setUsersApi] = useState("")
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
     setUsersApi(
       isLocal
         ? "http://localhost:3001/faq-api/users"
-        : "/faq-api/users"
+        : `${hubUrl}/faq-api/users`
     )
   }, [])
 
