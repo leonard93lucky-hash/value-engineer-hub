@@ -188,6 +188,17 @@ function saveUserLocal(userId, pin, email) {
   }
 }
 
+// ===== USERS =====
+app.get('/faq-api/users', (req, res) => {
+  const userList = Object.entries(validUsers).map(([id, data]) => ({
+    id,
+    name: data.name || '',
+    email: data.email || '',
+    position: data.position || '',
+  }));
+  res.json(userList);
+});
+
 // ===== AUTH =====
 app.post('/faq-api/auth', async (req, res) => {
   const { identifier, pin, email } = req.body;

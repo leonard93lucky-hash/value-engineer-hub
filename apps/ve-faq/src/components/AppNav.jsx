@@ -1,4 +1,4 @@
-import { FiBookOpen, FiFileText, FiPenTool, FiShield, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiBookOpen, FiFileText, FiPenTool, FiShield, FiLogOut, FiUser, FiDollarSign } from 'react-icons/fi';
 
 export default function AppNav({
   currentScreen,
@@ -48,6 +48,14 @@ export default function AppNav({
         >
           <FiPenTool size={15} />
           <span>SOW Generator</span>
+        </button>
+
+        <button
+          className={`app-nav-tab ${currentScreen === 'team-fund' ? 'active' : ''}`}
+          onClick={() => onNavigate('team-fund')}
+        >
+          <FiDollarSign size={15} />
+          <span>Team Fund</span>
         </button>
 
         {isAuthorizedForAdmin && (
