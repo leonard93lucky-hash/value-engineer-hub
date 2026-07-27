@@ -31,8 +31,9 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
   const [usersApi, setUsersApi] = useState("")
 
   useEffect(() => {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     setUsersApi(
-      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      isLocal
         ? "http://localhost:3001/faq-api/users"
         : "/faq-api/users"
     )
