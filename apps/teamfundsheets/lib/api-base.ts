@@ -1,8 +1,5 @@
-"use client"
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH || ''
 
 export function api(path: string): string {
-  if (typeof window !== 'undefined' && !window.location.hostname.includes('localhost')) {
-    return `/fund${path}`
-  }
-  return path
+  return `${BASE}${path}`
 }
