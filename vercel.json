@@ -13,6 +13,15 @@
       "use": "@vercel/next"
     },
     {
+      "src": "apps/teamfundsheets/package.json",
+      "use": "@vercel/next",
+      "config": {
+        "includeFiles": [
+          "apps/teamfundsheets/.env"
+        ]
+      }
+    },
+    {
       "src": "apps/sow-generator/backend/main.py",
       "use": "@vercel/python",
       "config": {
@@ -68,6 +77,10 @@
     {
       "source": "/login(/.*)?",
       "destination": "apps/ve-faq/index.html"
+    },
+    {
+      "source": "/fund/(.*)",
+      "destination": "apps/teamfundsheets/$1"
     },
     {
       "source": "/(.*)",
