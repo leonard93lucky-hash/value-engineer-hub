@@ -5,9 +5,7 @@ import FAQModal from './components/FAQModal.jsx';
 import ActivityLog from './components/ActivityLog.jsx';
 
 const SOW_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3000';
-const TEAM_FUND_ORIGIN = import.meta.env.PROD
-  ? (import.meta.env.VITE_TEAM_FUND_URL || '/fund/')
-  : 'http://localhost:3002/';
+const TEAM_FUND_ORIGIN = import.meta.env.PROD ? '/fund/' : 'http://localhost:3002/fund/';
 import StatsDashboard from './components/StatsDashboard.jsx';
 import ConfirmDialog from './components/ConfirmDialog.jsx';
 import Toast from './components/Toast.jsx';
