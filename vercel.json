@@ -14,12 +14,7 @@
     },
     {
       "src": "apps/teamfundsheets/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "includeFiles": [
-          "apps/teamfundsheets/.env"
-        ]
-      }
+      "use": "@vercel/next"
     },
     {
       "src": "apps/sow-generator/backend/main.py",
