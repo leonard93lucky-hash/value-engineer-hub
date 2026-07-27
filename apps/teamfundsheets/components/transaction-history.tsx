@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import type { Payment, Expense } from "@/lib/types"
 import { Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 
@@ -31,6 +31,8 @@ export default function TransactionHistory({
   const [monthFilter, setMonthFilter] = useState<string>("all")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+
+  useEffect(() => { setPage(1) }, [activeTab])
 
   const availableYears = useMemo(() => {
     const years = new Set<number>()
@@ -67,8 +69,8 @@ export default function TransactionHistory({
     return list
   }, [expenses, yearFilter, monthFilter])
 
-  const totalPages = (items: unknown[]) => Math.max(1, Math.ceil(items.length / pageSize))
   const paginated = <T,>(items: T[]): T[] => items.slice((page - 1) * pageSize, page * pageSize)
+  const totalPages = (count: number) => Math.max(1, Math.ceil(count / pageSize))
 
   const handleFilterChange = () => { setPage(1) }
 

@@ -1,15 +1,17 @@
 "use client"
 
-import { Plus, Download } from "lucide-react"
+import { Plus, Download, RotateCw } from "lucide-react"
 import { useAuth } from "@/app/providers"
 
 interface HeaderProps {
   onIncomeClick: () => void
   onExpenseClick: () => void
   onExportClick: () => void
+  onRefresh: () => void
+  refreshing: boolean
 }
 
-export default function Header({ onIncomeClick, onExpenseClick, onExportClick }: HeaderProps) {
+export default function Header({ onIncomeClick, onExpenseClick, onExportClick, onRefresh, refreshing }: HeaderProps) {
   const { isSupport, userName } = useAuth()
 
   return (
@@ -34,6 +36,15 @@ export default function Header({ onIncomeClick, onExpenseClick, onExportClick }:
             >
               <Download size={18} />
               <span className="hidden sm:inline">Export</span>
+            </button>
+            <button
+              onClick={onRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
+              title="Refresh data"
+            >
+              <RotateCw size={18} className={refreshing ? "animate-spin" : ""} />
+              <span className="hidden sm:inline">{refreshing ? "Refreshing..." : "Refresh"}</span>
             </button>
             {isSupport && (
               <>
