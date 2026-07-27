@@ -6,7 +6,7 @@ import ActivityLog from './components/ActivityLog.jsx';
 
 const SOW_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3000';
 const TEAM_FUND_ORIGIN = import.meta.env.PROD
-  ? (import.meta.env.VITE_TEAM_FUND_URL || 'https://v0-team-fund-idr-tracker.vercel.app')
+  ? (import.meta.env.VITE_TEAM_FUND_URL || 'https://teamfundsheets.vercel.app')
   : 'http://localhost:3002';
 import StatsDashboard from './components/StatsDashboard.jsx';
 import ConfirmDialog from './components/ConfirmDialog.jsx';
