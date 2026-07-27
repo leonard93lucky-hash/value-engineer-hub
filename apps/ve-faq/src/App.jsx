@@ -298,7 +298,7 @@ function App() {
       {teamFundMounted && (
         <div className="sow-iframe-container" style={{ display: currentScreen === 'team-fund' ? 'block' : 'none' }}>
           <iframe
-            src={`${TEAM_FUND_ORIGIN}/?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&position=${encodeURIComponent(userPosition)}`}
+            src={`${TEAM_FUND_ORIGIN}?userId=${encodeURIComponent(userId)}&userName=${encodeURIComponent(userName)}&position=${encodeURIComponent(userPosition)}`}
             className="sow-iframe"
             title="Team Fund Tracker"
             allow="clipboard-read; clipboard-write"
