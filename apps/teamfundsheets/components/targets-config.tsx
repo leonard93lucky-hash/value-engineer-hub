@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { X, Save } from "lucide-react"
 import { useAuth } from "@/app/providers"
+import { api as apiPath } from "@/lib/api-base"
 
 interface TargetsConfigProps {
   isOpen: boolean
@@ -19,7 +20,7 @@ export default function TargetsConfig({ isOpen, onClose, onSaved }: TargetsConfi
   useEffect(() => {
     if (!isOpen) return
     setLoading(true)
-    fetch(`api/targets?year=${year}`)
+    fetch(apiPath(`/api/targets?year=${year}`))
       .then(res => res.json())
       .then(data => setMonthlyTarget(data.monthlyTarget || 600000))
       .catch(err => console.error("Failed to load target:", err))
@@ -29,7 +30,7 @@ export default function TargetsConfig({ isOpen, onClose, onSaved }: TargetsConfi
   const handleSave = async () => {
     setLoading(true)
     try {
-      await fetch("api/targets", {
+      await fetch(apiPath("/api/targets"), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ year, monthlyTarget }),
