@@ -10,6 +10,7 @@ import TransactionHistory from "@/components/transaction-history"
 import TargetsConfig from "@/components/targets-config"
 import { Payment, Expense } from "@/lib/types"
 import { useAuth } from "@/app/providers"
+import { api as apiPath } from "@/lib/api-base"
 import { Settings } from "lucide-react"
 
 export default function HomeContent() {
@@ -29,9 +30,9 @@ export default function HomeContent() {
     try {
       console.log("[v0] Fetching payments and expenses from API...")
       const [paymentsRes, expensesRes, targetsRes] = await Promise.all([
-        fetch("api/payments"),
-        fetch("api/expenses"),
-        fetch(`api/targets?year=${currentYear}`),
+        fetch(apiPath("/api/payments")),
+        fetch(apiPath("/api/expenses")),
+        fetch(apiPath(`/api/targets?year=${currentYear}`)),
       ])
 
       if (paymentsRes.ok) {
@@ -82,7 +83,7 @@ export default function HomeContent() {
 
   const handleAddPayment = async (payment: Payment) => {
     try {
-      const res = await fetch("api/payments", {
+      const res = await fetch(apiPath("/api/payments"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payment),
@@ -103,7 +104,7 @@ export default function HomeContent() {
 
   const handleAddExpense = async (expense: Expense) => {
     try {
-      const res = await fetch("api/expenses", {
+      const res = await fetch(apiPath("/api/expenses"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(expense),
@@ -122,7 +123,7 @@ export default function HomeContent() {
 
   const handleDeletePayment = async (id: string) => {
     try {
-      const res = await fetch(`api/payments/${id}`, {
+      const res = await fetch(apiPath(`/api/payments/${id}`), {
         method: "DELETE",
       })
       if (res.ok) {
@@ -137,7 +138,7 @@ export default function HomeContent() {
 
   const handleDeleteExpense = async (id: string) => {
     try {
-      const res = await fetch(`api/expenses/${id}`, {
+      const res = await fetch(apiPath(`/api/expenses/${id}`), {
         method: "DELETE",
       })
       if (res.ok) {
