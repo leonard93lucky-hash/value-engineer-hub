@@ -16,6 +16,12 @@ export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingP
     setIsIframe(window !== window.top)
   }, [])
 
+  const goBackToHub = () => {
+    if (window.top) {
+      window.top.postMessage('back-to-faq', '*');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans relative overflow-hidden">
       
@@ -23,12 +29,19 @@ export function LandingPage({ currentUser, onLogout, onSelectProduct }: LandingP
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-red-100 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-red-50 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* TOP BAR - hidden when in iframe (parent AppNav already shows it) */}
-      {!isIframe && (
-        <header className="border-b border-gray-200 px-6 py-3 flex items-center bg-white/70 backdrop-blur-md relative z-10">
-          <span className="text-sm font-semibold text-gray-800 tracking-wide">SOW Generator</span>
-        </header>
-      )}
+      {/* SUBHEADER - always visible, back button only inside iframe */}
+      <header className="border-b border-gray-200 px-6 py-3 flex items-center bg-white/70 backdrop-blur-md relative z-10">
+        {isIframe && (
+          <button
+            onClick={goBackToHub}
+            className="mr-3 p-1 rounded-full hover:bg-gray-200 text-gray-500 hover:text-gray-800 transition-colors"
+            title="Back to FAQ"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+          </button>
+        )}
+        <span className="text-sm font-semibold text-gray-800 tracking-wide">SOW Generator</span>
+      </header>
 
       {/* MAIN CONTENT */}
       <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10 w-full max-w-5xl mx-auto -mt-10">
