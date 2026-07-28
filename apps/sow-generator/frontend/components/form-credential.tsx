@@ -88,6 +88,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
   useEffect(() => {
     setIsIframe(window !== window.top)
   }, [])
+
   const [selectedServicesTemp, setSelectedServicesTemp] = useState<SelectedService[]>([])
   // 2-step dropdown: pick category, then pick sub-service (or Other → custom input)
   const [dropdownCategory, setDropdownCategory] = useState<ServiceCategory | "">("")
@@ -263,7 +264,6 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
     <div className="flex h-screen bg-neutral-100 font-sans overflow-hidden">
       {/* --- LEFT PANEL: FORM --- */}
       <div className="w-full md:w-[500px] bg-white md:border-r flex flex-col z-10 shadow-xl h-full">
-        {!isIframe && (
         <div className="p-5 border-b bg-white flex items-center gap-3">
           {onBack && (
             <button
@@ -278,7 +278,6 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
             <LockIcon className="w-6 h-6 text-emerald-500" /> Credential Document
           </h2>
         </div>
-        )}
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
           {/* Section 1: Basic Info */}

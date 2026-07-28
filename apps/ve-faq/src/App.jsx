@@ -105,6 +105,7 @@ function App() {
     const handleMessage = (e) => {
       if (e.data === 'open-activity-log') setIsLogOpen(true);
       if (e.data === 'open-leaderboard') setIsStatsOpen(true);
+      if (e.data === 'back-to-faq') setCurrentScreen('faq');
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
