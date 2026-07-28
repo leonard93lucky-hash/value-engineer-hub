@@ -84,6 +84,11 @@ cd "apps/teamfundsheets" && npx next dev -p 3002    # :3002
 | `TELEGRAM_BOT_TOKEN` | SOW Admin |
 | `TELEGRAM_CHAT_ID` | SOW Admin |
 | `DEEPSEEK_API_KEY` | Express API (chatbot) |
+| `GMAIL_CLIENT_ID` | Express API (questionnaire emails) |
+| `GMAIL_CLIENT_SECRET` | Express API (questionnaire emails) |
+| `GMAIL_REFRESH_TOKEN` | Express API (questionnaire emails) |
+| `GMAIL_USER` | Express API (questionnaire emails) |
+| `BASE_URL` | Express API (questionnaire link construction) |
 
 ### v0-team-fund-idr-tracker project
 

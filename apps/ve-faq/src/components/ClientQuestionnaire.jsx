@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchQuestionnaireDetails, submitQuestionnaireAnswers, fetchSubmissions } from '../api.js';
+import { fetchQuestionnaireDetails, submitQuestionnaireAnswers, checkQuestionnaireSubmitted } from '../api.js';
 
 export default function ClientQuestionnaire() {
   const [logDetails, setLogDetails] = useState(null);
@@ -33,10 +33,9 @@ export default function ClientQuestionnaire() {
         qList.forEach(q => { initialAnswers[q.id] = ''; });
         setAnswers(initialAnswers);
         
-        // Check if already submitted
+        // Check if already submitted (server-side check, no data leak)
         try {
-          const submissions = await fetchSubmissions();
-          const alreadySubmitted = submissions.some(s => s.logId === logId);
+          const alreadySubmitted = await checkQuestionnaireSubmitted(logId);
           if (alreadySubmitted) {
             setSubmitted(true);
           }

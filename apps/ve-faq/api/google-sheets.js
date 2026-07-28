@@ -1127,12 +1127,19 @@ export async function getQuestionnaireQuestions(category) {
       range: `${QUESTIONNAIRE_TEMPLATES_SHEET}!A2:D`,
     });
     const rows = res.data.values || [];
-    const questions = rows.map(row => ({
-      id: row[0] || '',
-      category: row[1] || '',
-      questionText: row[2] || '',
-      order: parseInt(row[3], 10) || 0,
-    }));
+    const seen = new Set();
+    const questions = [];
+    for (const row of rows) {
+      const id = row[0] || '';
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      questions.push({
+        id,
+        category: row[1] || '',
+        questionText: row[2] || '',
+        order: parseInt(row[3], 10) || 0,
+      });
+    }
     return category ? questions.filter(q => q.category === category) : questions;
   } catch (err) {
     console.error('Error fetching templates:', err.message);

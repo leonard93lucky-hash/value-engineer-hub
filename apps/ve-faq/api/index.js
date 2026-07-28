@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import nodemailer from 'nodemailer';
 import * as gsheets from './google-sheets.js';
+import { sendEmail as sendGmail } from './gmail-api.js';
 
 dotenv.config();
 
@@ -51,27 +51,12 @@ loadLocalData();
 let localQuestionnaireLogs = [];
 let localQuestionnaireSubmissions = [];
 
-// SMTP Config
-const smtpConfig = {
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT, 10) || 465,
-  secure: process.env.SMTP_SECURE === 'true' || (process.env.SMTP_PORT ? process.env.SMTP_PORT === '465' : true),
-  auth: {
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || '',
-  }
-};
-const smtpEnabled = !!(smtpConfig.auth.user && smtpConfig.auth.pass);
-let transporter = null;
-if (smtpEnabled) {
-  try {
-    transporter = nodemailer.createTransport(smtpConfig);
-    console.log('✉️ SMTP configuration loaded. Real emails will be sent.');
-  } catch (err) {
-    console.error('❌ Failed to construct SMTP transporter:', err.message);
-  }
+// Gmail API Config
+const gmailConfigured = !!(process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET && process.env.GMAIL_REFRESH_TOKEN && process.env.GMAIL_USER);
+if (gmailConfigured) {
+  console.log('✉️ Gmail API configured. Real emails will be sent.');
 } else {
-  console.log('ℹ️ SMTP not configured. Questionnaire emails will fall back to Console Logging.');
+  console.log('ℹ️ Gmail API not configured. Questionnaire emails will fall back to Console Logging.');
 }
 
 const useSheets = gsheets.isConfigured();
@@ -948,10 +933,12 @@ app.post('/faq-api/questionnaires/send', async (req, res) => {
       localQuestionnaireLogs.unshift(logData);
     }
 
-    // Build the questionnaire URL dynamically based on the request host
-    const origin = req.headers.referer || req.headers.origin || `http://localhost:${PORT}`;
-    // Construct base path (removing trailing slash or extra segments)
-    let baseUrl = new URL(origin).origin;
+    // Build the questionnaire URL from BASE_URL env var (or fallback to request host)
+    let baseUrl = process.env.BASE_URL;
+    if (!baseUrl) {
+      const origin = req.headers.referer || req.headers.origin || `http://localhost:${PORT}`;
+      baseUrl = new URL(origin).origin;
+    }
     const questionnaireLink = `${baseUrl}/login/privy-officer-performance-questionnaire?id=${logId}`;
 
     const emailSubject = `[Privy] Integration Officer Performance Evaluation`;
@@ -991,18 +978,20 @@ app.post('/faq-api/questionnaires/send', async (req, res) => {
       </div>
     `;
 
-    if (smtpEnabled && transporter) {
-      const mailOptions = {
-        from: `"Privy VE Team" <${smtpConfig.auth.user}>`,
+    if (gmailConfigured) {
+      const result = await sendGmail({
         to: receiverEmail.trim().toLowerCase(),
         subject: emailSubject,
         html: emailHtml,
-      };
-      await transporter.sendMail(mailOptions);
-      console.log(`✉️ Email successfully sent to ${receiverEmail} for officer ${officerName}`);
+      });
+      if (result.sent) {
+        console.log(`✉️ Email successfully sent to ${receiverEmail} for officer ${officerName}`);
+      } else {
+        console.error(`❌ Failed to send email to ${receiverEmail}: ${result.reason}`);
+      }
     } else {
       console.log(`\n=============================================================`);
-      console.log(`✉️ EMAIL WORKFLOW FALLBACK (SMTP not configured)`);
+      console.log(`✉️ EMAIL WORKFLOW FALLBACK (Gmail API not configured)`);
       console.log(`Subject: ${emailSubject}`);
       console.log(`To: ${receiverEmail}`);
       console.log(`Link: ${questionnaireLink}`);
@@ -1012,7 +1001,7 @@ app.post('/faq-api/questionnaires/send', async (req, res) => {
     // Log this email sending action in activity logs
     await logActivity(sender.name, 'SEND_QUESTIONNAIRE', logId, `Sent questionnaire to ${receiverEmail} evaluating ${officerName}`);
 
-    res.json({ success: true, logId, link: questionnaireLink, smtpSent: smtpEnabled });
+    res.json({ success: true, logId, link: questionnaireLink, emailSent: gmailConfigured });
   } catch (err) {
     console.error('Error sending questionnaire:', err.message);
     res.status(500).json({ error: err.message });
@@ -1134,6 +1123,24 @@ app.get('/faq-api/questionnaires/submissions', async (req, res) => {
     res.json(results);
   } catch (err) {
     console.error('GET /api/questionnaires/submissions error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/questionnaires/check-submitted/:logId — lightweight check, no data leak
+app.get('/faq-api/questionnaires/check-submitted/:logId', async (req, res) => {
+  try {
+    const { logId } = req.params;
+    let alreadySubmitted = false;
+    if (useSheets) {
+      const submissions = await gsheets.getSubmissions();
+      alreadySubmitted = submissions.some(s => s.logId === logId);
+    } else {
+      alreadySubmitted = localQuestionnaireSubmissions.some(s => s.logId === logId);
+    }
+    res.json({ submitted: alreadySubmitted });
+  } catch (err) {
+    console.error('GET /api/questionnaires/check-submitted error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
