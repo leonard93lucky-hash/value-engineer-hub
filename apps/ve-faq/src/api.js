@@ -317,6 +317,12 @@ export async function submitQuestionnaireAnswers(payload) {
   return { success: true };
 }
 
+export async function checkQuestionnaireSubmitted(logId) {
+  const data = await request(`/questionnaires/check-submitted/${logId}`);
+  if (data) return data.submitted;
+  return false;
+}
+
 export async function fetchSubmissions(officerName = '', dateFrom = '', dateTo = '') {
   const params = new URLSearchParams();
   if (officerName) params.append('officerName', officerName);
