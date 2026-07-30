@@ -1,6 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiSend, FiX } from 'react-icons/fi';
 
+function renderWithLinks(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.startsWith('http://') || part.startsWith('https://')) {
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer">{part}</a>;
+    }
+    return part;
+  });
+}
+
 const ANGELING = '/login/ro_angeling.webp';
 
 const WELCOME_MSG = {
@@ -125,7 +136,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
                   </div>
                 )}
                 <div className="ro-msg-bubble">
-                  <div className="ro-msg-text">{msg.text}</div>
+                  <div className="ro-msg-text">{renderWithLinks(msg.text)}</div>
                   {msg.references && msg.references.length > 0 && (
                     <div className="ro-msg-references">
                       <div className="ro-ref-label">View referenced FAQs:</div>

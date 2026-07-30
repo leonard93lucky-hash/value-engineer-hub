@@ -4,6 +4,18 @@ import {
   FiClock, FiUser, FiFilter, FiX, FiRefreshCw,
   FiArrowUp, FiArrowDown, FiAward, FiStar, FiLink, FiAlertTriangle, FiTrendingUp, FiBarChart2
 } from 'react-icons/fi';
+
+function renderWithLinks(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.startsWith('http://') || part.startsWith('https://')) {
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer">{part}</a>;
+    }
+    return part;
+  });
+}
+
 // Default category list as fallback
 const DEFAULT_CATEGORIES = [
   'General',
@@ -59,6 +71,7 @@ export default function FAQDashboard({
   onRate,
   onAddRelated,
   onRemoveRelated,
+  onScrollHandled,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
@@ -146,18 +159,46 @@ export default function FAQDashboard({
   }, [filteredFaqs, sortOrder, ratings]);
 
   useEffect(() => {
+    if (scrollToFaqId) return;
     setCurrentPage(1);
-  }, [searchQuery, activeCategory, activeContributor, itemsPerPage, showLowRated, sortOrder]);
+  }, [searchQuery, activeCategory, activeContributor, itemsPerPage, showLowRated, sortOrder, scrollToFaqId]);
 
   useEffect(() => {
     if (!scrollToFaqId) return;
     setOpenFaqId(scrollToFaqId);
     setActiveCategory('All');
     setSearchQuery('');
-    setTimeout(() => {
+    const sortedAll = [...faqs].sort((a, b) => {
+      if (sortOrder === 'top-rated') {
+        const ra = ratings[a.id]?.average ?? 0;
+        const rb = ratings[b.id]?.average ?? 0;
+        if (rb !== ra) return rb - ra;
+        return (ratings[b.id]?.total ?? 0) - (ratings[a.id]?.total ?? 0);
+      }
+      if (sortOrder === 'most-voted') {
+        return (ratings[b.id]?.total ?? 0) - (ratings[a.id]?.total ?? 0);
+      }
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : parseDate(a.date);
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : parseDate(b.date);
+      if (ta === tb) {
+        return sortOrder === 'desc'
+          ? (b.id || '').localeCompare(a.id || '')
+          : (a.id || '').localeCompare(b.id || '');
+      }
+      return sortOrder === 'desc' ? tb - ta : ta - tb;
+    });
+    const idx = sortedAll.findIndex(f => f.id === scrollToFaqId);
+    if (idx !== -1) {
+      setCurrentPage(Math.floor(idx / itemsPerPage) + 1);
+    }
+    const timer = setTimeout(() => {
       const el = document.getElementById(`faq-item-${scrollToFaqId}`);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 150);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        onScrollHandled?.();
+      }
+    }, 400);
+    return () => clearTimeout(timer);
   }, [scrollToFaqId]);
 
   const totalPages = Math.ceil(sortedFaqs.length / itemsPerPage);
@@ -444,7 +485,7 @@ export default function FAQDashboard({
                 <div className="faq-answer">
                   <div className="faq-answer-text">
                     {faq.answer.split('\n').map((line, i) => (
-                      <span key={i}>{line}<br /></span>
+                      <span key={i}>{renderWithLinks(line)}<br /></span>
                     ))}
                   </div>
 

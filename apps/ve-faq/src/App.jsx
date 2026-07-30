@@ -338,6 +338,7 @@ function App() {
             onRate={handleRate}
             onAddRelated={handleAddRelated}
             onRemoveRelated={handleRemoveRelated}
+            onScrollHandled={() => setScrollToFaqId(null)}
           />
           <FAQChatbot faqs={faqs} onScrollToFaq={setScrollToFaqId} />
         </>

@@ -412,6 +412,14 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
   color: var(--text-muted); line-height: 1.7; font-size: 0.92rem;
   padding: 1rem 0; border-top: 1px solid var(--surface-border);
 }
+.faq-answer-text a {
+  color: var(--accent, #3b82f6);
+  text-decoration: underline;
+  word-break: break-all;
+}
+.faq-answer-text a:hover {
+  opacity: 0.8;
+}
 .faq-meta {
   display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.75rem;
   padding-top: 0.75rem; border-top: 1px solid var(--surface-border);
@@ -2579,6 +2587,14 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
 
 .ro-msg-text {
   white-space: pre-wrap;
+}
+.ro-msg-text a {
+  color: var(--accent, #3b82f6);
+  text-decoration: underline;
+  word-break: break-all;
+}
+.ro-msg-text a:hover {
+  opacity: 0.8;
 }
 
 /* ── FAQ Reference Chips ── */
