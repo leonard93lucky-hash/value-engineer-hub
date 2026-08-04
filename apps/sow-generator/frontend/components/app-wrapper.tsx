@@ -40,6 +40,12 @@ export function AppWrapper() {
           setCurrentUser(verifiedUser)
           sessionStorage.setItem("ve_authenticated", "true")
           sessionStorage.setItem("ve_user", JSON.stringify(verifiedUser))
+          if (data.pic_ve || data.pic_bd) {
+            sessionStorage.setItem("sow_master_data", JSON.stringify({
+              pic_ve: data.pic_ve || [],
+              pic_bd: data.pic_bd || []
+            }))
+          }
           document.cookie = `ve_auth_token=1; path=/; max-age=86400; SameSite=Lax`
           const currentUrl = new URL(window.location.href)
           currentUrl.searchParams.delete("userId")

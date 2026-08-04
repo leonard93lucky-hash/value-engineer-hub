@@ -138,12 +138,21 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
   }, [currentUser])
 
   const fetchMasterData = async () => {
+    const cached = sessionStorage.getItem("sow_master_data")
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached)
+        if (parsed.pic_ve) setListPicVe(parsed.pic_ve)
+        return
+      } catch {}
+    }
     try {
       const url = currentUser?.id ? `${API_BASE_URL}/master-data?user_id=${encodeURIComponent(currentUser.id)}` : `${API_BASE_URL}/master-data`
       const response = await fetch(url)
       if (response.ok) {
         const result = await response.json()
         if (result.pic_ve) setListPicVe(result.pic_ve)
+        sessionStorage.setItem("sow_master_data", JSON.stringify(result))
       }
     } catch (err) { console.error(err) }
   }

@@ -145,6 +145,15 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
     }, [data.envType]);
 
     const fetchMasterData = async () => {
+        const cached = sessionStorage.getItem("sow_master_data");
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if (parsed.pic_ve) setListPicVe(parsed.pic_ve);
+                if (parsed.pic_bd) setListPicBd(parsed.pic_bd);
+                return;
+            } catch {}
+        }
         try {
             const url = currentUser?.id ? `${API_BASE_URL}/master-data?user_id=${encodeURIComponent(currentUser.id)}` : `${API_BASE_URL}/master-data`
             const response = await fetch(url)
@@ -152,6 +161,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                 const result = await response.json();
                 if (result.pic_ve) setListPicVe(result.pic_ve);
                 if (result.pic_bd) setListPicBd(result.pic_bd);
+                sessionStorage.setItem("sow_master_data", JSON.stringify(result));
             }
         } catch (err) { console.error(err); }
     };
@@ -327,7 +337,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                 <div className="flex-1 overflow-hidden flex flex-col px-6 w-full max-w-2xl mx-auto">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-                        <div className="sticky top-0 z-30 bg-white border-b pt-4 pb-2 shadow-sm">
+                        <div className="sticky top-0 z-30 bg-white pt-4 pb-2 shadow-sm">
                             <TabsList className="grid w-full grid-cols-2 bg-gray-100">
                                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                                 <TabsTrigger value="product" className="gap-2">
