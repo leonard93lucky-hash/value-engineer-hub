@@ -373,13 +373,6 @@ def bg_send_generate_email(email_to, merchant_name, nomor_surat, enterprise_name
 def get_master_data(user_id: Optional[str] = None, x_admin_id: Optional[str] = Header(None, alias="X-Admin-Id")):
     try:
         data = sheets_client.get_master_data()
-        if x_admin_id and verify_admin_id(x_admin_id):
-            return {"status": "success", "pic_ve": data.get("pic_ve", []), "pic_bd": data.get("pic_bd", [])}
-        if user_id:
-            pic_ve_list = data.get("pic_ve", [])
-            user = next((u for u in pic_ve_list if str(u.get("privy_id", "")).lower() == user_id.strip().lower()), None)
-            if not user:
-                raise HTTPException(status_code=401, detail="ID tidak valid.")
         return {"status": "success", "pic_ve": data.get("pic_ve", []), "pic_bd": data.get("pic_bd", [])}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -392,7 +385,12 @@ def verify_user(data: dict):
         pic_ve_list = master_data.get("pic_ve", [])
         user = next((u for u in pic_ve_list if str(u.get("privy_id", "")).lower() == privy_id_clean), None)
         if not user: raise HTTPException(status_code=401, detail="ID tidak ditemukan.")
-        return {"status": "success", "user": user}
+        return {
+            "status": "success",
+            "user": user,
+            "pic_ve": pic_ve_list,
+            "pic_bd": master_data.get("pic_bd", [])
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

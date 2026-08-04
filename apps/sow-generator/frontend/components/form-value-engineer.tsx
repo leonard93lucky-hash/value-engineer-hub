@@ -148,6 +148,15 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
     // --- FETCH MASTER DATA ---
     const fetchMasterData = async () => {
+        const cached = sessionStorage.getItem("sow_master_data");
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if (parsed.pic_ve) setListPicVe(parsed.pic_ve);
+                if (parsed.pic_bd) setListPicBd(parsed.pic_bd);
+                return;
+            } catch {}
+        }
         try {
             const url = currentUser?.id ? `${API_BASE_URL}/master-data?user_id=${encodeURIComponent(currentUser.id)}` : `${API_BASE_URL}/master-data`
             const response = await fetch(url)
@@ -155,6 +164,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                 const result = await response.json();
                 if (result.pic_ve) setListPicVe(result.pic_ve);
                 if (result.pic_bd) setListPicBd(result.pic_bd);
+                sessionStorage.setItem("sow_master_data", JSON.stringify(result));
             }
         } catch (err) { console.error(err); }
     };
@@ -398,7 +408,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                 <div className="flex-1 overflow-hidden flex flex-col px-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-                        <div className="sticky top-0 z-30 bg-white border-b px-6 pt-4 pb-2 shadow-sm">
+                        <div className="sticky top-0 z-30 bg-white px-6 pt-4 pb-2 shadow-sm">
                             <TabsList className="grid w-full grid-cols-2 bg-gray-100">
                                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                                 <TabsTrigger value="product" className="gap-2">
