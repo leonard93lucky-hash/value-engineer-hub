@@ -16,6 +16,16 @@ function renderWithLinks(text) {
   });
 }
 
+// Search helpers: match every query word anywhere in the text (order-independent)
+const getSearchTokens = (query) =>
+  (query || '').toLowerCase().trim().split(/\s+/).filter(Boolean);
+
+const textMatchesAllTokens = (text, tokens) => {
+  if (tokens.length === 0) return true;
+  const lower = (text || '').toLowerCase();
+  return tokens.every(token => lower.includes(token));
+};
+
 // Default category list as fallback
 const DEFAULT_CATEGORIES = [
   'General',
@@ -88,6 +98,7 @@ export default function FAQDashboard({
   const [ratingInFlight, setRatingInFlight] = useState({});
   const [hoveredStar, setHoveredStar] = useState({}); // { [faqId]: starIndex }
   const relatedPickerRef = useRef(null);
+  const scrollHandledRef = useRef(null);
 
   const parseDate = (dateStr) => {
     if (!dateStr) return 0;
@@ -119,12 +130,10 @@ export default function FAQDashboard({
   }, [ratings]);
 
   const filteredFaqs = useMemo(() => {
+    const tokens = getSearchTokens(searchQuery);
     return faqs.filter(faq => {
-      const matchesSearch = !searchQuery ||
-        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (faq.merchant && faq.merchant.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (faq.reporter && faq.reporter.toLowerCase().includes(searchQuery.toLowerCase()));
+      const searchableText = `${faq.question || ''} ${faq.answer || ''} ${faq.merchant || ''} ${faq.reporter || ''}`;
+      const matchesSearch = textMatchesAllTokens(searchableText, tokens);
       const matchesCategory = activeCategory === 'All' || normalizeCategory(faq.category) === activeCategory;
       const matchesContributor = activeContributor === 'All' || (faq.reporter && faq.reporter.trim() === activeContributor);
       const matchesLowRated = !showLowRated || lowRatedFaqIds.has(faq.id);
@@ -160,11 +169,16 @@ export default function FAQDashboard({
 
   useEffect(() => {
     if (scrollToFaqId) return;
+    if (scrollHandledRef.current) {
+      scrollHandledRef.current = null;
+      return;
+    }
     setCurrentPage(1);
   }, [searchQuery, activeCategory, activeContributor, itemsPerPage, showLowRated, sortOrder, scrollToFaqId]);
 
   useEffect(() => {
     if (!scrollToFaqId) return;
+    scrollHandledRef.current = scrollToFaqId;
     setOpenFaqId(scrollToFaqId);
     setActiveCategory('All');
     setSearchQuery('');
