@@ -96,7 +96,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
             <div className="angeling-sparkle sparkle-2" />
             <div className="angeling-sparkle sparkle-3" />
           </div>
-          <span className="ro-chat-fab-label">FAQ Gatotkaca</span>
+          <span className="ro-chat-fab-label">Ask Pak Gatotkaca</span>
         </button>
       )}
 
@@ -113,7 +113,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
                 />
               </div>
               <div>
-                <div className="ro-chat-title">FAQ Gatotkaca</div>
+                <div className="ro-chat-title">Ask Pak Gatotkaca</div>
                 <div className="ro-chat-status">Online</div>
               </div>
             </div>
