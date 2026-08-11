@@ -216,9 +216,10 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
 .app-nav {
   display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
   padding: 0.6rem 1.5rem; position: sticky; top: 0; z-index: 50;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-top: 4px solid #CE1126;
   border-bottom: 1px solid var(--surface-border);
   box-shadow: 0 4px 20px rgba(31, 41, 55, 0.06);
   min-height: 56px;
@@ -2801,7 +2802,7 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
 }
 
 body:has(.ro-theme) {
-  background: linear-gradient(135deg, #fff5f5 0%, #fffafa 35%, #fff5f5 70%, #ffd9d9 100%) !important;
+  background: #FFFFFF !important;
 }
 
 /* ── Background light orbs ── */
@@ -2815,33 +2816,33 @@ body:has(.ro-theme) {
 
 .ro-bg-orb-1 {
   width: 700px; height: 700px;
-  background: radial-gradient(circle, #f3a0a0, #e05e5e, transparent);
+  background: radial-gradient(circle, #F87171, #CE1126, transparent);
   top: -200px; right: -100px;
-  opacity: 0.2;
+  opacity: 0.4;
   animation: roOrbFloat 12s ease-in-out infinite;
 }
 
 .ro-bg-orb-2 {
   width: 500px; height: 500px;
-  background: radial-gradient(circle, #ffb3b3, #ef4444, transparent);
+  background: radial-gradient(circle, #CE1126, #8B1A1A, transparent);
   bottom: -150px; left: -100px;
-  opacity: 0.18;
+  opacity: 0.35;
   animation: roOrbFloat 16s ease-in-out infinite reverse;
 }
 
 .ro-bg-orb-3 {
   width: 400px; height: 400px;
-  background: radial-gradient(circle, #f2b8b8, #c24343, transparent);
+  background: radial-gradient(circle, #EF4444, #CE1126, transparent);
   top: 15%; left: 80%;
-  opacity: 0.12;
+  opacity: 0.28;
   animation: roOrbFloat 14s ease-in-out infinite;
 }
 
 .ro-bg-orb-4 {
   width: 350px; height: 350px;
-  background: radial-gradient(circle, #f3a0a0, #dc2626, transparent);
+  background: radial-gradient(circle, #CE1126, #A50F1E, transparent);
   top: 60%; left: 10%;
-  opacity: 0.1;
+  opacity: 0.25;
   animation: roOrbFloat 18s ease-in-out infinite reverse;
 }
 
@@ -2858,8 +2859,8 @@ body:has(.ro-theme) {
 
 /* ── Sub-header ── */
 .ro-theme .faq-subheader {
-  background: linear-gradient(135deg, rgba(206, 17, 38, 0.08), rgba(255, 152, 0, 0.06));
-  border: 1px solid rgba(206, 17, 38, 0.12);
+  background: linear-gradient(135deg, rgba(206, 17, 38, 0.08), rgba(206, 17, 38, 0.04));
+  border: 1px solid rgba(206, 17, 38, 0.18);
   border-radius: 14px;
   position: relative;
   z-index: 1;
@@ -2877,7 +2878,11 @@ body:has(.ro-theme) {
 .ro-theme .hero-section {
   position: relative;
   z-index: 1;
-  padding: 1rem 0 2rem;
+  padding: 2.5rem 1.5rem 3rem;
+  background: linear-gradient(135deg, #CE1126 0%, #A50F1E 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(206, 17, 38, 0.35);
+  margin-bottom: 1.5rem;
 }
 
 .ro-hero-deco {
@@ -2911,8 +2916,8 @@ body:has(.ro-theme) {
 .ro-hero-title {
   font-size: 2.2rem !important;
   font-weight: 800 !important;
-  color: #6b1f1f !important;
-  text-shadow: 0 2px 8px rgba(206, 17, 38, 0.15);
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
   letter-spacing: -0.02em;
   position: relative;
   display: inline-block;
@@ -2922,15 +2927,15 @@ body:has(.ro-theme) {
   content: '';
   display: block;
   width: 120px;
-  height: 3px;
-  background: linear-gradient(90deg, #f3a0a0, #CE1126, #f3a0a0);
+  height: 4px;
+  background: #FFFFFF;
   margin: 0.6rem auto 0;
   border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(206, 17, 38, 0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .ro-hero-sub {
-  color: #8f5252 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
   font-weight: 500 !important;
   font-size: 1.05rem !important;
 }
@@ -2948,10 +2953,10 @@ body:has(.ro-theme) {
 }
 
 .ro-theme .search-input {
-  border: 2px solid rgba(206, 17, 38, 0.15) !important;
-  background: rgba(255, 255, 255, 0.85) !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  background: #FFFFFF !important;
   border-radius: 50px !important;
-  box-shadow: 0 2px 16px rgba(206, 17, 38, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18) !important;
   transition: all 0.3s ease;
   padding-left: 3.2rem !important;
   padding-top: 0.9rem !important;
@@ -2959,19 +2964,19 @@ body:has(.ro-theme) {
 }
 
 .ro-theme .search-input:focus {
-  border-color: #f3a0a0 !important;
-  box-shadow: 0 0 0 4px rgba(206, 17, 38, 0.12), 0 4px 24px rgba(206, 17, 38, 0.12) !important;
+  border-color: #FFFFFF !important;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25), 0 6px 28px rgba(0, 0, 0, 0.22) !important;
 }
 
 .ro-theme .search-icon {
   left: 1.3rem !important;
-  color: #f3a0a0 !important;
+  color: #CE1126 !important;
   font-size: 1.2rem !important;
 }
 
 /* ── Contributors Section ── */
 .ro-theme .contributors-container {
-  background: linear-gradient(135deg, rgba(206, 17, 38, 0.08), rgba(255, 152, 0, 0.04)) !important;
+  background: linear-gradient(135deg, rgba(206, 17, 38, 0.08), rgba(206, 17, 38, 0.04)) !important;
   border: 1px solid rgba(206, 17, 38, 0.15) !important;
   border-radius: 16px !important;
   position: relative;
@@ -2990,12 +2995,12 @@ body:has(.ro-theme) {
 }
 
 .ro-theme .contributor-tag:hover {
-  border-color: #f3a0a0 !important;
-  box-shadow: 0 4px 16px rgba(206, 17, 38, 0.15);
+  border-color: #CE1126 !important;
+  box-shadow: 0 4px 16px rgba(206, 17, 38, 0.25);
 }
 
 .ro-theme .contributor-rank {
-  background: linear-gradient(135deg, #f3a0a0, #dc2626) !important;
+  background: linear-gradient(135deg, #CE1126, #A50F1E) !important;
   box-shadow: 0 2px 6px rgba(206, 17, 38, 0.3);
 }
 
@@ -3027,7 +3032,7 @@ body:has(.ro-theme) {
 .ro-theme .category-chip.active {
   color: white !important;
   border-color: transparent !important;
-  background: linear-gradient(135deg, #f3a0a0, #dc2626) !important;
+  background: linear-gradient(135deg, #CE1126, #A50F1E) !important;
   box-shadow: 0 4px 12px rgba(206, 17, 38, 0.25);
 }
 
@@ -3041,7 +3046,7 @@ body:has(.ro-theme) {
 }
 
 .ro-theme .sort-btn.active {
-  background: linear-gradient(135deg, #f3a0a0, #dc2626) !important;
+  background: linear-gradient(135deg, #CE1126, #A50F1E) !important;
 }
 
 .ro-theme .contributor-filter-container {
@@ -3077,9 +3082,9 @@ body:has(.ro-theme) {
 
 .ro-theme .faq-item {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.97)) !important;
-  border: 1.5px solid rgba(206, 17, 38, 0.1) !important;
+  border: 1.5px solid rgba(206, 17, 38, 0.22) !important;
   border-radius: 18px !important;
-  box-shadow: 0 2px 16px rgba(206, 17, 38, 0.06);
+  box-shadow: 0 2px 16px rgba(206, 17, 38, 0.12);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -3090,7 +3095,7 @@ body:has(.ro-theme) {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #f3a0a0, #CE1126, #f3a0a0);
+  background: linear-gradient(90deg, #CE1126, #A50F1E, #CE1126);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -3121,8 +3126,8 @@ body:has(.ro-theme) {
 }
 
 .ro-theme .faq-icon {
-  color: #f3a0a0 !important;
-  filter: drop-shadow(0 1px 2px rgba(206, 17, 38, 0.15));
+  color: #CE1126 !important;
+  filter: drop-shadow(0 1px 2px rgba(206, 17, 38, 0.25));
 }
 
 .ro-theme .category-badge {
@@ -3321,21 +3326,21 @@ body:has(.ro-theme) ::-webkit-scrollbar-track,
 
 body:has(.ro-theme) ::-webkit-scrollbar-thumb,
 .ro-chat-body::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f3a0a0, #dc2626);
+  background: linear-gradient(180deg, #CE1126, #A50F1E);
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 body:has(.ro-theme) ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #dc2626, #b91c1c);
+  background: linear-gradient(180deg, #CE1126, #A50F1E);
   background-clip: padding-box;
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
   body:has(.ro-theme) {
-    background: linear-gradient(135deg, #fff5f5 0%, #fffafa 60%, #ffd9d9 100%) !important;
+    background: #FFFFFF !important;
   }
   .ro-bg-orb-1 { width: 300px; height: 300px; }
   .ro-bg-orb-2 { width: 200px; height: 200px; }
