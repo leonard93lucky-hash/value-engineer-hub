@@ -12,11 +12,11 @@ function renderWithLinks(text) {
   });
 }
 
-const ANGELING = '/login/ro_angeling.webp';
+const GATOTKACA = '/login/gatotkaca.webp';
 
 const WELCOME_MSG = {
   role: 'bot',
-  text: 'Hey there! I\'m your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
+  text: 'Hey there! I\'m Gatotkaca, your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
 };
 
 
@@ -87,8 +87,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
           <div className="ro-chat-fab-character">
             <div className="angeling-glow" />
             <img
-              src={ANGELING}
-              alt="Angeling"
+              src={GATOTKACA}
+              alt="Gatotkaca"
               className="angeling-fab"
               onError={() => handleImgError('fab')}
             />
@@ -96,7 +96,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
             <div className="angeling-sparkle sparkle-2" />
             <div className="angeling-sparkle sparkle-3" />
           </div>
-          <span className="ro-chat-fab-label">FAQ Angeling</span>
+          <span className="ro-chat-fab-label">FAQ Gatotkaca</span>
         </button>
       )}
 
@@ -106,14 +106,14 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
             <div className="ro-chat-header-left">
               <div className="ro-chat-avatar">
                 <img
-                  src={ANGELING}
-                  alt="Angeling"
+                  src={GATOTKACA}
+                  alt="Gatotkaca"
                   className="angeling-header"
                   onError={() => handleImgError('header')}
                 />
               </div>
               <div>
-                <div className="ro-chat-title">FAQ Angeling</div>
+                <div className="ro-chat-title">FAQ Gatotkaca</div>
                 <div className="ro-chat-status">Online</div>
               </div>
             </div>
@@ -128,8 +128,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
                 {msg.role === 'bot' && (
                   <div className="ro-msg-avatar">
                     <img
-                      src={ANGELING}
-                      alt="Angeling"
+                      src={GATOTKACA}
+                      alt="Gatotkaca"
                       className="angeling-msg"
                       onError={() => handleImgError(`msg-${i}`)}
                     />
@@ -159,8 +159,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               <div className="ro-msg bot">
                 <div className="ro-msg-avatar">
                   <img
-                    src={ANGELING}
-                    alt="Angeling"
+                    src={GATOTKACA}
+                    alt="Gatotkaca"
                     className="angeling-msg"
                     onError={() => handleImgError('typing')}
                   />
@@ -183,7 +183,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               ref={inputRef}
               type="text"
               className="ro-chat-input"
-              placeholder="Ask the FAQ Angeling..."
+              placeholder="Ask Gatotkaca..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}
