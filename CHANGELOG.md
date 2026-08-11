@@ -12,6 +12,7 @@ All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo 
 
 ### Changed
 - **Theme → Merah Putih (red & white)** for Independence Day month: RO pink/orange/cream palette remapped to flag red `#CE1126` + white/red tints throughout `index.css` (background, orbs, hero, search bar, FAQ cards, chips, buttons, pagination, scrollbar)
+- **Bolder iteration**: solid white background, bold red hero panel (`#CE1126 → #A50F1E`) with white title/search, saturated red orbs (opacity 0.25–0.4), 4px red stripe on top of the nav, red accents on cards/chips/scrollbar
 - `:root` variables: `--primary: #CE1126` (flag red), `--primary-hover: #A50F1E`, `--primary-glow` updated
 - **Chatbot renamed Angeling → Gatotkaca**: icon, name, alt texts, placeholder, welcome message
 - CSS section comment renamed to Gatotkaca styles
