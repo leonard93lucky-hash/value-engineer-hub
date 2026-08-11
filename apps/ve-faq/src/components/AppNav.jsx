@@ -21,6 +21,17 @@ export default function AppNav({
         />
         <span className="app-nav-divider" />
         <span className="app-nav-brand">Value Engineering Hub</span>
+        <svg
+          className="app-nav-flag"
+          width="28"
+          height="20"
+          viewBox="0 0 28 20"
+          aria-label="Bendera Merah Putih - Dirgahayu Republik Indonesia"
+          role="img"
+        >
+          <rect x="0" y="0" width="28" height="10" fill="#CE1126" />
+          <rect x="0" y="10" width="28" height="10" fill="#FFFFFF" />
+        </svg>
       </div>
 
       <div className="app-nav-center">
