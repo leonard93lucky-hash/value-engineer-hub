@@ -106,6 +106,7 @@ cd "apps/teamfundsheets" && npx next dev -p 3002    # :3002
 3. **Team Fund root directory** — on `v0-team-fund-idr-tracker` Vercel project, root directory MUST be `apps/teamfundsheets`. If it's `.`, it will deploy the hub code instead.
 4. **Team Fund port** — locally must use port 3002 (`next dev -p 3002`) to not conflict with SOW Generator on 3000.
 5. **SOW backend must run** — without `:8000`, SOW iframe auth fails and redirects to login page.
+6. **Versioning** — every notable change gets a `vX.Y.Z` annotated git tag + a `CHANGELOG.md` entry at repo root. Large UI/UX changes: tag a baseline first (e.g. `v1.0.0`), then tag the new state (`v2.0.0`) — revert with `git checkout vX.Y.Z -- <path>` or `git revert <commit>`. Independence Day theme change: baseline `v1.0.0`, new state `v2.0.0`.
 
 ## Key files
 
