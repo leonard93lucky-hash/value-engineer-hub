@@ -11,6 +11,7 @@ const SHEET_LOG_CREDENTIAL     = "LOG_CREDENTIAL";     // <--- SHEET BARU UNTUK 
 const SHEET_PIC_VE             = "pic_ve";   // sheet master data PIC VE yang sudah ada
 const SHEET_PIC_BD             = "pic_bd";   // sheet master data PIC BD yang sudah ada
 const SHEET_PENDING_CREDENTIAL = "PENDING_CREDENTIAL"; // <--- DITAMBAHKAN UNTUK CREDENTIAL
+const SHEET_UPDATE_LOG         = "UPDATE_LOG";
 
 // =====================================================
 // ROUTER UTAMA
@@ -24,11 +25,12 @@ function doGet(e) {
     if (action === "get_submissions")       return respond(getSubmissions());
     if (action === "get_submission_by_id")  return respond(getSubmissionById(e.parameter.submission_id));
     if (action === "get_logs")              return respond(getLogs());
-    
+    if (action === "get_update_logs") return respond(getUpdateLogs());
+
     // --- CREDENTIAL GET ENDPOINTS ---
     if (action === "get_credential_submissions") return respond(getCredentialSubmissions());
     if (action === "get_credential_by_id")       return respond(getCredentialById(e.parameter.submission_id));
-    
+
     // --- SEPARATED CREDENTIAL LOG GET ENDPOINTS ---
     if (action === "get_last_credential_number") return respond(getLastCredentialNumber(e.parameter.year));
     if (action === "get_credential_logs")        return respond(getCredentialLogs());
@@ -47,13 +49,15 @@ function doPost(e) {
     if (action === "save_draft")        return respond(saveDraft(body));
     if (action === "update_submission") return respond(updateSubmission(body));
     if (action === "delete_submission") return respond(deleteSubmission(body));
-    if (action === "delete_log")        return respond(deleteLog(body));  
+    if (action === "delete_log")        return respond(deleteLog(body));
     if (action === "send_email")        return respond(sendEmail(body));
-    
+    if (action === "save_update_log")   return respond(saveUpdateLog(body));
+    if (action === "delete_update_log") return respond(deleteUpdateLog(body));
+
     // --- CREDENTIAL POST ENDPOINTS ---
     if (action === "save_credential_draft")        return respond(saveCredentialDraft(body));
     if (action === "delete_credential_submission") return respond(deleteCredentialSubmission(body));
-    
+
     // --- SEPARATED CREDENTIAL LOG POST ENDPOINTS ---
     if (action === "save_credential_log")          return respond(saveCredentialLog(body));
     if (action === "delete_credential_log")        return respond(deleteCredentialLog(body));
@@ -87,12 +91,12 @@ function getMasterData() {
     role:     row[3]  // Kolom D
   }));
 
-  // PIC BD 
+  // PIC BD
   const bdSheet = ss.getSheetByName(SHEET_PIC_BD);
   const bdData  = bdSheet.getDataRange().getValues();
   const picBd   = bdData.slice(1).map(row => ({
     name: row[0],
-    id:   row[1] 
+    id:   row[1]
   }));
 
   return { status: "success", pic_ve: picVe, pic_bd: picBd };
@@ -145,12 +149,12 @@ function saveLog(body) {
 
 function getLogs() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName("LOG_SURAT"); 
+  const sheet = ss.getSheetByName("LOG_SURAT");
   if (!sheet || sheet.getLastRow() <= 1) return { status: "success", logs: [] };
 
   const data = sheet.getDataRange().getValues();
-  const headers = data[0]; 
-  
+  const headers = data[0];
+
   const logs = data.slice(1).map(row => {
     const obj = {};
     headers.forEach((h, i) => {
@@ -279,7 +283,7 @@ function getSubmissionById(submission_id) {
 function updateSubmission(body) {
   const submission_id = body.submission_id;
   const ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
-  
+
   let sheet = ss.getSheetByName(SHEET_PENDING);
   let data  = sheet ? sheet.getDataRange().getValues() : [];
   let headers = data[0] || [];
@@ -291,7 +295,7 @@ function updateSubmission(body) {
     data  = sheet ? sheet.getDataRange().getValues() : [];
     headers = data[0] || [];
     rowIdx  = data.slice(1).findIndex(r => r[0] === submission_id);
-    
+
     if (rowIdx === -1) {
       return { status: "error", message: "Submission tidak ditemukan di PENDING maupun PENDING_CREDENTIAL: " + submission_id };
     }
@@ -310,7 +314,7 @@ function updateSubmission(body) {
 
   updatable.forEach(field => {
     if (body[field] !== undefined && body[field] !== null && fieldMap[field] !== undefined) {
-      const sheetRow = rowIdx + 2; 
+      const sheetRow = rowIdx + 2;
       const sheetCol = fieldMap[field] + 1;
       sheet.getRange(sheetRow, sheetCol).setValue(body[field]);
     }
@@ -330,7 +334,7 @@ function deleteSubmission(body) {
 
   if (rowIdx === -1) return { status: "error", message: "Submission tidak ditemukan" };
 
-  sheet.deleteRow(rowIdx + 2); 
+  sheet.deleteRow(rowIdx + 2);
 
   return { status: "success" };
 }
@@ -380,7 +384,7 @@ function sendEmail(body) {
 
   // Gunakan GmailApp (mengirim menggunakan account google Apps Script yang mendeploy code ini)
   GmailApp.sendEmail(to, subject, message, options);
-  
+
   return { status: "success" };
 }
 
@@ -418,7 +422,7 @@ function saveCredentialDraft(body) {
     body.pic_ve_name           || "",
     body.environment           || "",
     body.revision_number       || "",
-    "'" + (body.release_date   || ""), 
+    "'" + (body.release_date   || ""),
     "'" + (body.created_date   || ""),
     body.services              || "[]"
   ]);
@@ -497,7 +501,7 @@ function deleteCredentialSubmission(body) {
 
   if (rowIdx === -1) return { status: "error", message: "Credential submission tidak ditemukan" };
 
-  sheet.deleteRow(rowIdx + 2); 
+  sheet.deleteRow(rowIdx + 2);
 
   return { status: "success" };
 }
@@ -509,12 +513,12 @@ function deleteCredentialSubmission(body) {
 function getLastCredentialNumber(year) {
   const ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_LOG_CREDENTIAL);
-  
+
   if (!sheet || sheet.getLastRow() <= 1) return { status: "success", last_urut: 0 };
 
   const data  = sheet.getDataRange().getValues();
   let lastUrut = 0;
-  
+
   data.slice(1).forEach(row => {
     if (String(row[5]) === String(year)) { // Asumsi Kolom F (index 5) adalah Tahun
       const urut = parseInt(row[3]);       // Asumsi Kolom D (index 3) adalah Nomor Urut
@@ -527,7 +531,7 @@ function getLastCredentialNumber(year) {
 function saveCredentialLog(body) {
   const ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet   = ss.getSheetByName(SHEET_LOG_CREDENTIAL);
-  
+
   if (!sheet) sheet = ss.insertSheet(SHEET_LOG_CREDENTIAL);
 
   if (sheet.getLastRow() === 0) {
@@ -548,12 +552,12 @@ function saveCredentialLog(body) {
 
 function getCredentialLogs() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_LOG_CREDENTIAL); 
+  const sheet = ss.getSheetByName(SHEET_LOG_CREDENTIAL);
   if (!sheet || sheet.getLastRow() <= 1) return { status: "success", logs: [] };
 
   const data = sheet.getDataRange().getValues();
-  const headers = data[0]; 
-  
+  const headers = data[0];
+
   const logs = data.slice(1).map(row => {
     const obj = {};
     headers.forEach((h, i) => {
@@ -565,17 +569,69 @@ function getCredentialLogs() {
 }
 
 function deleteCredentialLog(body) {
-  const submission_id = body.submission_id;
+  // Ambil nomor_surat (key baru) atau fallback ke submission_id (lama)
+  const nomorSurat = body.nomor_surat || body.submission_id;
+
   const ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_LOG_CREDENTIAL);
   if (!sheet) return { status: "error", message: "Sheet LOG_CREDENTIAL tidak ditemukan" };
 
   const data   = sheet.getDataRange().getValues();
-  const rowIdx = data.slice(1).findIndex(r => String(r[0]) === String(submission_id));
 
-  if (rowIdx === -1) return { status: "error", message: "Log credential tidak ditemukan: " + submission_id };
+  // PERBAIKAN: cari di kolom G (index 6) = nomor_surat, bukan kolom A (index 0) = id_form
+  const rowIdx = data.slice(1).findIndex(r => String(r[6]).trim() === String(nomorSurat).trim());
+
+  if (rowIdx === -1) return { status: "error", message: "Log credential tidak ditemukan: " + nomorSurat };
 
   sheet.deleteRow(rowIdx + 2);
 
+  return { status: "success" };
+}
+
+// ==========================================================
+// UPDATE NOTES (changelog) — visible to all users via popup
+// ==========================================================
+
+function getUpdateLogs() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_UPDATE_LOG);
+  if (!sheet || sheet.getLastRow() <= 1) return { status: "success", logs: [] };
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const logs = data.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = row[i]; });
+    return obj;
+  });
+  return { status: "success", logs: logs };
+}
+
+function saveUpdateLog(body) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_UPDATE_LOG);
+  if (!sheet) sheet = ss.insertSheet(SHEET_UPDATE_LOG);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["id", "title", "description", "type", "posted_at", "posted_by"]);
+  }
+  sheet.appendRow([
+    body.id || "",
+    body.title || "",
+    body.description || "",
+    body.type || "feature",
+    body.posted_at || "",
+    body.posted_by || ""
+  ]);
+  return { status: "success" };
+}
+
+function deleteUpdateLog(body) {
+  const id = body.id;
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_UPDATE_LOG);
+  if (!sheet) return { status: "error", message: "Sheet UPDATE_LOG tidak ditemukan" };
+  const data = sheet.getDataRange().getValues();
+  const rowIdx = data.slice(1).findIndex(r => String(r[0]) === String(id));
+  if (rowIdx === -1) return { status: "error", message: "Update tidak ditemukan: " + id };
+  sheet.deleteRow(rowIdx + 2);
   return { status: "success" };
 }

@@ -4,7 +4,7 @@ import FAQDashboard from './components/FAQDashboard.jsx';
 import FAQModal from './components/FAQModal.jsx';
 import ActivityLog from './components/ActivityLog.jsx';
 
-const SOW_ORIGIN = import.meta.env.PROD ? '' : 'http://localhost:3000';
+const SOW_ORIGIN = import.meta.env.VITE_SOW_URL || (import.meta.env.PROD ? 'https://ve-document-generator.vercel.app' : 'http://localhost:3000');
 const TEAM_FUND_ORIGIN = import.meta.env.PROD
   ? (import.meta.env.VITE_TEAM_FUND_URL || 'https://v0-team-fund-idr-tracker-leonard93lucky-2074s-projects.vercel.app')
   : 'http://localhost:3002';

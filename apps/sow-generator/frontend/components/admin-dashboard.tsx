@@ -216,7 +216,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
   useEffect(() => {
     if (adminId) { // Hanya jalankan jika adminId sudah ada
       fetchSubmissions()
-      const interval = setInterval(() => fetchSubmissions(true), 15000)
+      const interval = setInterval(() => fetchSubmissions(true), 60000)
       return () => clearInterval(interval)
     }
   }, [fetchSubmissions, adminId])
