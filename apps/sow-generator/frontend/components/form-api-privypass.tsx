@@ -77,7 +77,10 @@ const PRIVYPASS_DEFAULTS = {
     levelAccount: ["Verified Trusted"],
     callbackUrl: "",
     deeplink: "",
-    purpose: ""
+    purpose: "",
+    digitalIdVersion: "V1",
+    identifier: [] as string[],
+    sso: ""
 };
 
 const initialFormData = {
@@ -113,7 +116,10 @@ const initialFormData = {
         callbackUrl: PRIVYPASS_DEFAULTS.callbackUrl,
         deeplink: PRIVYPASS_DEFAULTS.deeplink,
         purpose: PRIVYPASS_DEFAULTS.purpose,
-        isExpirationOther: false
+        isExpirationOther: false,
+        digitalIdVersion: PRIVYPASS_DEFAULTS.digitalIdVersion,
+        identifier: [...PRIVYPASS_DEFAULTS.identifier],
+        sso: PRIVYPASS_DEFAULTS.sso
     },
 };
 
@@ -222,6 +228,12 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
             return;
         }
 
+        if (!data.productConfig.digitalIdVersion) {
+            toast.error("Please select Digital ID Version!");
+            setActiveTab("product");
+            return;
+        }
+
         setIsSubmitting(true);
         const toastId = toast.loading("Processing data. Please wait...");
         try {
@@ -313,7 +325,10 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
             JSON.stringify(c.levelAccount) === JSON.stringify(d.levelAccount) &&
             c.callbackUrl === d.callbackUrl &&
             c.deeplink === d.deeplink &&
-            c.purpose === d.purpose
+            c.purpose === d.purpose &&
+            c.digitalIdVersion === d.digitalIdVersion &&
+            JSON.stringify(c.identifier) === JSON.stringify(d.identifier) &&
+            c.sso === d.sso
         );
     }
 
@@ -456,6 +471,88 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                                     ))}
                                                 </div>
                                             </div>
+
+                                            {/* Digital ID Version */}
+                                            <div className="space-y-3">
+                                                <Label className="font-bold text-gray-700 text-xs">Digital ID Version <span className="text-red-500">*</span></Label>
+                                                <div className="flex gap-3">
+                                                    {[
+                                                        { value: "V1", label: "V1 (Redirect Privy Apps)" },
+                                                        { value: "V2", label: "V2 (Non Redirect)" }
+                                                    ].map(({ value, label }) => (
+                                                        <div
+                                                            key={value}
+                                                            className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.digitalIdVersion === value ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            onClick={() => {
+                                                                if (data.productConfig.digitalIdVersion === value) return;
+                                                                if (value === "V2") {
+                                                                    setData(prev => ({
+                                                                        ...prev,
+                                                                        productConfig: {
+                                                                            ...prev.productConfig,
+                                                                            digitalIdVersion: "V2",
+                                                                            identifier: ["Phone", "PrivyID", "NIK", "Email"],
+                                                                            sso: "Disabled"
+                                                                        }
+                                                                    }));
+                                                                } else {
+                                                                    setData(prev => ({
+                                                                        ...prev,
+                                                                        productConfig: {
+                                                                            ...prev.productConfig,
+                                                                            digitalIdVersion: "V1",
+                                                                            identifier: [],
+                                                                            sso: ""
+                                                                        }
+                                                                    }));
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Checkbox checked={data.productConfig.digitalIdVersion === value} />
+                                                            <Label className="text-xs cursor-pointer">{label}</Label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Identifier & SSO — only visible when V2 */}
+                                            {data.productConfig.digitalIdVersion === "V2" && (
+                                                <>
+                                                    {/* Identifier */}
+                                                    <div className="space-y-3">
+                                                        <Label className="font-bold text-gray-700 text-xs">Identifier</Label>
+                                                        <div className="flex gap-3 flex-wrap">
+                                                            {["Phone", "PrivyID", "NIK", "Email"].map((p) => (
+                                                                <div
+                                                                    key={p}
+                                                                    className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.identifier.includes(p) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                                    onClick={() => toggleProductList('identifier', p)}
+                                                                >
+                                                                    <Checkbox checked={data.productConfig.identifier.includes(p)} />
+                                                                    <Label className="text-xs cursor-pointer">{p}</Label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* SSO */}
+                                                    <div className="space-y-3">
+                                                        <Label className="font-bold text-gray-700 text-xs">SSO</Label>
+                                                        <div className="flex gap-3">
+                                                            {["Enabled", "Disabled"].map((value) => (
+                                                                <div
+                                                                    key={value}
+                                                                    className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.sso === value ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                                    onClick={() => handleProductChange('sso', value)}
+                                                                >
+                                                                    <Checkbox checked={data.productConfig.sso === value} />
+                                                                    <Label className="text-xs cursor-pointer">{value}</Label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
 
                                             {/* Data Share */}
                                             <div className="space-y-3">
