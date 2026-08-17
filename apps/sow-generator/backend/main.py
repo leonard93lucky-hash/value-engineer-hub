@@ -701,6 +701,9 @@ def admin_generate(submission_id: str, bg_tasks: BackgroundTasks, x_admin_id: Op
                 "expected_deliver_prod": format_tgl_indo(sub.get("expected_deliver_prod")),
                 
                 "subsciption_type": ", ".join(p_cfg.get("subscriptionType", [])) if isinstance(p_cfg.get("subscriptionType"), list) else "-",
+                "digitalid_version": p_cfg.get("digitalIdVersion", "") or "-",
+                "identifier": ", ".join(p_cfg.get("identifier", [])) if isinstance(p_cfg.get("identifier"), list) and p_cfg.get("identifier") else "-",
+                "sso": p_cfg.get("sso", "") or "-",
                 "data_share": ", ".join(p_cfg.get("dataShare", [])) if isinstance(p_cfg.get("dataShare"), list) else "-",
                 "expiration_user": p_cfg.get("expirationUser", "5 Minutes"),
                 "send_notification": ", ".join(p_cfg.get("sendNotification", [])) if isinstance(p_cfg.get("sendNotification"), list) else "-",

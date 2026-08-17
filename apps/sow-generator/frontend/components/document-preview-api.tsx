@@ -114,6 +114,41 @@ export const DocumentPreviewApi = ({ data, zoom, listPicVe, listPicBd }: Documen
                                 </td>
                             </tr>
                             <tr>
+                                <td className="border border-black p-2 font-semibold">Digital ID Version</td>
+                                <td className="border border-black p-2">{(data.productConfig as any).digitalIdVersion || "-"}</td>
+                                <td className="border border-black p-2 text-[8pt] text-gray-700">
+                                    <p>Version of Digital ID</p>
+                                    <ul>
+                                        <li><strong>V1:</strong> Redirect Privy Apps</li>
+                                        <li><strong>V2:</strong> Non Redirect</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="border border-black p-2 font-semibold">Identifier</td>
+                                <td className="border border-black p-2">{((data.productConfig as any).identifier || []).join(", ") || "-"}</td>
+                                <td className="border border-black p-2 text-[8pt] text-gray-700">
+                                    <p>First data identifier by user</p>
+                                    <ul>
+                                        <li>Phone</li>
+                                        <li>PrivyID</li>
+                                        <li>NIK</li>
+                                        <li>Email</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="border border-black p-2 font-semibold">SSO</td>
+                                <td className="border border-black p-2">{(data.productConfig as any).sso || "-"}</td>
+                                <td className="border border-black p-2 text-[8pt] text-gray-700">
+                                    <p>Single Sign-On (SSO) behavior</p>
+                                    <ul>
+                                        <li><strong>SSO Enabled:</strong> recurring transactions do not require user consent for each transaction.</li>
+                                        <li><strong>SSO Disabled:</strong> recurring transactions require user approval/consent for every transaction.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td className="border border-black p-2 font-semibold">Data Share</td>
                                 <td className="border border-black p-2">{data.productConfig.dataShare.join(", ") || "-"}</td>
                                 <td className="border border-black p-2 text-[8pt] text-gray-700">
