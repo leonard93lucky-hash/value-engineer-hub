@@ -106,6 +106,22 @@ export function AppWrapper() {
 
   if (!isAuthenticated) {
     if (typeof window !== "undefined") {
+      const isInIframe = window !== window.top
+      if (isInIframe) {
+        return (
+          <div className="min-h-screen bg-background flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <p className="text-muted-foreground">Gagal memuat SOW Generator. Server sedang sibuk.</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:opacity-90"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          </div>
+        )
+      }
       const isLocal = window.location.hostname === "localhost"
       window.location.href = isLocal ? "http://localhost:5173/login/" : "/login/"
     }

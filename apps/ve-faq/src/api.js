@@ -10,6 +10,7 @@ let useBackend = true;
 
 // --- Helper ---
 async function request(endpoint, options = {}) {
+  const method = (options.method || 'GET').toUpperCase();
   try {
     const res = await fetch(`${API_URL}${endpoint}`, {
       headers: { 'Content-Type': 'application/json' },
@@ -19,11 +20,15 @@ async function request(endpoint, options = {}) {
     if (!res.ok) {
       const err = new Error(json.error || `API error: ${res.status}`);
       err.status = res.status;
-      throw err;
+      // Write operations (POST/PATCH/DELETE) perlu error propagasi ke caller
+      // Read operations (GET) kembalikan null agar mock fallback aktif
+      if (method !== 'GET') throw err;
+      console.warn(`API GET ${res.status} ${endpoint}:`, err.message);
+      return null;
     }
     return json;
   } catch (err) {
-    if (err.status) throw err; // Re-throw API errors (like 401)
+    if (err.status) throw err; // Re-throw write errors (POST/DELETE)
     console.warn('Backend unavailable, using local mock:', err.message);
     useBackend = false;
     return null;

@@ -29,6 +29,8 @@ import io
 import sys
 import hmac
 import hashlib
+import time
+from concurrent.futures import ThreadPoolExecutor
 
 # Tambahkan path folder 'backend' ke sys.path agar Vercel bisa mengenali file lokal
 sys.path.append(os.path.dirname(__file__))
@@ -321,7 +323,36 @@ class CredentialSubmitRequest(BaseModel):
 # FASTAPI & ROUTER SETUP
 # =========================================================
 sheets_client = GoogleSheetsClient(APPS_SCRIPT_URL)
-app = FastAPI() 
+
+# Cache master data selama 5 menit — data PIC jarang berubah
+_master_data_cache: dict = {"data": None, "ts": 0.0}
+_MASTER_DATA_TTL = 300  # detik
+
+def get_cached_master_data() -> dict:
+    now = time.time()
+    if _master_data_cache["data"] and _master_data_cache["data"].get("pic_ve") and (now - _master_data_cache["ts"]) < _MASTER_DATA_TTL:
+        return _master_data_cache["data"]
+    data = sheets_client.get_master_data()
+    if data.get("pic_ve"):
+        _master_data_cache["data"] = data
+        _master_data_cache["ts"] = now
+    return data
+
+from contextlib import asynccontextmanager
+import threading
+
+def _prewarm_cache():
+    try:
+        get_cached_master_data()
+    except Exception:
+        pass
+
+@asynccontextmanager
+async def lifespan(app_instance):
+    threading.Thread(target=_prewarm_cache, daemon=True).start()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 # Gunakan APIRouter dengan prefix /api agar alamatnya resmi terdaftar
 api_router = APIRouter(prefix="/api")
@@ -372,7 +403,7 @@ def bg_send_generate_email(email_to, merchant_name, nomor_surat, enterprise_name
 @api_router.get("/master-data")
 def get_master_data(user_id: Optional[str] = None, x_admin_id: Optional[str] = Header(None, alias="X-Admin-Id")):
     try:
-        data = sheets_client.get_master_data()
+        data = get_cached_master_data()
         return {"status": "success", "pic_ve": data.get("pic_ve", []), "pic_bd": data.get("pic_bd", [])}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -381,23 +412,28 @@ def get_master_data(user_id: Optional[str] = None, x_admin_id: Optional[str] = H
 def verify_user(data: dict):
     try:
         privy_id_clean = str(data.get("access_code", "")).strip().lower()
-        master_data = sheets_client.get_master_data()
+        master_data = get_cached_master_data()
         pic_ve_list = master_data.get("pic_ve", [])
+        if not pic_ve_list:
+            raise HTTPException(status_code=503, detail="Data pengguna belum tersedia, coba lagi.")
         user = next((u for u in pic_ve_list if str(u.get("privy_id", "")).lower() == privy_id_clean), None)
-        if not user: raise HTTPException(status_code=401, detail="ID tidak ditemukan.")
+        if not user:
+            raise HTTPException(status_code=401, detail="ID tidak ditemukan.")
         return {
             "status": "success",
             "user": user,
             "pic_ve": pic_ve_list,
             "pic_bd": master_data.get("pic_bd", [])
         }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/save-draft")
 def save_draft(data: DraftRequest, bg_tasks: BackgroundTasks):
     try:
-        master_data = sheets_client.get_master_data()
+        master_data = get_cached_master_data()
         pic_ve = next((u for u in master_data.get("pic_ve", []) if str(u.get('privy_id', '')).lower() == str(data.pic_ve_id).lower()), None)
         if not pic_ve:
             raise HTTPException(status_code=401, detail="PIC VE ID tidak valid.")
@@ -474,11 +510,16 @@ def admin_get_submissions(x_admin_id: Optional[str] = Header(None, alias="X-Admi
         raise HTTPException(status_code=403, detail="Akses Admin Ditolak")
     
     try:
-        raw_pending = sheets_client.get_submissions()
-        logs = sheets_client.get_logs()
-        
+        # Parallelkan 3 panggilan Apps Script agar tidak sequential
+        with ThreadPoolExecutor() as ex:
+            f_pending  = ex.submit(sheets_client.get_submissions)
+            f_logs     = ex.submit(sheets_client.get_logs)
+            f_cred_logs = ex.submit(sheets_client.get_credential_logs)
+            raw_pending     = f_pending.result()
+            logs            = f_logs.result()
+            credential_logs = f_cred_logs.result()
+
         # Gabungkan log credential agar muncul di tab Generated
-        credential_logs = sheets_client.get_credential_logs()
         logs.extend(credential_logs)
 
         # Normalisasi pending: pastikan status = PENDING
@@ -912,7 +953,7 @@ def bg_send_credential_email(email_to, merchant_name, nomor_surat, enterprise_na
 @api_router.post("/credential/submit")
 def credential_submit(data: CredentialSubmitRequest, bg_tasks: BackgroundTasks):
     try:
-        master_data = sheets_client.get_master_data()
+        master_data = get_cached_master_data()
         pic_ve = next(
             (u for u in master_data.get("pic_ve", [])
              if str(u.get("privy_id", "")).lower() == str(data.pic_ve_id).lower()),
