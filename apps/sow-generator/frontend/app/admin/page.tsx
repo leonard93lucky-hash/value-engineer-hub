@@ -10,22 +10,23 @@ import { API_BASE_URL } from "@/lib/constants"
 function AdminPageInner() {
   const searchParams = useSearchParams()
 
-  // Pre-init dari sessionStorage agar tidak ada dark flash saat sudah pernah login
-  const storedAdminId = (() => {
-    try {
-      return sessionStorage.getItem("admin_authenticated") === "true"
-        ? (sessionStorage.getItem("admin_id") || "")
-        : ""
-    } catch { return "" }
-  })()
-
-  const [isAuthenticated, setIsAuthenticated] = useState(!!storedAdminId)
-  const [adminId, setAdminId] = useState(storedAdminId)
-  const [isLoading, setIsLoading] = useState(!storedAdminId)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [adminId, setAdminId] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     const checkAdminAuth = async () => {
+      // Cek sessionStorage dulu — kalau sudah pernah login, skip loading
+      const cachedAuth = sessionStorage.getItem("admin_authenticated")
+      const cachedId = sessionStorage.getItem("admin_id")
+      if (cachedAuth === "true" && cachedId && !searchParams.get("userId")) {
+        setIsAuthenticated(true)
+        setAdminId(cachedId)
+        setIsLoading(false)
+        return
+      }
+
       // Check if arriving from hub with pre-auth
       const urlUserId = searchParams.get("userId")
       const urlPosition = searchParams.get("position")
@@ -99,8 +100,8 @@ function AdminPageInner() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-white/40 text-sm animate-pulse">Loading...</div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-gray-300 text-sm animate-pulse">Loading...</div>
       </div>
     )
   }
@@ -127,7 +128,7 @@ function AdminPageInner() {
 
 export default function AdminPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-900 flex items-center justify-center"><div className="text-white/40 text-sm animate-pulse">Loading...</div></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><div className="text-gray-300 text-sm animate-pulse">Loading...</div></div>}>
       <AdminPageInner />
     </Suspense>
   )
