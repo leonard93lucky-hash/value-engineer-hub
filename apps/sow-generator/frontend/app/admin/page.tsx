@@ -8,11 +8,21 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { API_BASE_URL } from "@/lib/constants"
 
 function AdminPageInner() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [adminId, setAdminId] = useState("")
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
   const searchParams = useSearchParams()
+
+  // Pre-init dari sessionStorage agar tidak ada dark flash saat sudah pernah login
+  const storedAdminId = (() => {
+    try {
+      return sessionStorage.getItem("admin_authenticated") === "true"
+        ? (sessionStorage.getItem("admin_id") || "")
+        : ""
+    } catch { return "" }
+  })()
+
+  const [isAuthenticated, setIsAuthenticated] = useState(!!storedAdminId)
+  const [adminId, setAdminId] = useState(storedAdminId)
+  const [isLoading, setIsLoading] = useState(!storedAdminId)
+  const router = useRouter()
 
   useEffect(() => {
     const checkAdminAuth = async () => {

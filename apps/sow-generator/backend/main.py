@@ -175,7 +175,9 @@ def encrypt_pdf(pdf_path: str, password: str) -> str | None:
 # =========================================================
 # TELEGRAM NOTIFICATION
 # =========================================================
-def send_telegram_msg(message: str):
+_ADMIN_DASHBOARD_URL = "https://valueengineeringhub.vercel.app/login"
+
+def send_telegram_msg(message: str, with_dashboard_button: bool = False):
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     raw_chat_ids = os.getenv("TELEGRAM_CHAT_ID", "")
     chat_ids = [cid.strip() for cid in raw_chat_ids.split(",") if cid.strip()]
@@ -187,6 +189,10 @@ def send_telegram_msg(message: str):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     for chat_id in chat_ids:
         payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
+        if with_dashboard_button:
+            payload["reply_markup"] = {
+                "inline_keyboard": [[{"text": "Buka Dashboard Admin", "url": _ADMIN_DASHBOARD_URL}]]
+            }
         try:
             resp = requests.post(url, json=payload, timeout=10)
             resp_data = resp.json()
@@ -471,10 +477,9 @@ def save_draft(data: DraftRequest, bg_tasks: BackgroundTasks):
             f"📝 <b>Kategori: {kategori}</b>\n"
             f"👤 VE: {pic_ve_name}\n"
             f"🏢 Enterprise: {data.enterprise_name}\n"
-            f"🤝 Merchant: {data.merchant_name}\n\n"
-            f"🔗 <a href='https://ve-document-generator.vercel.app/admin'>Buka Dashboard Admin</a>"
+            f"🤝 Merchant: {data.merchant_name}"
         )
-        bg_tasks.add_task(send_telegram_msg, notif_text)
+        bg_tasks.add_task(send_telegram_msg, notif_text, True)
         return {"status": "success", "submission_id": result.get("submission_id", "")}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -986,8 +991,8 @@ def credential_submit(data: CredentialSubmitRequest, bg_tasks: BackgroundTasks):
             f"👤 VE: {pic_ve_name}\n"
             f"🏢 Enterprise: {data.enterprise_name}\n"
             f"🤝 Merchant: {data.merchant_name}\n"
-            f"🌍 Env: {data.environment}\n\n"
-            f"🔗 <a href='https://ve-document-generator.vercel.app/admin'>Buka Dashboard Admin</a>"
+            f"🌍 Env: {data.environment}",
+            True
         )
         return {"status": "success", "submission_id": result.get("submission_id", "")}
     except Exception as e:
