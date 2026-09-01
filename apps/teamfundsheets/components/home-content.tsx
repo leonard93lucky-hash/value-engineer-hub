@@ -27,46 +27,67 @@ export default function HomeContent() {
 
   const currentYear = new Date().getFullYear()
 
-  const fetchData = async () => {
+  const fetchData = async (allowRetry = false) => {
     setRefreshing(true)
+    let retrying = false
     try {
       console.log("[v0] Fetching payments and expenses from API...")
-      const [paymentsRes, expensesRes, targetsRes] = await Promise.all([
+      const [paymentsRes, expensesRes, targetsRes] = await Promise.allSettled([
         fetch(apiPath("/api/payments")),
         fetch(apiPath("/api/expenses")),
         fetch(apiPath(`/api/targets?year=${currentYear}`)),
       ])
 
-      if (paymentsRes.ok) {
-        const paymentsData = await paymentsRes.json()
+      if (paymentsRes.status === "fulfilled" && paymentsRes.value.ok) {
+        const paymentsData = await paymentsRes.value.json()
         console.log("[v0] Successfully fetched", paymentsData.length, "payments")
         setPayments(paymentsData)
       } else {
-        console.error("[v0] Error fetching payments:", paymentsRes.statusText)
+        console.error("[v0] Error fetching payments:", paymentsRes.status === "fulfilled" ? paymentsRes.value.statusText : paymentsRes.reason)
       }
 
-      if (expensesRes.ok) {
-        const expensesData = await expensesRes.json()
+      if (expensesRes.status === "fulfilled" && expensesRes.value.ok) {
+        const expensesData = await expensesRes.value.json()
         console.log("[v0] Successfully fetched", expensesData.length, "expenses")
         setExpenses(expensesData)
       } else {
-        console.error("[v0] Error fetching expenses:", expensesRes.statusText)
+        console.error("[v0] Error fetching expenses:", expensesRes.status === "fulfilled" ? expensesRes.value.statusText : expensesRes.reason)
       }
 
-      if (targetsRes.ok) {
-        const data = await targetsRes.json()
+      if (targetsRes.status === "fulfilled" && targetsRes.value.ok) {
+        const data = await targetsRes.value.json()
         setMonthlyTarget(data.monthlyTarget || 600000)
+      }
+
+      const anyRejected = [paymentsRes, expensesRes, targetsRes].some(
+        (r) => r.status === "rejected"
+      )
+
+      if (anyRejected && allowRetry) {
+        retrying = true
+        console.log("[v0] Some fetches failed (cold start?), retrying in 2s...")
+        setTimeout(() => {
+          setLoading(false)
+          fetchData(false)
+        }, 2000)
       }
     } catch (error) {
       console.error("[v0] Unexpected error fetching data:", error)
+      if (allowRetry) {
+        retrying = true
+        setTimeout(() => {
+          setLoading(false)
+          fetchData(false)
+        }, 2000)
+      }
     } finally {
-      setLoading(false)
       setRefreshing(false)
+      if (!retrying) setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchData()
+    fetchData(true)
   }, [])
 
   const formattedPaymentsForChart = useMemo(() => {
