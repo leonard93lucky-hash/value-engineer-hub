@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { FiShield, FiArrowRight, FiArrowLeft, FiLock, FiMail, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiShield, FiArrowRight, FiArrowLeft, FiLock, FiMail, FiEye, FiEyeOff, FiLoader } from 'react-icons/fi';
 import { login } from '../api.js';
+import privyLogo from '../assets/Privy_Logo_Red.png';
 
 // Step 1: Enter PrivyID or Email
 // Step 2a: requires_pin  → Enter 6-digit PIN
@@ -119,14 +120,10 @@ export default function LoginScreen({ onLogin }) {
 
   return (
     <div className="login-container">
-      <div className="login-orb login-orb-1" />
-      <div className="login-orb login-orb-2" />
-      <div className="login-orb login-orb-3" />
-
       <div className="login-card glass animate-fade-in">
         <div className="login-icon-wrap" style={{ background: 'transparent', boxShadow: 'none', width: 'auto', height: 'auto' }}>
           <img
-            src="https://privy.id/_nuxt/Privy_Logo_Red.BXNsidzu.png"
+            src={privyLogo}
             alt="Privy"
             style={{ width: '120px', objectFit: 'contain' }}
           />
@@ -152,7 +149,7 @@ export default function LoginScreen({ onLogin }) {
               </div>
               <button type="submit" className="btn-primary login-btn" id="continue-btn" disabled={loading}>
                 {loading
-                  ? <><span className="spin-icon">⏳</span> Checking...</>
+                  ? <><FiLoader className="spin" size={16} /> Checking...</>
                   : <>Continue <FiArrowRight style={{ marginLeft: '0.5rem' }} /></>}
               </button>
               {error && <div className="error-msg animate-fade-in" id="login-error">{error}</div>}
@@ -196,7 +193,7 @@ export default function LoginScreen({ onLogin }) {
                 {showPin ? 'Hide PIN' : 'Show PIN'}
               </button>
               <button type="submit" className="btn-primary login-btn" id="verify-pin-btn" disabled={loading || pinValue.length !== 6}>
-                {loading ? <>⏳ Verifying...</> : <>Access Portal <FiArrowRight style={{ marginLeft: '0.5rem' }} /></>}
+                {loading ? <><FiLoader className="spin" size={16} /> Verifying...</> : <>Access Portal <FiArrowRight style={{ marginLeft: '0.5rem' }} /></>}
               </button>
               {error && <div className="error-msg animate-fade-in" id="pin-error">{error}</div>}
               <button type="button" className="back-btn" onClick={resetToCode} id="back-btn">
@@ -260,7 +257,7 @@ export default function LoginScreen({ onLogin }) {
               </div>
               <button type="submit" className="btn-primary login-btn" id="setup-pin-btn"
                 disabled={loading || pinValue.length !== 6 || !email.trim()}>
-                {loading ? <>⏳ Saving...</> : <>Save PIN & Enter Portal <FiArrowRight style={{ marginLeft: '0.5rem' }} /></>}
+                {loading ? <><FiLoader className="spin" size={16} /> Saving...</> : <>Save PIN & Enter Portal <FiArrowRight style={{ marginLeft: '0.5rem' }} /></>}
               </button>
               {error && <div className="error-msg animate-fade-in" id="setup-error">{error}</div>}
               <button type="button" className="back-btn" onClick={resetToCode} id="back-btn-setup">

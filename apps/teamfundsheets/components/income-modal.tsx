@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { X } from "lucide-react"
-import type { Payment } from "@/app/page"
+import type { Payment } from "@/lib/types"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -19,6 +19,9 @@ interface IncomeModalProps {
   onSubmit: (payment: Payment) => void
 }
 
+const fieldCls =
+  "w-full px-3 py-2.5 min-h-[44px] bg-card border border-input rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 focus:border-ring"
+
 export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalProps) {
   const [users, setUsers] = useState<UserOption[]>([])
   const [formData, setFormData] = useState({
@@ -27,6 +30,7 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
     transferDate: new Date().toISOString().split("T")[0],
     amount: 50000,
   })
+  const firstFieldRef = useRef<HTMLSelectElement>(null)
 
   const hubUrl = process.env.NEXT_PUBLIC_HUB_URL || ""
 
@@ -50,7 +54,21 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
         setUsers(sorted)
       })
       .catch(err => console.error("Failed to fetch users:", err))
-  }, [isOpen])
+  }, [isOpen, usersApi])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const previouslyFocused = document.activeElement as HTMLElement | null
+    firstFieldRef.current?.focus()
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose()
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+      previouslyFocused?.focus?.()
+    }
+  }, [isOpen, onClose])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,22 +91,34 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card border border-border rounded-lg w-full max-w-md max-h-screen overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="income-modal-title"
+        className="bg-card border border-border rounded-lg w-full max-w-md max-h-screen overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border sticky top-0 bg-card">
-          <h2 className="text-lg sm:text-xl font-bold text-foreground">Add Income</h2>
-          <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors">
+          <h2 id="income-modal-title" className="text-lg sm:text-xl font-semibold text-foreground">Add Income</h2>
+          <button
+            onClick={onClose}
+            aria-label="Close dialog"
+            className="p-2.5 rounded-lg hover:bg-canvas transition-colors"
+          >
             <X size={20} className="text-foreground" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Month</label>
+            <label htmlFor="income-month" className="block text-sm font-medium text-foreground mb-2">Month</label>
             <select
+              id="income-month"
+              ref={firstFieldRef}
               value={formData.month}
               onChange={(e) => setFormData({ ...formData, month: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className={fieldCls}
             >
               {MONTHS.map((month) => (
                 <option key={month} value={month}>{month}</option>
@@ -97,11 +127,12 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Name</label>
+            <label htmlFor="income-name" className="block text-sm font-medium text-foreground mb-2">Name</label>
             <select
+              id="income-name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className={fieldCls}
               required
             >
               <option value="">Select a name...</option>
@@ -112,30 +143,32 @@ export default function IncomeModal({ isOpen, onClose, onSubmit }: IncomeModalPr
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Transfer Date</label>
+            <label htmlFor="income-date" className="block text-sm font-medium text-foreground mb-2">Transfer Date</label>
             <input
+              id="income-date"
               type="date"
               value={formData.transferDate}
               onChange={(e) => setFormData({ ...formData, transferDate: e.target.value })}
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className={fieldCls}
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Amount (IDR)</label>
+            <label htmlFor="income-amount" className="block text-sm font-medium text-foreground mb-2">Amount (IDR)</label>
             <input
+              id="income-amount"
               type="number"
               value={formData.amount}
               onChange={(e) => setFormData({ ...formData, amount: Number.parseInt(e.target.value) })}
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className={fieldCls}
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors mt-6"
+            className="w-full min-h-[44px] bg-primary hover:bg-primary-hover text-white font-medium rounded-lg transition-colors mt-6"
           >
             Add Income
           </button>

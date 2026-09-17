@@ -270,28 +270,28 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
   }
 
   return (
-    <div className="flex h-screen bg-neutral-100 font-sans overflow-hidden">
+    <div className="flex h-screen bg-background font-sans overflow-hidden">
       {/* --- LEFT PANEL: FORM --- */}
-      <div className="w-full md:w-[500px] bg-white md:border-r flex flex-col z-10 shadow-xl h-full">
+      <div className="w-full md:w-[500px] bg-white md:border-r flex flex-col z-10  h-full">
         <div className="p-5 border-b bg-white flex items-center gap-3">
           {onBack && (
             <button
               onClick={onBack}
-              className="p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
+              className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
               title="Back to Product Selection"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
             </button>
           )}
-          <h2 className="flex items-center gap-2 font-bold text-gray-800 text-xl">
-            <LockIcon className="w-6 h-6 text-emerald-500" /> Credential Document
+          <h2 className="flex items-center gap-2 font-bold text-foreground text-xl">
+            <LockIcon className="w-6 h-6 text-success" /> Credential Document
           </h2>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
           {/* Section 1: Basic Info */}
           <section className="space-y-4">
-            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">Basic Info</h3>
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Basic Info</h3>
             
             <div className="space-y-1">
               <Label>PIC VE</Label>
@@ -340,13 +340,13 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
           {/* Section 2: Services */}
           <section className="space-y-4">
-            <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">Select Services</h3>
+            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Select Services</h3>
             
             <div className="space-y-3">
               {/* Two-step dropdown: Category → Sub-service (with "Other" option) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Service</Label>
+                  <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Service</Label>
                   <Select
                     value={dropdownCategory}
                     onValueChange={v => {
@@ -355,7 +355,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                       setCustomServiceName("")
                     }}
                   >
-                    <SelectTrigger className="bg-white border-gray-200 focus:ring-emerald-500">
+                    <SelectTrigger className="bg-white border-border focus:ring-success">
                       <SelectValue placeholder="Select category..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -367,13 +367,13 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Sub-Service</Label>
+                  <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Sub-Service</Label>
                   <Select
                     value={dropdownSubService}
                     onValueChange={handleSubServicePick}
                     disabled={!dropdownCategory}
                   >
-                    <SelectTrigger className="bg-white border-gray-200 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <SelectTrigger className="bg-white border-border focus:ring-success disabled:opacity-50 disabled:cursor-not-allowed">
                       <SelectValue placeholder={dropdownCategory ? "Select sub-service..." : "Pick a category first"} />
                     </SelectTrigger>
                     <SelectContent>
@@ -384,7 +384,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                         ))}
                       {dropdownCategory && <SelectSeparator />}
                       {dropdownCategory && (
-                        <SelectItem value="__OTHER__" className="text-emerald-600 font-semibold">
+                        <SelectItem value="__OTHER__" className="text-success font-semibold">
                           Other (custom)
                         </SelectItem>
                       )}
@@ -395,8 +395,8 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
               {/* Custom input — only when "Other" is picked */}
               {dropdownSubService === "__OTHER__" && dropdownCategory && (
-                <div className="p-3 bg-emerald-50/50 border border-dashed border-emerald-300 rounded-lg space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">
+                <div className="p-3 bg-success-surface border border-dashed border-success/40 rounded-lg space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <div className="text-[10px] uppercase tracking-widest text-success font-bold">
                     Custom service name for {CATEGORY_LABEL[dropdownCategory]}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
@@ -412,7 +412,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                       type="button"
                       onClick={addCustomService}
                       disabled={!customServiceName.trim()}
-                      className="h-9 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold disabled:opacity-50"
+                      className="h-9 bg-success hover:bg-[#1C4E30] text-white text-xs font-semibold disabled:opacity-50"
                     >
                       <Plus className="w-3.5 h-3.5 mr-1" /> Add
                     </Button>
@@ -420,7 +420,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                       type="button"
                       variant="ghost"
                       onClick={() => { setDropdownSubService(""); setCustomServiceName("") }}
-                      className="h-9 text-xs text-gray-500"
+                      className="h-9 text-xs text-muted-foreground"
                     >
                       Cancel
                     </Button>
@@ -434,14 +434,14 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     const presetNames = SERVICES_BY_CATEGORY[svc.category].map(stripApiPrefix)
                     const isCustom = !presetNames.includes(svc.name)
                     return (
-                      <div key={`${svc.category}:${svc.name}`} className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold border border-emerald-100 shadow-sm animate-in fade-in zoom-in duration-200">
+                      <div key={`${svc.category}:${svc.name}`} className="flex items-center gap-1.5 bg-success-surface text-success px-3 py-1 rounded-full text-xs font-semibold border border-success/20 shadow-sm animate-in fade-in zoom-in duration-200">
                         <span>{svc.name}</span>
-                        <span className="text-[9px] uppercase tracking-wider bg-emerald-100 text-emerald-600 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[9px] uppercase tracking-wider bg-success-surface text-success px-1.5 py-0.5 rounded-full">
                           {CATEGORY_LABEL[svc.category]}{isCustom ? " · custom" : ""}
                         </span>
                         <button
                           onClick={() => removeService(svc)}
-                          className="p-0.5 hover:bg-emerald-200 rounded-full transition-colors text-emerald-500 hover:text-emerald-700"
+                          className="p-0.5 hover:bg-success-surface rounded-full transition-colors text-success hover:text-success"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
@@ -455,9 +455,9 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
             {/* Service Credentials — grouped by category */}
             {selectedServicesTemp.some(s => s.category === "avengers") && (
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">Avengers Credentials</h3>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-3">
-                  <div className="text-xs text-gray-400 font-medium">
+                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Avengers Credentials</h3>
+                <div className="p-4 bg-canvas border border-border rounded-xl space-y-3">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {selectedServicesTemp.filter(s => s.category === "avengers").map(s => s.name).join(", ")}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -473,9 +473,9 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
             {selectedServicesTemp.some(s => s.category === "general") && (
               <div className="mt-4 space-y-3">
-                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">General Credentials</h3>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-3">
-                  <div className="text-xs text-gray-400 font-medium">
+                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">General Credentials</h3>
+                <div className="p-4 bg-canvas border border-border rounded-xl space-y-3">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {selectedServicesTemp.filter(s => s.category === "general").map(s => s.name).join(", ")}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -501,9 +501,9 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
             {selectedServicesTemp.some(s => s.category === "connect") && (
               <div className="mt-4 space-y-3">
-                <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">Connect Credentials</h3>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl space-y-3">
-                  <div className="text-xs text-gray-400 font-medium">
+                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Connect Credentials</h3>
+                <div className="p-4 bg-canvas border border-border rounded-xl space-y-3">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {selectedServicesTemp.filter(s => s.category === "connect").map(s => s.name).join(", ")}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -524,7 +524,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 h-12 text-white shadow-md hover:shadow-lg transition-all rounded-xl font-bold flex items-center justify-center gap-2 group"
+            className="w-full bg-success hover:bg-[#1C4E30] h-12 text-white transition-colors rounded-lg font-medium flex items-center justify-center gap-2 group"
           >
             {isSubmitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Saving...</> : <><Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" /> Submit Credential Draft</>}
           </Button>
@@ -532,11 +532,11 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
       </div>
 
       {/* --- RIGHT PANEL: PREVIEW --- */}
-      <div className="hidden md:flex flex-1 bg-gray-100 relative overflow-hidden flex-col items-center">
-        <div className="absolute top-6 z-50 flex gap-3 bg-white p-2 rounded-full shadow-xl border border-gray-100">
-          <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.3, z - 0.1))}><ZoomOut className="w-4 h-4 text-gray-600" /></Button>
-          <span className="text-xs font-mono self-center w-12 text-center text-gray-600">{Math.round(zoom * 100)}%</span>
-          <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(1.5, z + 0.1))}><ZoomIn className="w-4 h-4 text-gray-600" /></Button>
+      <div className="hidden md:flex flex-1 bg-muted relative overflow-hidden flex-col items-center">
+        <div className="absolute top-6 z-50 flex gap-3 bg-white p-2 rounded-full  border border-border">
+          <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.3, z - 0.1))}><ZoomOut className="w-4 h-4 text-muted-foreground" /></Button>
+          <span className="text-xs font-mono self-center w-12 text-center text-muted-foreground">{Math.round(zoom * 100)}%</span>
+          <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(1.5, z + 0.1))}><ZoomIn className="w-4 h-4 text-muted-foreground" /></Button>
         </div>
 
         <div className="flex-1 overflow-y-auto w-full pt-20 pb-10 flex flex-col items-center">

@@ -12,6 +12,7 @@ import { Payment, Expense } from "@/lib/types"
 import { useAuth } from "@/app/providers"
 import { api as apiPath } from "@/lib/api-base"
 import { Settings } from "lucide-react"
+import { toast } from "sonner"
 
 export default function HomeContent() {
   const [payments, setPayments] = useState<Payment[]>([])
@@ -116,13 +117,15 @@ export default function HomeContent() {
       if (res.ok) {
         await fetchData()
         setShowIncomeModal(false)
+        toast.success("Income recorded")
       } else {
         const errorData = await res.json().catch(() => ({}));
         console.error("Failed to add payment:", errorData.details || res.statusText);
-        alert(`Failed to add payment: ${errorData.details || "Please checks logs"}`);
+        toast.error("Could not add income. Please try again.");
       }
     } catch (error) {
       console.error("Error adding payment:", error)
+      toast.error("Could not add income. Please try again.");
     }
   }
 
@@ -137,11 +140,14 @@ export default function HomeContent() {
       if (res.ok) {
         await fetchData()
         setShowExpenseModal(false)
+        toast.success("Expense recorded")
       } else {
         console.error("Failed to add expense")
+        toast.error("Could not add expense. Please try again.")
       }
     } catch (error) {
       console.error("Error adding expense:", error)
+      toast.error("Could not add expense. Please try again.")
     }
   }
 
@@ -152,11 +158,14 @@ export default function HomeContent() {
       })
       if (res.ok) {
         setPayments((prev) => prev.filter((p) => p.id !== id))
+        toast.success("Payment deleted")
       } else {
         console.error("Failed to delete payment")
+        toast.error("Could not delete payment. Please try again.")
       }
     } catch (error) {
       console.error("Error deleting payment:", error)
+      toast.error("Could not delete payment. Please try again.")
     }
   }
 
@@ -167,11 +176,14 @@ export default function HomeContent() {
       })
       if (res.ok) {
         setExpenses((prev) => prev.filter((e) => e.id !== id))
+        toast.success("Expense deleted")
       } else {
         console.error("Failed to delete expense")
+        toast.error("Could not delete expense. Please try again.")
       }
     } catch (error) {
       console.error("Error deleting expense:", error)
+      toast.error("Could not delete expense. Please try again.")
     }
   }
 
@@ -230,7 +242,11 @@ export default function HomeContent() {
   const totalIncome = payments.reduce((sum, p) => sum + p.amount, 0)
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0)
 
-  if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
+  if (loading) return (
+    <div className="flex h-screen items-center justify-center text-muted-foreground">
+      Loading team fund data...
+    </div>
+  )
 
   return (
     <main className="min-h-screen bg-background">
@@ -249,9 +265,9 @@ export default function HomeContent() {
           expenseCount={expenses.length}
         />
 
-        <section className="bg-card p-6 rounded-xl border shadow-sm">
+        <section className="bg-card p-6 rounded-lg border border-border">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold">
+            <h2 className="text-lg sm:text-xl font-semibold">
               Income Goal Progress
               <span className="text-sm font-normal text-muted-foreground ml-2">
                 ({currentYear})
@@ -260,7 +276,7 @@ export default function HomeContent() {
             {isSupport && (
               <button
                 onClick={() => setShowTargetsConfig(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm text-muted-foreground hover:text-foreground hover:bg-canvas rounded-lg transition-colors"
               >
                 <Settings size={16} />
                 Targets
@@ -276,19 +292,21 @@ export default function HomeContent() {
                 const isGoalReached = total >= monthlyTarget
                 return (
                   <div key={name} className="space-y-2">
-                    <div className="flex justify-between text-sm font-medium">
-                      <span>{name}</span>
-                      <span>
-                        Rp {total.toLocaleString()} / Rp {monthlyTarget.toLocaleString()}
+                    <div className="flex justify-between text-sm font-medium gap-3">
+                      <span className="truncate">{name}</span>
+                      <span className="tabular-nums text-muted-foreground whitespace-nowrap">
+                        Rp {total.toLocaleString("id-ID")} / Rp {monthlyTarget.toLocaleString("id-ID")}
                       </span>
                     </div>
-                    <div className="relative h-6 w-full bg-muted rounded-md border overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-1000 ${isGoalReached ? "bg-green-500" : "bg-blue-500"}`}
-                        style={{ width: `${percentage}%` }}
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white uppercase">
-                        {isGoalReached ? "Goal Reached!" : `${percentage.toFixed(1)}%`}
+                    <div className="flex items-center gap-3">
+                      <div className="relative h-2.5 flex-1 bg-muted rounded-full border border-border overflow-hidden">
+                        <div
+                          className={`h-full transition-all duration-1000 ${isGoalReached ? "bg-success" : "bg-info"}`}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <span className={`text-xs font-medium tabular-nums whitespace-nowrap ${isGoalReached ? "text-success" : "text-muted-foreground"}`}>
+                        {isGoalReached ? "Goal reached" : `${percentage.toFixed(1)}%`}
                       </span>
                     </div>
                   </div>

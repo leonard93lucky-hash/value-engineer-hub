@@ -505,7 +505,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
   // ----- TABLE HEADER -----
   const SortableTh = ({ label, field }: { label: string; field: SortKey }) => (
     <th
-      className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-800 transition-colors whitespace-nowrap"
+      className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer select-none hover:text-foreground transition-colors whitespace-nowrap"
       onClick={() => handleSort(field)}
     >
       <div className="flex items-center gap-1">
@@ -520,30 +520,30 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
   // ----- STATUS BADGE -----
   const StatusBadge = ({ status }: { status: string }) => (
     status === "GENERATED"
-      ? <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
+      ? <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-success-surface text-success border border-success/30">
         <CheckCircle2 className="w-3 h-3" /> Generated
       </span>
-      : <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-200">
+      : <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-warning-surface text-warning border border-warning/30">
         <Clock className="w-3 h-3" /> Pending
       </span>
   )
 
   // ----- RENDER -----
   return (
-    <div className="h-screen bg-gray-50 flex flex-col font-sans overflow-hidden">
+    <div className="h-screen bg-canvas flex flex-col font-sans overflow-hidden">
       {/* TOP BAR */}
-      <header className="border-b border-gray-200 px-3 sm:px-6 py-3 flex items-center justify-between bg-white sticky top-0 z-40 shadow-sm gap-2">
+      <header className="border-b border-border px-3 sm:px-6 py-3 flex items-center justify-between bg-white sticky top-0 z-40 shadow-sm gap-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <span className="hidden sm:inline text-sm font-semibold text-gray-800 truncate">Admin VE Support</span>
-          <Badge className="hidden sm:inline-flex bg-red-50 text-red-500 border-red-200 text-[10px]">Dashboard</Badge>
+          <span className="hidden sm:inline text-sm font-semibold text-foreground truncate">Admin VE Support</span>
+          <Badge className="hidden sm:inline-flex bg-danger-surface text-danger border-danger/30 text-[10px]">Dashboard</Badge>
         </div>
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <Button variant="ghost" size="sm" onClick={() => fetchSubmissions()}
-            className="text-gray-500 hover:text-gray-800 hover:bg-gray-100 gap-1.5 cursor-pointer px-2 sm:px-3">
+            className="text-muted-foreground hover:text-foreground hover:bg-muted gap-1.5 cursor-pointer px-2 sm:px-3">
             <RefreshCw className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Refresh</span>
           </Button>
           <Button variant="ghost" size="icon" onClick={() => setUpdateManagerOpen(true)}
-            className="text-gray-400 hover:text-red-500 hover:bg-red-50 h-8 w-8 cursor-pointer shrink-0"
+            className="text-muted-foreground hover:text-danger hover:bg-danger-surface h-8 w-8 cursor-pointer shrink-0"
             title="Manage Update Notes">
             <Megaphone className="w-4 h-4" />
           </Button>
@@ -565,50 +565,50 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
           return (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mb-3 sm:mb-5">
               {/* Kolom 1: Pending */}
-              <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1">
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-500">{totalPending}</div>
-                <div className="text-[10px] uppercase tracking-widest text-gray-400">Pending</div>
+              <div className="bg-white border border-border rounded-xl p-2.5 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1">
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-warning">{totalPending}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Pending</div>
                 {pendingCredentialSubmissions.length > 0 && (
-                  <div className="text-[9px] text-gray-400">
+                  <div className="text-[9px] text-muted-foreground">
                     {pendingSubmissions.length} SOW/API · {pendingCredentialSubmissions.length} Cred
                   </div>
                 )}
               </div>
               {/* Kolom 2: Generated */}
-              <div className="bg-white border border-gray-200 rounded-xl p-2.5 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1">
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-600">{totalGenerated}</div>
-                <div className="text-[10px] uppercase tracking-widest text-gray-400">Generated</div>
-                <div className="text-[9px] text-gray-400">
+              <div className="bg-white border border-border rounded-xl p-2.5 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1">
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-success">{totalGenerated}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Generated</div>
+                <div className="text-[9px] text-muted-foreground">
                   {sdkCount + apiCount} SOW/API · {credCount} Cred
                 </div>
               </div>
               {/* Kolom 3: breakdown per doc type — desktop only */}
               <div className="hidden sm:flex flex-col gap-2">
                 {/* SDK Liveness */}
-                <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 flex items-center gap-3 flex-1">
-                  <Package className="w-4 h-4 text-violet-500 flex-shrink-0" />
+                <div className="bg-white border border-border rounded-xl px-4 py-2 flex items-center gap-3 flex-1">
+                  <Package className="w-4 h-4 text-info flex-shrink-0" />
                   <div className="flex items-baseline gap-2 min-w-0">
-                    <div className="text-lg font-bold text-violet-600 leading-none">{sdkCount}</div>
-                    <div className="text-[10px] font-semibold text-gray-500 truncate">SDK Liveness</div>
-                    <div className="text-[9px] text-gray-400 uppercase tracking-wide truncate">{filterLabel}</div>
+                    <div className="text-lg font-bold text-info leading-none">{sdkCount}</div>
+                    <div className="text-[10px] font-semibold text-muted-foreground truncate">SDK Liveness</div>
+                    <div className="text-[9px] text-muted-foreground uppercase tracking-wide truncate">{filterLabel}</div>
                   </div>
                 </div>
                 {/* API PrivyPass */}
-                <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 flex items-center gap-3 flex-1">
-                  <Shield className="w-4 h-4 text-cyan-600 flex-shrink-0" />
+                <div className="bg-white border border-border rounded-xl px-4 py-2 flex items-center gap-3 flex-1">
+                  <Shield className="w-4 h-4 text-info flex-shrink-0" />
                   <div className="flex items-baseline gap-2 min-w-0">
-                    <div className="text-lg font-bold text-cyan-600 leading-none">{apiCount}</div>
-                    <div className="text-[10px] font-semibold text-gray-500 truncate">API PrivyPass</div>
-                    <div className="text-[9px] text-gray-400 uppercase tracking-wide truncate">{filterLabel}</div>
+                    <div className="text-lg font-bold text-info leading-none">{apiCount}</div>
+                    <div className="text-[10px] font-semibold text-muted-foreground truncate">API PrivyPass</div>
+                    <div className="text-[9px] text-muted-foreground uppercase tracking-wide truncate">{filterLabel}</div>
                   </div>
                 </div>
                 {/* Credential */}
-                <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 flex items-center gap-3 flex-1">
-                  <Shield className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                <div className="bg-white border border-border rounded-xl px-4 py-2 flex items-center gap-3 flex-1">
+                  <Shield className="w-4 h-4 text-success flex-shrink-0" />
                   <div className="flex items-baseline gap-2 min-w-0">
-                    <div className="text-lg font-bold text-emerald-600 leading-none">{credCount}</div>
-                    <div className="text-[10px] font-semibold text-gray-500 truncate">Credential</div>
-                    <div className="text-[9px] text-gray-400 uppercase tracking-wide truncate">{filterLabel}</div>
+                    <div className="text-lg font-bold text-success leading-none">{credCount}</div>
+                    <div className="text-[10px] font-semibold text-muted-foreground truncate">Credential</div>
+                    <div className="text-[9px] text-muted-foreground uppercase tracking-wide truncate">{filterLabel}</div>
                   </div>
                 </div>
               </div>
@@ -621,14 +621,14 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
           {/* Row 1: Search + Status Tab */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
             <div className="relative w-full sm:flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search by enterprise, merchant, initial, or letter number"
                 value={search} onChange={e => setSearch(e.target.value)}
-                className="pl-9 bg-white border-gray-300 text-gray-900 h-9 text-sm focus:ring-red-400/30"
+                className="pl-9 bg-white border-input text-foreground h-9 text-sm focus:ring-selection/30"
               />
             </div>
-            <div className="flex gap-1 bg-gray-100 p-1 rounded-lg border border-gray-200 w-full sm:w-auto overflow-x-auto">
+            <div className="flex gap-1 bg-muted p-1 rounded-lg border border-border w-full sm:w-auto overflow-x-auto">
               {(
                 [
                   { key: "PENDING_SOW", label: "Pending (SOW/API)", shortLabel: "SOW/API" },
@@ -637,7 +637,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                 ] as const
               ).map(s => (
                 <button key={s.key} onClick={() => setSelectedStatus(s.key as any)}
-                  className={`px-2 sm:px-4 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex-1 sm:flex-none ${selectedStatus === s.key ? "bg-red-500 text-white shadow" : "text-gray-400 hover:text-gray-700"
+                  className={`px-2 sm:px-4 py-1.5 rounded-md text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex-1 sm:flex-none ${selectedStatus === s.key ? "bg-primary text-white" : "text-muted-foreground hover:text-foreground"
                     }`}>
                   <span className="sm:hidden">{s.shortLabel}</span>
                   <span className="hidden sm:inline">{s.label}</span>
@@ -647,7 +647,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
           </div>
           {/* Row 2: Date + Kategori Filter */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 text-gray-400">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
               <Filter className="w-3.5 h-3.5" />
               <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider">Time:</span>
             </div>
@@ -661,8 +661,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                 key={f.key}
                 onClick={() => setFilterMode(f.key)}
                 className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer border ${filterMode === f.key
-                  ? "bg-red-500/10 text-red-500 border-red-200 shadow"
-                  : "bg-white text-gray-400 border-gray-200 hover:text-gray-700 hover:bg-gray-50"
+                  ? "bg-danger-surface text-danger border-danger/30 shadow"
+                  : "bg-white text-muted-foreground border-border hover:text-foreground hover:bg-canvas"
                   }`}
               >
                 {f.label}
@@ -672,10 +672,10 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               <select
                 value={filterYear}
                 onChange={e => setFilterYear(e.target.value)}
-                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-md px-2 py-1 h-7 focus:outline-none focus:ring-1 focus:ring-red-400/50 cursor-pointer"
+                className="bg-white border border-input text-foreground text-xs rounded-md px-2 py-1 h-7 focus:outline-none focus:ring-1 focus:ring-selection/40 cursor-pointer"
               >
                 {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(y => (
-                  <option key={y} value={String(y)} className="bg-white text-gray-800">{y}</option>
+                  <option key={y} value={String(y)} className="bg-white text-foreground">{y}</option>
                 ))}
               </select>
             )}
@@ -683,32 +683,32 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               <select
                 value={filterMonth}
                 onChange={e => setFilterMonth(e.target.value)}
-                className="bg-white border border-gray-300 text-gray-700 text-xs rounded-md px-2 py-1 h-7 focus:outline-none focus:ring-1 focus:ring-red-400/50 cursor-pointer"
+                className="bg-white border border-input text-foreground text-xs rounded-md px-2 py-1 h-7 focus:outline-none focus:ring-1 focus:ring-selection/40 cursor-pointer"
               >
                 {[
                   "January", "February", "March", "April", "May", "June",
                   "July", "August", "September", "October", "November", "December"
                 ].map((m, idx) => (
-                  <option key={idx + 1} value={String(idx + 1)} className="bg-white text-gray-800">{m}</option>
+                  <option key={idx + 1} value={String(idx + 1)} className="bg-white text-foreground">{m}</option>
                 ))}
               </select>
             )}
             {filterMode !== "all" && (
               <button
                 onClick={() => setFilterMode("all")}
-                className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
               >
                 <X className="w-3 h-3" /> Reset
               </button>
             )}
 
             {/* Divider */}
-            <div className="w-px h-5 bg-gray-200 mx-1" />
+            <div className="w-px h-5 bg-muted mx-1" />
 
             {/* Filter Kategori — only on PENDING_SOW tab */}
             {selectedStatus === "PENDING_SOW" && (
               <>
-                <div className="flex items-center gap-1.5 text-gray-400">
+                <div className="flex items-center gap-1.5 text-muted-foreground">
                   <BarChart3 className="w-3.5 h-3.5" />
                   <span className="text-[11px] font-semibold uppercase tracking-wider">Category:</span>
                 </div>
@@ -721,8 +721,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     key={k.key}
                     onClick={() => setFilterKategori(k.key as any)}
                     className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer border ${filterKategori === k.key
-                        ? "bg-red-500/10 text-red-500 border-red-200 shadow"
-                        : "bg-white text-gray-400 border-gray-200 hover:text-gray-700 hover:bg-gray-50"
+                        ? "bg-danger-surface text-danger border-danger/30 shadow"
+                        : "bg-white text-muted-foreground border-border hover:text-foreground hover:bg-canvas"
                       }`}
                   >
                     {k.label}
@@ -734,7 +734,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
             {/* Filter Jenis Dokumen — only on GENERATED tab */}
             {selectedStatus === "GENERATED" && (
               <>
-                <div className="flex items-center gap-1.5 text-gray-400">
+                <div className="flex items-center gap-1.5 text-muted-foreground">
                   <BarChart3 className="w-3.5 h-3.5" />
                   <span className="text-[11px] font-semibold uppercase tracking-wider">Type:</span>
                 </div>
@@ -747,8 +747,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     key={k.key}
                     onClick={() => setFilterDocType(k.key)}
                     className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer border ${filterDocType === k.key
-                        ? "bg-red-500/10 text-red-500 border-red-200 shadow"
-                        : "bg-white text-gray-400 border-gray-200 hover:text-gray-700 hover:bg-gray-50"
+                        ? "bg-danger-surface text-danger border-danger/30 shadow"
+                        : "bg-white text-muted-foreground border-border hover:text-foreground hover:bg-canvas"
                       }`}
                   >
                     {k.label}
@@ -760,20 +760,20 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
         </div>
 
         {/* 3. TABLE WRAPPER (DESKTOP) — flex-1, overflow-hidden, hanya tbody yang scroll */}
-        <div className="hidden md:flex flex-1 bg-white border border-gray-200 rounded-xl overflow-hidden flex-col shadow-sm min-h-0">
+        <div className="hidden md:flex flex-1 bg-white border border-border rounded-xl overflow-hidden flex-col shadow-sm min-h-0">
           {/* scrollable area: overflow-y-auto di sini */}
           <div className="overflow-auto flex-1
               [&::-webkit-scrollbar]:w-2
               [&::-webkit-scrollbar]:h-2
               [&::-webkit-scrollbar-track]:bg-transparent
               [&::-webkit-scrollbar-thumb]:rounded-full
-              [&::-webkit-scrollbar-thumb]:bg-gray-200
-              hover:[&::-webkit-scrollbar-thumb]:bg-gray-300">
+              [&::-webkit-scrollbar-thumb]:bg-muted
+              hover:[&::-webkit-scrollbar-thumb]:bg-border">
 
             {/* Kasih min-width agar kolom tidak dempet-dempetan */}
             <table className="w-full text-left border-collapse min-w-[1200px]">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 sticky top-0 z-10 shadow-sm">
+                <tr className="border-b border-border bg-canvas sticky top-0 z-10 shadow-sm">
                   <th className="w-10 px-4 py-3" />
                   {selectedStatus === "GENERATED" ? (
                     <>
@@ -795,20 +795,20 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     </>
                   )}
                   <SortableTh label="Status" field="status" />
-                  <th className="px-4 py-3 text-right text-[10px] font-bold text-gray-400 uppercase">Action</th>
+                  <th className="px-4 py-3 text-right text-[10px] font-bold text-muted-foreground uppercase">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={9} className="text-center py-16 text-gray-400">
+                    <td colSpan={9} className="text-center py-16 text-muted-foreground">
                       <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
                       <div className="text-sm">Loading data...</div>
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="text-center py-16 text-gray-400">
+                    <td colSpan={9} className="text-center py-16 text-muted-foreground">
                       <FileText className="w-8 h-8 mx-auto mb-2 opacity-30" />
                       <div className="text-sm">{search ? "No search results" : "No submissions yet"}</div>
                     </td>
@@ -829,39 +829,39 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                         />
                       ) : sub.status === "GENERATED" ? (
                         /* --- 2. TAMPILAN BARIS GENERATED (LOG SURAT) --- */
-                        <tr className="hover:bg-gray-50 transition-colors group border-l-2 border-gray-300">
+                        <tr className="hover:bg-canvas transition-colors group border-l-2 border-input">
                           <td className="px-2 py-3 text-center">
-                            <span className="text-gray-300 text-xs">-</span>
+                            <span className="text-muted-foreground/60 text-xs">-</span>
                           </td>
-                          <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
+                          <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
                             {formatDateIndo(sub.submitted_at || "")}
                           </td>
                           <td className="px-4 py-3 whitespace-nowrap">
-                            <span className="font-mono text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded shadow-sm whitespace-nowrap">
+                            <span className="font-mono text-[10px] font-bold text-success bg-success-surface border border-success/30 px-2 py-1 rounded shadow-sm whitespace-nowrap">
                               {sub.nomor_surat}
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            <div className="text-sm font-medium text-gray-800">{sub.enterprise_name}</div>
-                            <div className="text-[10px] text-gray-400 mt-0.5">{sub.enterprise_initial}</div>
+                            <div className="text-sm font-medium text-foreground">{sub.enterprise_name}</div>
+                            <div className="text-[10px] text-muted-foreground mt-0.5">{sub.enterprise_initial}</div>
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-600">{sub.merchant_name || "-"}</td>
-                          <td className="px-4 py-3 text-sm text-gray-500">{sub.pic_ve_name}</td>
-                          <td className="px-4 py-3 text-xs text-gray-400 text-center font-mono">
+                          <td className="px-4 py-3 text-sm text-muted-foreground">{sub.merchant_name || "-"}</td>
+                          <td className="px-4 py-3 text-sm text-muted-foreground">{sub.pic_ve_name}</td>
+                          <td className="px-4 py-3 text-xs text-muted-foreground text-center font-mono">
                             {formatRevision(sub.revision_number)}
                           </td>
                           <td className="px-4 py-3"><StatusBadge status={sub.status} /></td>
                           <td className="px-4 py-3 text-right">
                             <div className="flex items-center justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                               {confirmDeleteId === sub.submission_id ? (
-                                <div className="flex items-center gap-1 bg-red-50 p-0.5 rounded-lg border border-red-200">
-                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-red-500 text-[10px] font-bold hover:bg-red-500 hover:text-white rounded cursor-pointer">YES</button>
-                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-gray-500 text-[10px] hover:bg-gray-100 rounded cursor-pointer">NO</button>
+                                <div className="flex items-center gap-1 bg-danger-surface p-0.5 rounded-lg border border-danger/30">
+                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-[10px] font-bold hover:bg-danger hover:text-white rounded cursor-pointer">YES</button>
+                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-[10px] hover:bg-muted rounded cursor-pointer">NO</button>
                                 </div>
                               ) : (
                                 <button
                                   onClick={() => setConfirmDeleteId(sub.submission_id)}
-                                  className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 border border-red-200 transition-all cursor-pointer"
+                                  className="p-1.5 rounded-lg bg-danger-surface hover:bg-danger-surface text-danger border border-danger/30 transition-all cursor-pointer"
                                   title="Delete Log"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
@@ -872,39 +872,39 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                         </tr>
                       ) : (
                         /* --- 3. TAMPILAN BARIS PENDING (DRAFT) --- */
-                        <tr className="hover:bg-gray-50 transition-colors group">
+                        <tr className="hover:bg-canvas transition-colors group">
                           <td className="px-2 py-3">
                             <button
                               onClick={() => setDetailId(detailId === sub.submission_id ? null : sub.submission_id)}
-                              className="text-gray-300 hover:text-gray-500 transition-colors"
+                              className="text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                             >
                               <ChevronRight className={`w-4 h-4 transition-transform ${detailId === sub.submission_id ? "rotate-90" : ""}`} />
                             </button>
                           </td>
-                          <td className="px-4 py-3 text-xs text-gray-400 whitespace-nowrap">
+                          <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
                             {formatDateIndo(sub.submitted_at?.split(" ")[0] || "")}
                           </td>
-                          <td className="px-4 py-3 font-medium text-gray-800 text-sm">
+                          <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {sub.enterprise_name}
-                            <div className="text-[10px] text-gray-400 font-normal">by {getAdminDisplayName(sub.created_by)}</div>
+                            <div className="text-[10px] text-muted-foreground font-normal">by {getAdminDisplayName(sub.created_by)}</div>
                           </td>
                           <td className="px-4 py-3">
                             {sub.enterprise_initial ? (
-                              <span className="font-mono text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded">
+                              <span className="font-mono text-xs font-bold text-danger bg-danger-surface border border-danger/30 px-2 py-0.5 rounded">
                                 {sub.enterprise_initial}
                               </span>
                             ) : (
-                              <span className="text-[10px] italic text-amber-400/70 bg-amber-500/5 border border-amber-500/10 px-2 py-0.5 rounded">
+                              <span className="text-[10px] italic text-warning/70 bg-warning-surface border border-warning/20 px-2 py-0.5 rounded">
                                 Empty
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-600">{sub.merchant_name || "-"}</td>
-                          <td className="px-4 py-3 text-sm text-gray-500">{sub.pic_ve_name}</td>
+                          <td className="px-4 py-3 text-sm text-muted-foreground">{sub.merchant_name || "-"}</td>
+                          <td className="px-4 py-3 text-sm text-muted-foreground">{sub.pic_ve_name}</td>
                           <td className="px-4 py-3">
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production"
-                              ? "bg-purple-50 text-purple-600 border-purple-200"
-                              : "bg-blue-50 text-blue-600 border-blue-200"
+                              ? "bg-info-surface text-info border-info/30"
+                              : "bg-info-surface text-info border-info/30"
                               }`}>
                               {sub.environment}
                             </span>
@@ -914,7 +914,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                             <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                               <button
                                 onClick={() => startEdit(sub)}
-                                className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 transition-all"
+                                className="p-1.5 rounded-lg bg-muted hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
                                 title="Edit"
                               >
                                 <Pencil className="w-3.5 h-3.5" />
@@ -924,8 +924,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                                 onClick={() => handleGenerate(sub)}
                                 disabled={!!generatingId}
                                 className={`p-1.5 rounded-lg transition-all flex items-center gap-1 text-[10px] font-bold px-2 ${sub.enterprise_initial?.trim()
-                                  ? "bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200"
-                                  : "bg-gray-50 text-gray-300 border border-gray-200 cursor-not-allowed"
+                                  ? "bg-success-surface hover:bg-success-surface text-success border border-success/30"
+                                  : "bg-canvas text-muted-foreground/60 border border-border cursor-not-allowed"
                                   }`}
                               >
                                 {generatingId === sub.submission_id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
@@ -933,12 +933,12 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                               </button>
 
                               {confirmDeleteId === sub.submission_id ? (
-                                <div className="flex items-center gap-1 bg-red-50 p-0.5 rounded-lg border border-red-200">
-                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-red-500 text-[10px] font-bold hover:bg-red-500 hover:text-white rounded cursor-pointer">YES</button>
-                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-gray-500 text-[10px] hover:bg-gray-100 rounded cursor-pointer">NO</button>
+                                <div className="flex items-center gap-1 bg-danger-surface p-0.5 rounded-lg border border-danger/30">
+                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-[10px] font-bold hover:bg-danger hover:text-white rounded cursor-pointer">YES</button>
+                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-[10px] hover:bg-muted rounded cursor-pointer">NO</button>
                                 </div>
                               ) : (
-                                <button onClick={() => setConfirmDeleteId(sub.submission_id)} className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-500 border border-red-200 cursor-pointer">
+                                <button onClick={() => setConfirmDeleteId(sub.submission_id)} className="p-1.5 rounded-lg bg-danger-surface hover:bg-danger-surface text-danger border border-danger/30 cursor-pointer">
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               )}
@@ -950,7 +950,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                       {/* --- DETAIL PANEL (COLLAPSIBLE) --- */}
                       {detailId === sub.submission_id && editingId !== sub.submission_id && (
                         <tr>
-                          <td colSpan={9} className="bg-gray-50 border-l-2 border-red-400 px-6 py-6 shadow-inner">
+                          <td colSpan={9} className="bg-canvas border-l-2 border-danger/50 px-6 py-6 shadow-inner">
                             <DetailPanel sub={sub} />
                           </td>
                         </tr>
@@ -966,35 +966,35 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
         {/* 3b. MOBILE CARD LIST — visible < md only */}
         <div className="md:hidden flex-1 overflow-auto min-h-0 space-y-3">
           {isLoading ? (
-            <div className="text-center py-16 text-gray-400">
+            <div className="text-center py-16 text-muted-foreground">
               <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
               <div className="text-sm">Loading data...</div>
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-16 text-gray-400 bg-white rounded-xl border border-gray-200">
+            <div className="text-center py-16 text-muted-foreground bg-white rounded-xl border border-border">
               <FileText className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <div className="text-sm">{search ? "No search results" : "No submissions yet"}</div>
             </div>
           ) : (
             filtered.map((sub) => (
-              <div key={sub.submission_id} className={`bg-white border rounded-xl shadow-sm overflow-hidden ${sub.status === "GENERATED" ? "border-emerald-200" : "border-gray-200"}`}>
+              <div key={sub.submission_id} className={`bg-white border rounded-xl shadow-sm overflow-hidden ${sub.status === "GENERATED" ? "border-success/30" : "border-border"}`}>
                 {editingId === sub.submission_id ? (
                   /* --- MOBILE: INLINE EDIT FORM --- */
-                  <div className="p-4 bg-red-50/30 border-l-4 border-red-400 space-y-3">
-                    <div className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-2">Editing Submission</div>
+                  <div className="p-4 bg-danger-surface border-l-4 border-danger/50 space-y-3">
+                    <div className="text-[10px] font-bold text-danger uppercase tracking-widest mb-2">Editing Submission</div>
                     <div className="space-y-2">
-                      <Label className="text-[11px] text-gray-500">Enterprise Name</Label>
+                      <Label className="text-[11px] text-muted-foreground">Enterprise Name</Label>
                       <Input value={editForm.enterprise_name || ""} onChange={e => setEditForm({ ...editForm, enterprise_name: e.target.value })}
                         className="h-9 text-sm bg-white" placeholder="Enterprise Name" />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-gray-500">Initial</Label>
+                        <Label className="text-[11px] text-muted-foreground">Initial</Label>
                         <Input value={editForm.enterprise_initial || ""} onChange={e => setEditForm({ ...editForm, enterprise_initial: e.target.value.toUpperCase() })}
-                          maxLength={3} className="h-9 text-sm font-mono uppercase bg-red-50 border-red-300 text-red-600" placeholder="XXX" />
+                          maxLength={3} className="h-9 text-sm font-mono uppercase bg-danger-surface border-danger/40 text-danger" placeholder="XXX" />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-gray-500">Environment</Label>
+                        <Label className="text-[11px] text-muted-foreground">Environment</Label>
                         <Select value={editForm.environment || "Staging"} onValueChange={v => setEditForm({ ...editForm, environment: v })}>
                           <SelectTrigger className="h-9 text-sm bg-white"><SelectValue /></SelectTrigger>
                           <SelectContent>{ENV_TYPE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
@@ -1002,25 +1002,25 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-[11px] text-gray-500">Merchant Name</Label>
+                      <Label className="text-[11px] text-muted-foreground">Merchant Name</Label>
                       <Input value={editForm.merchant_name || ""} onChange={e => setEditForm({ ...editForm, merchant_name: e.target.value })}
                         className="h-9 text-sm bg-white" placeholder="Merchant Name" />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-gray-500">Revision</Label>
+                        <Label className="text-[11px] text-muted-foreground">Revision</Label>
                         <Input value={editForm.revision_number || ""} onChange={e => setEditForm({ ...editForm, revision_number: e.target.value })}
                           className="h-9 text-sm bg-white" />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-gray-500">Release Date</Label>
+                        <Label className="text-[11px] text-muted-foreground">Release Date</Label>
                         <Input type="date" value={editForm.release_date || ""} onChange={e => setEditForm({ ...editForm, release_date: e.target.value })}
                           className="h-9 text-sm bg-white" />
                       </div>
                     </div>
-                    <details className="bg-white rounded-md border border-gray-200">
-                      <summary className="px-3 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider cursor-pointer">Timeline (tap to expand)</summary>
-                      <div className="p-3 grid grid-cols-2 gap-2 border-t border-gray-100">
+                    <details className="bg-white rounded-md border border-border">
+                      <summary className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer">Timeline (tap to expand)</summary>
+                      <div className="p-3 grid grid-cols-2 gap-2 border-t border-border">
                         {[
                           { label: "Plan STG", field: "plan_stg" as keyof Submission },
                           { label: "UAT", field: "uat_date" as keyof Submission },
@@ -1033,7 +1033,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                           { label: "Deliver PROD", field: "expected_deliver_prod" as keyof Submission },
                         ].map(({ label, field }) => (
                           <div key={field} className="space-y-1">
-                            <Label className="text-[10px] text-gray-400">{label}</Label>
+                            <Label className="text-[10px] text-muted-foreground">{label}</Label>
                             <Input type="date"
                               value={editForm[field] !== undefined && editForm[field] !== null ? String(editForm[field]) : ""}
                               onChange={e => setEditForm({ ...editForm, [field]: e.target.value })}
@@ -1044,55 +1044,55 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     </details>
                     <div className="flex gap-2 pt-1">
                       <button onClick={saveEdit} disabled={isSaving}
-                        className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold disabled:opacity-60">
+                        className="flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-success hover:bg-[#1C4E30] text-white text-sm font-semibold disabled:opacity-60">
                         {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Save
                       </button>
                       <button onClick={cancelEdit}
-                        className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 text-sm">
+                        className="px-4 py-2 rounded-lg bg-muted text-muted-foreground text-sm">
                         Cancel
                       </button>
                     </div>
                   </div>
                 ) : sub.status === "GENERATED" ? (
                   /* --- MOBILE: GENERATED CARD --- */
-                  <div className="p-4 space-y-3 border-l-4 border-emerald-400">
+                  <div className="p-4 space-y-3 border-l-4 border-success/50">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="font-mono text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded break-all">
+                      <span className="font-mono text-[10px] font-bold text-success bg-success-surface border border-success/30 px-2 py-1 rounded break-all">
                         {sub.nomor_surat}
                       </span>
                       <StatusBadge status={sub.status} />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-800">{sub.enterprise_name}</div>
-                      <div className="text-[11px] text-gray-400">{sub.enterprise_initial}</div>
+                      <div className="text-sm font-semibold text-foreground">{sub.enterprise_name}</div>
+                      <div className="text-[11px] text-muted-foreground">{sub.enterprise_initial}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">Merchant</div>
-                        <div className="text-gray-700">{sub.merchant_name || "-"}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Merchant</div>
+                        <div className="text-foreground">{sub.merchant_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">PIC VE</div>
-                        <div className="text-gray-700">{sub.pic_ve_name || "-"}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">PIC VE</div>
+                        <div className="text-foreground">{sub.pic_ve_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">Rev</div>
-                        <div className="text-gray-700 font-mono">{formatRevision(sub.revision_number)}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Rev</div>
+                        <div className="text-foreground font-mono">{formatRevision(sub.revision_number)}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">Created</div>
-                        <div className="text-gray-700">{formatDateIndo(sub.submitted_at || "")}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Created</div>
+                        <div className="text-foreground">{formatDateIndo(sub.submitted_at || "")}</div>
                       </div>
                     </div>
-                    <div className="pt-2 border-t border-gray-100 flex justify-end">
+                    <div className="pt-2 border-t border-border flex justify-end">
                       {confirmDeleteId === sub.submission_id ? (
-                        <div className="flex items-center gap-1 bg-red-50 p-1 rounded-lg border border-red-200">
-                          <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-3 py-1 text-red-500 text-xs font-bold hover:bg-red-500 hover:text-white rounded">YES, DELETE</button>
-                          <button onClick={() => setConfirmDeleteId(null)} className="px-3 py-1 text-gray-500 text-xs hover:bg-gray-100 rounded">NO</button>
+                        <div className="flex items-center gap-1 bg-danger-surface p-1 rounded-lg border border-danger/30">
+                          <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-3 py-1 text-danger text-xs font-bold hover:bg-danger hover:text-white rounded">YES, DELETE</button>
+                          <button onClick={() => setConfirmDeleteId(null)} className="px-3 py-1 text-muted-foreground text-xs hover:bg-muted rounded">NO</button>
                         </div>
                       ) : (
                         <button onClick={() => setConfirmDeleteId(sub.submission_id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-500 border border-red-200 text-xs font-semibold">
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-danger-surface text-danger border border-danger/30 text-xs font-semibold">
                           <Trash2 className="w-3.5 h-3.5" /> Delete
                         </button>
                       )}
@@ -1103,67 +1103,67 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                   <div className="p-4 space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-gray-800 break-words">{sub.enterprise_name}</div>
-                        <div className="text-[10px] text-gray-400">by {getAdminDisplayName(sub.created_by)}</div>
+                        <div className="text-sm font-semibold text-foreground break-words">{sub.enterprise_name}</div>
+                        <div className="text-[10px] text-muted-foreground">by {getAdminDisplayName(sub.created_by)}</div>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
                         <StatusBadge status={sub.status} />
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production" ? "bg-purple-50 text-purple-600 border-purple-200" : "bg-blue-50 text-blue-600 border-blue-200"}`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production" ? "bg-info-surface text-info border-info/30" : "bg-info-surface text-info border-info/30"}`}>
                           {sub.environment}
                         </span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">Initial</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Initial</div>
                         {sub.enterprise_initial ? (
-                          <span className="inline-block font-mono text-xs font-bold text-red-500 bg-red-50 border border-red-200 px-2 py-0.5 rounded mt-0.5">{sub.enterprise_initial}</span>
+                          <span className="inline-block font-mono text-xs font-bold text-danger bg-danger-surface border border-danger/30 px-2 py-0.5 rounded mt-0.5">{sub.enterprise_initial}</span>
                         ) : (
-                          <span className="inline-block text-[10px] italic text-amber-500 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded mt-0.5">Empty</span>
+                          <span className="inline-block text-[10px] italic text-warning bg-warning-surface border border-warning/30 px-2 py-0.5 rounded mt-0.5">Empty</span>
                         )}
                       </div>
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">Merchant</div>
-                        <div className="text-gray-700">{sub.merchant_name || "-"}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Merchant</div>
+                        <div className="text-foreground">{sub.merchant_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">PIC VE</div>
-                        <div className="text-gray-700">{sub.pic_ve_name || "-"}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">PIC VE</div>
+                        <div className="text-foreground">{sub.pic_ve_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider">Date</div>
-                        <div className="text-gray-700">{formatDateIndo(sub.submitted_at?.split(" ")[0] || "")}</div>
+                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Date</div>
+                        <div className="text-foreground">{formatDateIndo(sub.submitted_at?.split(" ")[0] || "")}</div>
                       </div>
                     </div>
                     <button
                       onClick={() => setDetailId(detailId === sub.submission_id ? null : sub.submission_id)}
-                      className="text-[11px] text-gray-500 hover:text-gray-800 flex items-center gap-1"
+                      className="text-[11px] text-muted-foreground hover:text-foreground flex items-center gap-1"
                     >
                       <ChevronRight className={`w-3.5 h-3.5 transition-transform ${detailId === sub.submission_id ? "rotate-90" : ""}`} />
                       {detailId === sub.submission_id ? "Hide details" : "Show details"}
                     </button>
                     {detailId === sub.submission_id && (
-                      <div className="bg-gray-50 rounded-lg border border-gray-200 p-3">
+                      <div className="bg-canvas rounded-lg border border-border p-3">
                         <DetailPanel sub={sub} />
                       </div>
                     )}
-                    <div className="pt-2 border-t border-gray-100 flex flex-wrap gap-2">
+                    <div className="pt-2 border-t border-border flex flex-wrap gap-2">
                       <button onClick={() => startEdit(sub)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 border border-gray-200 text-xs font-semibold">
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-foreground border border-border text-xs font-semibold">
                         <Pencil className="w-3.5 h-3.5" /> Edit
                       </button>
                       <button onClick={() => handleGenerate(sub)} disabled={!!generatingId || !sub.enterprise_initial?.trim()}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold flex-1 justify-center ${sub.enterprise_initial?.trim() ? "bg-emerald-50 text-emerald-600 border border-emerald-200" : "bg-gray-50 text-gray-300 border border-gray-200 cursor-not-allowed"}`}>
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold flex-1 justify-center ${sub.enterprise_initial?.trim() ? "bg-success-surface text-success border border-success/30" : "bg-canvas text-muted-foreground/60 border border-border cursor-not-allowed"}`}>
                         {generatingId === sub.submission_id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />} GENERATE
                       </button>
                       {confirmDeleteId === sub.submission_id ? (
-                        <div className="flex items-center gap-1 bg-red-50 p-1 rounded-lg border border-red-200">
-                          <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-red-500 text-xs font-bold hover:bg-red-500 hover:text-white rounded">YES</button>
-                          <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-gray-500 text-xs hover:bg-gray-100 rounded">NO</button>
+                        <div className="flex items-center gap-1 bg-danger-surface p-1 rounded-lg border border-danger/30">
+                          <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-xs font-bold hover:bg-danger hover:text-white rounded">YES</button>
+                          <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-xs hover:bg-muted rounded">NO</button>
                         </div>
                       ) : (
                         <button onClick={() => setConfirmDeleteId(sub.submission_id)}
-                          className="flex items-center justify-center w-9 h-9 rounded-lg bg-red-50 text-red-500 border border-red-200">
+                          className="flex items-center justify-center w-9 h-9 rounded-lg bg-danger-surface text-danger border border-danger/30">
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       )}
@@ -1193,9 +1193,9 @@ function DetailPanel({ sub }: { sub: Submission }) {
 
   const dateRow = (label: string, val?: string) => (
     <div className="space-y-0.5">
-      <div className="text-[10px] text-gray-400 uppercase tracking-wider">{label}</div>
-      <div className="text-xs text-gray-700 font-medium">
-        {val && val !== "-" ? val : <span className="text-gray-300 italic">—</span>}
+      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</div>
+      <div className="text-xs text-foreground font-medium">
+        {val && val !== "-" ? val : <span className="text-muted-foreground/60 italic">—</span>}
       </div>
     </div>
   )
@@ -1203,7 +1203,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
   const boolBadge = (val?: string | boolean) => {
     const isTrue = String(val).toLowerCase() === "true"
     return (
-      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isTrue ? "bg-emerald-50 text-emerald-600 border-emerald-200" : "bg-gray-100 text-gray-400 border-gray-200"
+      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isTrue ? "bg-success-surface text-success border-success/30" : "bg-muted text-muted-foreground border-border"
         }`}>{isTrue ? "Yes" : "No"}</span>
     )
   }
@@ -1212,22 +1212,22 @@ function DetailPanel({ sub }: { sub: Submission }) {
     <div className="space-y-6">
       {/* HEADER KHUSUS JIKA SUDAH GENERATED */}
       {sub.status === "GENERATED" && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 flex justify-between items-center">
+        <div className="bg-success-surface border border-success/30 rounded-lg p-4 flex justify-between items-center">
           <div>
-            <div className="text-[10px] text-emerald-600/70 uppercase font-bold tracking-widest">Document Status</div>
-            <div className="text-lg font-mono font-bold text-emerald-600">{sub.nomor_surat}</div>
+            <div className="text-[10px] text-success/70 uppercase font-bold tracking-widest">Document Status</div>
+            <div className="text-lg font-mono font-bold text-success">{sub.nomor_surat}</div>
           </div>
-          <Badge className="bg-emerald-500 text-white border-none">GENERATED</Badge>
+          <Badge className="bg-success text-white border-none">GENERATED</Badge>
         </div>
       )}
 
       {/* Row 1: Informasi Utama */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <User className="w-3.5 h-3.5 text-red-500" />
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Basic Information</span>
+          <User className="w-3.5 h-3.5 text-danger" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Basic Information</span>
         </div>
-        <div className="grid grid-cols-4 gap-x-8 gap-y-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+        <div className="grid grid-cols-4 gap-x-8 gap-y-4 bg-canvas p-4 rounded-xl border border-border">
           {dateRow("Submission ID", sub.submission_id)}
           {dateRow("Enterprise Name", sub.enterprise_name)}
           {dateRow("Merchant Name", sub.merchant_name)}
@@ -1238,7 +1238,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
           {dateRow("Initial Merchant", sub.enterprise_initial || "Not Set")}
 
           <div className="space-y-1">
-            <div className="text-[10px] text-gray-400 uppercase tracking-wider">RASP / RGB</div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">RASP / RGB</div>
             <div className="flex gap-2">
               {boolBadge(sub.rasp)}
               {boolBadge(sub.rgb)}
@@ -1250,8 +1250,8 @@ function DetailPanel({ sub }: { sub: Submission }) {
       {/* Row 2: Timeline (Hanya tampil jika ada datanya) */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <CalendarDays className="w-3.5 h-3.5 text-purple-500" />
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Project Timeline</span>
+          <CalendarDays className="w-3.5 h-3.5 text-info" />
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Project Timeline</span>
         </div>
         <div className="grid grid-cols-5 gap-4">
           {dateRow("Release Date", formatDateIndo(sub.release_date || ""))}
@@ -1266,13 +1266,13 @@ function DetailPanel({ sub }: { sub: Submission }) {
       {productConfig && (
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <Settings className="w-3.5 h-3.5 text-cyan-500" />
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">System Configuration Preview</span>
+            <Settings className="w-3.5 h-3.5 text-info" />
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">System Configuration Preview</span>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-              <div className="text-[10px] text-cyan-600 font-bold mb-2 uppercase">Liveness Setup</div>
-              <div className="text-xs text-gray-600">
+            <div className="bg-canvas rounded-lg p-3 border border-border">
+              <div className="text-[10px] text-info font-bold mb-2 uppercase">Liveness Setup</div>
+              <div className="text-xs text-muted-foreground">
                 Threshold: {productConfig.basic?.livenessThreshold || "-"} <br />
                 Providers: {Array.isArray(productConfig.basic?.livenessProviders) ? productConfig.basic.livenessProviders.join(", ") : "-"}
               </div>
@@ -1303,12 +1303,12 @@ function EditRow({
   return (
     <>
       {/* Row 1: field utama */}
-      <tr className="bg-red-50 border-l-2 border-red-400">
+      <tr className="bg-danger-surface border-l-2 border-danger/50">
         <td className="px-2 py-2" />
-        <td className="px-4 py-2 text-xs text-gray-400">{editForm.submitted_at?.split(" ")[0] || "-"}</td>
+        <td className="px-4 py-2 text-xs text-muted-foreground">{editForm.submitted_at?.split(" ")[0] || "-"}</td>
         <td className="px-4 py-2">
           <Input value={editForm.enterprise_name || ""} onChange={e => upd("enterprise_name", e.target.value)}
-            className="h-7 text-xs bg-white border-gray-300 text-gray-800 w-full" placeholder="Enterprise Name" />
+            className="h-7 text-xs bg-white border-input text-foreground w-full" placeholder="Enterprise Name" />
         </td>
         <td className="px-4 py-2">
           {(() => {
@@ -1333,14 +1333,14 @@ function EditRow({
                     onChange={e => upd("enterprise_initial", e.target.value.toUpperCase())}
                     className={`h-7 text-xs font-mono w-20 uppercase ${
                       conflict
-                        ? "bg-orange-50 border-orange-400 text-orange-700 ring-1 ring-orange-300"
-                        : "bg-red-50 border-red-300 text-red-600"
+                        ? "bg-warning-surface border-warning/50 text-warning ring-1 ring-warning/40"
+                        : "bg-danger-surface border-danger/40 text-danger"
                     }`}
                     placeholder="XXX"
                     maxLength={3}
                   />
                 </TooltipTrigger>
-                <TooltipContent side="top" className="bg-orange-500 text-white border-0 text-[10px] leading-snug max-w-[160px]">
+                <TooltipContent side="top" className="bg-warning text-white border-0 text-[10px] leading-snug max-w-[160px]">
                   ⚠️ Initial <b>{typedInitial}</b> is already used by{" "}
                   <span className="font-semibold">{conflict?.enterprise_name}</span>.
                   Please use a different initial.
@@ -1351,33 +1351,33 @@ function EditRow({
         </td>
         <td className="px-4 py-2">
           <Input value={editForm.merchant_name || ""} onChange={e => upd("merchant_name", e.target.value)}
-            className="h-7 text-xs bg-white border-gray-300 text-gray-800 w-full" placeholder="Merchant Name" />
+            className="h-7 text-xs bg-white border-input text-foreground w-full" placeholder="Merchant Name" />
         </td>
-        <td className="px-4 py-2 text-xs text-gray-500">{editForm.pic_ve_name || "-"}</td>
+        <td className="px-4 py-2 text-xs text-muted-foreground">{editForm.pic_ve_name || "-"}</td>
         <td className="px-4 py-2">
           <Select value={editForm.environment || "Staging"} onValueChange={v => upd("environment", v)}>
-            <SelectTrigger className="h-7 text-xs bg-white border-gray-300 text-gray-800 w-28"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="h-7 text-xs bg-white border-input text-foreground w-28"><SelectValue /></SelectTrigger>
             <SelectContent>{ENV_TYPE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
           </Select>
         </td>
-        <td className="px-4 py-2 text-xs text-gray-400">{editForm.status}</td>
+        <td className="px-4 py-2 text-xs text-muted-foreground">{editForm.status}</td>
         <td className="px-4 py-2">
           <div className="flex items-center gap-1.5">
             <button onClick={onSave} disabled={isSaving}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold transition-all disabled:opacity-60 cursor-pointer">
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-success hover:bg-[#1C4E30] text-white text-xs font-semibold transition-all disabled:opacity-60 cursor-pointer">
               {isSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />} Save
             </button>
             <button onClick={onCancel}
-              className="px-2 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 text-xs transition-all cursor-pointer">
+              className="px-2 py-1.5 rounded-lg bg-muted hover:bg-muted text-muted-foreground hover:text-foreground text-xs transition-all cursor-pointer">
               Cancel
             </button>
           </div>
         </td>
       </tr>
       {/* Row 2: timeline fields */}
-      <tr className="bg-red-50/50 border-l-2 border-red-300">
+      <tr className="bg-danger-surface border-l-2 border-danger/40">
         <td colSpan={9} className="px-6 py-3">
-          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Edit Timeline &amp; Configuration</div>
+          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Edit Timeline &amp; Configuration</div>
           <div className="grid grid-cols-5 gap-3">
             {[
               { label: "Revision", field: "revision_number" as keyof Submission },
@@ -1393,12 +1393,12 @@ function EditRow({
               { label: "Deliver PROD", field: "expected_deliver_prod" as keyof Submission, type: "date" },
             ].map(({ label, field, type }) => (
               <div key={field} className="space-y-1">
-                <Label className="text-[10px] text-gray-400">{label}</Label>
+                <Label className="text-[10px] text-muted-foreground">{label}</Label>
                 <Input
                   type={type || "text"}
                   value={editForm[field] !== undefined && editForm[field] !== null ? String(editForm[field]) : ""}
                   onChange={e => upd(field, e.target.value)}
-                  className="h-7 text-xs bg-white border-gray-300 text-gray-800"
+                  className="h-7 text-xs bg-white border-input text-foreground"
                 />
               </div>
             ))}

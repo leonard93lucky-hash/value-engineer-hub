@@ -31,9 +31,9 @@ function markAllAsSeen(ids: string[]) {
 }
 
 const TYPE_META: Record<string, { label: string; icon: React.ReactNode; cls: string }> = {
-  feature:     { label: "New Feature", icon: <Sparkles className="w-3.5 h-3.5" />,  cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  fix:         { label: "Fix",         icon: <Wrench className="w-3.5 h-3.5" />,    cls: "bg-red-50 text-red-700 border-red-200" },
-  improvement: { label: "Improvement", icon: <ArrowUp className="w-3.5 h-3.5" />,   cls: "bg-blue-50 text-blue-700 border-blue-200" },
+  feature:     { label: "New Feature", icon: <Sparkles className="w-3.5 h-3.5" />,  cls: "bg-success-surface text-success border-success/30" },
+  fix:         { label: "Fix",         icon: <Wrench className="w-3.5 h-3.5" />,    cls: "bg-danger-surface text-danger border-danger/30" },
+  improvement: { label: "Improvement", icon: <ArrowUp className="w-3.5 h-3.5" />,   cls: "bg-info-surface text-info border-info/30" },
 }
 
 function formatPostedAt(s: string): string {
@@ -85,13 +85,13 @@ export function UpdateNotesPopup() {
     return (
       <button
         onClick={reopen}
-        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-white border border-gray-200 hover:border-red-300 text-gray-700 hover:text-red-500 px-3 py-2 rounded-full shadow-lg text-xs font-semibold transition-all"
+        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-white border border-border hover:border-danger/40 text-foreground hover:text-danger px-3 py-2 rounded-full shadow-lg text-xs font-semibold transition-all"
         title="What's New"
       >
         <Megaphone className="w-3.5 h-3.5" />
         <span>What&apos;s New</span>
         {unseenIds.length > 0 && (
-          <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+          <span className="bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
             {unseenIds.length}
           </span>
         )}
@@ -101,22 +101,22 @@ export function UpdateNotesPopup() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-2 duration-200">
+      <div className="bg-white rounded-2xl shadow-sm w-full max-w-lg max-h-[80vh] flex flex-col overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-2 duration-200">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-br from-red-50 to-white">
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between bg-canvas">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-red-500" />
+            <div className="w-8 h-8 rounded-lg bg-danger-surface flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-danger" />
             </div>
             <div>
-              <div className="text-sm font-bold text-gray-800">What&apos;s New</div>
-              <div className="text-[10px] text-gray-500 uppercase tracking-wider">
+              <div className="text-sm font-bold text-foreground">What&apos;s New</div>
+              <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
                 {updates.length} update{updates.length !== 1 ? "s" : ""}
                 {unseenIds.length > 0 && ` · ${unseenIds.length} new`}
               </div>
             </div>
           </div>
-          <button onClick={dismiss} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition-colors">
+          <button onClick={dismiss} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -124,27 +124,27 @@ export function UpdateNotesPopup() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-5 space-y-3">
           {updates.length === 0 ? (
-            <div className="text-center py-10 text-gray-400 text-sm">No updates yet.</div>
+            <div className="text-center py-10 text-muted-foreground text-sm">No updates yet.</div>
           ) : (
             updates.map(u => {
               const meta = TYPE_META[u.type] || TYPE_META.feature
               const isNew = unseenIds.includes(u.id)
               return (
-                <div key={u.id} className={`p-3 rounded-xl border ${isNew ? "border-red-200 bg-red-50/30" : "border-gray-200 bg-gray-50/50"}`}>
+                <div key={u.id} className={`p-3 rounded-xl border ${isNew ? "border-danger/30 bg-danger-surface" : "border-border bg-canvas"}`}>
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${meta.cls}`}>
                         {meta.icon} {meta.label}
                       </span>
                       {isNew && (
-                        <span className="text-[9px] font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full">NEW</span>
+                        <span className="text-[9px] font-bold bg-primary text-white px-1.5 py-0.5 rounded-full">NEW</span>
                       )}
                     </div>
-                    <span className="text-[10px] text-gray-400 whitespace-nowrap">{formatPostedAt(u.posted_at)}</span>
+                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">{formatPostedAt(u.posted_at)}</span>
                   </div>
-                  <div className="text-sm font-semibold text-gray-800">{u.title}</div>
+                  <div className="text-sm font-semibold text-foreground">{u.title}</div>
                   {u.description && (
-                    <div className="text-xs text-gray-600 mt-1 whitespace-pre-wrap leading-relaxed">{u.description}</div>
+                    <div className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap leading-relaxed">{u.description}</div>
                   )}
                 </div>
               )
@@ -153,10 +153,10 @@ export function UpdateNotesPopup() {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-gray-100 bg-gray-50 flex justify-end">
+        <div className="px-5 py-3 border-t border-border bg-canvas flex justify-end">
           <button
             onClick={dismiss}
-            className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-semibold transition-colors"
+            className="px-4 py-2 rounded-lg bg-primary hover:bg-primary-hover text-white text-xs font-semibold transition-colors"
           >
             Got it, thanks
           </button>

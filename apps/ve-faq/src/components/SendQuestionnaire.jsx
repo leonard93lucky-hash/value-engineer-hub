@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiMail, FiUser, FiSend, FiClock, FiCheckCircle, FiRefreshCw, FiList, FiBarChart2, FiMessageSquare, FiStar, FiDownload, FiFilter, FiCalendar } from 'react-icons/fi';
+import { FiMail, FiUser, FiSend, FiClock, FiCheckCircle, FiRefreshCw, FiList, FiBarChart2, FiMessageSquare, FiStar, FiDownload, FiFilter, FiCalendar, FiLoader, FiCopy } from 'react-icons/fi';
 import { fetchOfficers, fetchQuestionnaireQuestions, sendQuestionnaire, fetchQuestionnaireLogs, fetchSubmissions } from '../api.js';
 
 export default function SendQuestionnaire({ userId, userName, showToast }) {
@@ -250,10 +250,10 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
   const scoreLabel = (score) => {
     if (!score) return 'N/A';
     const n = parseFloat(score);
-    if (n >= 4.5) return `${n} ⭐ Excellent`;
-    if (n >= 3.5) return `${n} 👍 Good`;
-    if (n >= 2.5) return `${n} 😐 Average`;
-    return `${n} ⚠️ Poor`;
+    if (n >= 4.5) return `${n} · Excellent`;
+    if (n >= 3.5) return `${n} · Good`;
+    if (n >= 2.5) return `${n} · Average`;
+    return `${n} · Poor`;
   };
 
   return (
@@ -285,7 +285,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
             <h3><FiSend style={{ marginRight: '0.5rem', verticalAlign: 'middle', color: 'var(--primary)' }} /> Send Evaluation Form</h3>
 
             {loading ? (
-              <div className="q-loading"><span className="spin-icon">⏳</span> Loading setup...</div>
+              <div className="q-loading"><FiLoader className="spin" size={16} /> Loading setup...</div>
             ) : (
               <form onSubmit={handleSubmit} className="q-form">
                 <div className="q-input-group">
@@ -362,7 +362,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
 
                 <button type="submit" className="btn-primary q-send-btn" disabled={submitting || selectedQuestions.length === 0}>
                   {submitting
-                    ? <><span className="spin-icon">⏳</span> Generating link...</>
+                    ? <><FiLoader className="spin" size={16} /> Generating link...</>
                     : <><FiSend style={{ marginRight: '0.4rem' }} /> Send Questionnaire Link</>}
                 </button>
               </form>
@@ -370,10 +370,10 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
 
             {lastSentLink && (
               <div className="q-link-banner">
-                <div className="q-link-banner-label">✅ Questionnaire link ready — share or open to test:</div>
+                <div className="q-link-banner-label"><FiCheckCircle style={{ verticalAlign: '-2px', marginRight: '0.3rem' }} /> Questionnaire link ready — share or open to test:</div>
                 <div className="q-link-row">
                   <a href={lastSentLink} target="_blank" rel="noreferrer" className="q-link-url">{lastSentLink}</a>
-                  <button className="q-copy-btn" onClick={handleCopyLink}>{copied ? '✅ Copied!' : '📋 Copy'}</button>
+                  <button className="q-copy-btn" onClick={handleCopyLink}>{copied ? <><FiCheckCircle style={{ verticalAlign: '-2px', marginRight: '0.3rem' }} /> Copied!</> : <><FiCopy style={{ verticalAlign: '-2px', marginRight: '0.3rem' }} /> Copy</>}</button>
                 </div>
               </div>
             )}
@@ -496,7 +496,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
           </div>
 
           {submissionsLoading ? (
-            <div className="q-loading"><span className="spin-icon">⏳</span> Loading results...</div>
+            <div className="q-loading"><FiLoader className="spin" size={16} /> Loading results...</div>
           ) : filteredSubmissions.length === 0 ? (
             <div className="no-results-message">
               <FiBarChart2 size={48} style={{ color: 'var(--text-muted)', marginBottom: '1rem' }} />

@@ -175,10 +175,9 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
                     <div className="quarter-contributors">
                       {qData.contributors.map((item, idx) => {
                         const rank = idx + 1;
-                        let rankText = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
                         return (
                           <div key={item.name} className="quarter-contributor-row">
-                            <span className="quarter-rank-emoji">{rankText}</span>
+                            <span className={`quarter-rank-emoji rank-${rank}`}>{rank}</span>
                             <span className="quarter-name">{item.name}</span>
                             <span className="quarter-count"><strong>{item.count}</strong> FAQs</span>
                           </div>
@@ -213,7 +212,7 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
                             {faq.question}
                           </span>
                           <span className="leaderboard-count" style={{color:'var(--warning)'}}>
-                            ★ {faq.average} ({faq.totalVotes} {faq.totalVotes === 1 ? 'review' : 'reviews'})
+                            <FiStar size={12} style={{ verticalAlign: '-1px' }} /> {faq.average} ({faq.totalVotes} {faq.totalVotes === 1 ? 'review' : 'reviews'})
                           </span>
                         </div>
                         <div className="leaderboard-progress-bg">
@@ -236,13 +235,13 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
                 </div>
               ) : (
                 <>
-                  <div style={{ padding: '0.75rem 1rem', background: 'rgba(239,68,68,0.1)', borderRadius: '0.5rem', marginBottom: '1rem', fontSize: '0.82rem', color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ padding: '0.75rem 1rem', background: 'var(--danger-surface)', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.82rem', color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <FiAlertTriangle />
-                    <span>These FAQs have an average rating lower than 3.0 ★. Consider reviewing or updating them.</span>
+                    <span>These FAQs have an average rating lower than 3.0 <FiStar size={12} style={{ verticalAlign: '-1px' }} />. Consider reviewing or updating them.</span>
                   </div>
                   {lowRatedFaqs.map((faq) => (
                     <div key={faq.id} className="leaderboard-item animate-fade-in" style={{borderLeft: '3px solid var(--danger)'}}>
-                      <div className="leaderboard-rank" style={{background:'rgba(239,68,68,0.15)', color:'var(--danger)'}}>
+                      <div className="leaderboard-rank" style={{background:'var(--danger-surface)', color:'var(--danger)'}}>
                         <FiAlertTriangle />
                       </div>
                       <div className="leaderboard-info">
@@ -251,7 +250,7 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
                             {faq.question}
                           </span>
                           <span className="leaderboard-count" style={{color:'var(--danger)'}}>
-                            ★ {faq.average} ({faq.totalVotes} {faq.totalVotes === 1 ? 'review' : 'reviews'})
+                            <FiStar size={12} style={{ verticalAlign: '-1px' }} /> {faq.average} ({faq.totalVotes} {faq.totalVotes === 1 ? 'review' : 'reviews'})
                           </span>
                         </div>
                         <div style={{fontSize:'0.72rem', color:'var(--text-muted)', marginTop:'0.2rem'}}>{faq.category} · {faq.reporter}</div>

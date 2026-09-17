@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { FiLoader, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
 import { fetchQuestionnaireDetails, submitQuestionnaireAnswers, checkQuestionnaireSubmitted } from '../api.js';
+import privyLogo from '../assets/Privy_Logo_Red.png';
 
 export default function ClientQuestionnaire() {
   const [logDetails, setLogDetails] = useState(null);
@@ -103,7 +105,7 @@ export default function ClientQuestionnaire() {
     return (
       <div className="client-q-wrapper">
         <div className="client-q-card glass text-center">
-          <span style={{ fontSize: '2rem' }}>⏳</span>
+          <FiLoader className="spin" size={28} />
           <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>Loading questionnaire...</p>
         </div>
       </div>
@@ -125,7 +127,7 @@ export default function ClientQuestionnaire() {
     return (
       <div className="client-q-wrapper">
         <div className="client-q-card glass text-center animate-fade-in">
-          <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>✅</div>
+          <div style={{ marginBottom: '1rem', color: 'var(--success)' }}><FiCheckCircle size={48} /></div>
           <h2 style={{ marginBottom: '0.75rem' }}>Thank You!</h2>
           <p style={{ color: 'var(--text-muted)', lineHeight: '1.7' }}>
             Your feedback has been successfully submitted. We appreciate your time and cooperation in helping us improve our integration services.
@@ -140,7 +142,7 @@ export default function ClientQuestionnaire() {
       <div className="client-q-card glass">
         <div className="client-q-header">
           <img
-            src="https://privy.id/_nuxt/Privy_Logo_Red.BXNsidzu.png"
+            src={privyLogo}
             alt="Privy"
             style={{ height: '32px', marginBottom: '1.5rem' }}
             onError={(e) => { e.target.style.display = 'none'; }}
@@ -155,7 +157,7 @@ export default function ClientQuestionnaire() {
           {/* Validation banner */}
           {showValidation && questions.some(q => !answers[q.id]) && (
             <div className="client-q-validation-banner">
-              ⚠️ Please answer all {questions.length} questions before submitting. Unanswered questions are highlighted in red.
+              <FiAlertTriangle style={{ verticalAlign: '-2px', marginRight: '0.3rem' }} /> Please answer all {questions.length} questions before submitting. Unanswered questions are highlighted in red.
             </div>
           )}
 
