@@ -1,4 +1,5 @@
 import { FiBookOpen, FiFileText, FiPenTool, FiShield, FiLogOut, FiUser, FiDollarSign } from 'react-icons/fi';
+import privyLogo from '../assets/Privy_Logo_Red.png';
 
 export default function AppNav({
   currentScreen,
@@ -15,7 +16,7 @@ export default function AppNav({
     <header className="app-nav glass">
       <div className="app-nav-left">
         <img
-          src="https://privy.id/_nuxt/Privy_Logo_Red.BXNsidzu.png"
+          src={privyLogo}
           alt="Privy"
           className="app-nav-logo"
         />

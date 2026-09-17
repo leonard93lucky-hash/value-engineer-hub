@@ -1,17 +1,13 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "sonner"
 import { AuthProvider } from "@/app/providers"
 import "./globals.css"
-
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Value Engineer's Team Fund Tracker",
   description: "Track your team monthly payments and expenses",
-  generator: "v0.app",
   icons: {
     icon: [
       {
@@ -41,6 +37,7 @@ export default function RootLayout({
       <body className={`font-sans antialiased`}>
         <AuthProvider>
           {children}
+          <Toaster position="top-right" />
           <Analytics />
         </AuthProvider>
       </body>

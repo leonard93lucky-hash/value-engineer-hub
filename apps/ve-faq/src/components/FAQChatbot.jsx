@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiSend, FiX } from 'react-icons/fi';
+import privyLogo from '../assets/Privy_Logo_Red.png';
 
 function renderWithLinks(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -12,11 +13,11 @@ function renderWithLinks(text) {
   });
 }
 
-const INDRA = '/login/indra.png';
+const BOT_NAME = 'Privy T-3000';
 
 const WELCOME_MSG = {
   role: 'bot',
-  text: 'Hey there! I\'m Indra, your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
+  text: 'Hey there! I\'m Privy T-3000, your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
 };
 
 
@@ -25,7 +26,6 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
   const [messages, setMessages] = useState([WELCOME_MSG]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [imgError, setImgError] = useState({});
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -76,27 +76,18 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
     sendMessage(input);
   };
 
-  const handleImgError = (key) => {
-    setImgError(prev => ({ ...prev, [key]: true }));
-  };
-
   return (
     <>
       {!isOpen && (
         <button className="ro-chat-fab" onClick={() => setIsOpen(true)} aria-label="Open FAQ Chatbot">
           <div className="ro-chat-fab-character">
-            <div className="angeling-glow" />
             <img
-              src={INDRA}
-              alt="Indra"
+              src={privyLogo}
+              alt="Privy"
               className="angeling-fab"
-              onError={() => handleImgError('fab')}
             />
-            <div className="angeling-sparkle" />
-            <div className="angeling-sparkle sparkle-2" />
-            <div className="angeling-sparkle sparkle-3" />
           </div>
-          <span className="ro-chat-fab-label">Ask Mas Indra</span>
+          <span className="ro-chat-fab-label">Ask {BOT_NAME}</span>
         </button>
       )}
 
@@ -106,14 +97,13 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
             <div className="ro-chat-header-left">
               <div className="ro-chat-avatar">
                 <img
-                  src={INDRA}
-                  alt="Indra"
+                  src={privyLogo}
+                  alt="Privy"
                   className="angeling-header"
-                  onError={() => handleImgError('header')}
                 />
               </div>
               <div>
-                <div className="ro-chat-title">Ask Mas Indra</div>
+                <div className="ro-chat-title">{BOT_NAME}</div>
                 <div className="ro-chat-status">Online</div>
               </div>
             </div>
@@ -128,10 +118,9 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
                 {msg.role === 'bot' && (
                   <div className="ro-msg-avatar">
                     <img
-                      src={INDRA}
-                      alt="Indra"
+                      src={privyLogo}
+                      alt="Privy"
                       className="angeling-msg"
-                      onError={() => handleImgError(`msg-${i}`)}
                     />
                   </div>
                 )}
@@ -159,10 +148,9 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               <div className="ro-msg bot">
                 <div className="ro-msg-avatar">
                   <img
-                    src={INDRA}
-                    alt="Indra"
+                    src={privyLogo}
+                    alt="Privy"
                     className="angeling-msg"
-                    onError={() => handleImgError('typing')}
                   />
                 </div>
                 <div className="ro-msg-bubble">
@@ -183,7 +171,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               ref={inputRef}
               type="text"
               className="ro-chat-input"
-              placeholder="Ask Indra..."
+              placeholder="Ask Privy T-3000..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}

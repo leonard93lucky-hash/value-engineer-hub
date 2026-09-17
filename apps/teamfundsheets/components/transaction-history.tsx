@@ -74,12 +74,16 @@ export default function TransactionHistory({
 
   const handleFilterChange = () => { setPage(1) }
 
+  const selectCls =
+    "px-3 py-1.5 bg-card border border-input rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 focus:border-ring"
+
   const FilterBar = () => (
     <div className="flex flex-wrap items-center gap-2">
       <select
         value={yearFilter}
         onChange={e => { setYearFilter(e.target.value); handleFilterChange() }}
-        className="px-3 py-1.5 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className={selectCls}
+        aria-label="Filter by year"
       >
         <option value="all">All Years</option>
         {availableYears.map(y => (
@@ -89,7 +93,8 @@ export default function TransactionHistory({
       <select
         value={monthFilter}
         onChange={e => { setMonthFilter(e.target.value); handleFilterChange() }}
-        className="px-3 py-1.5 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className={selectCls}
+        aria-label="Filter by month"
       >
         <option value="all">All Months</option>
         {MONTHS.map(m => (
@@ -109,13 +114,14 @@ export default function TransactionHistory({
           <select
             value={pageSize}
             onChange={e => { setPageSize(Number(e.target.value)); setPage(1) }}
-            className="px-2 py-1 bg-background border border-border rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="px-2 py-1 bg-card border border-input rounded text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 focus:border-ring"
+            aria-label="Rows per page"
           >
             {PAGE_SIZES.map(s => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
-          <span>
+          <span className="tabular-nums">
             {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} of {total}
           </span>
         </div>
@@ -123,7 +129,8 @@ export default function TransactionHistory({
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="p-1.5 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-2.5 rounded-lg hover:bg-canvas disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Previous page"
           >
             <ChevronLeft size={16} />
           </button>
@@ -135,11 +142,13 @@ export default function TransactionHistory({
               <button
                 key={p}
                 onClick={() => setPage(p)}
-                className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
+                className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors tabular-nums ${
                   p === page
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-muted text-foreground"
+                    ? "bg-selection-surface text-selection border border-selection"
+                    : "hover:bg-canvas text-foreground border border-transparent"
                 }`}
+                aria-label={`Page ${p}`}
+                aria-current={p === page ? "page" : undefined}
               >
                 {p}
               </button>
@@ -148,7 +157,8 @@ export default function TransactionHistory({
           <button
             onClick={() => setPage(p => Math.min(tp, p + 1))}
             disabled={page >= tp}
-            className="p-1.5 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="p-2.5 rounded-lg hover:bg-canvas disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Next page"
           >
             <ChevronRight size={16} />
           </button>
@@ -160,27 +170,27 @@ export default function TransactionHistory({
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-foreground">Transaction History</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground">Transaction History</h2>
 
         <div className="flex flex-wrap items-center gap-3">
           <FilterBar />
           <div className="flex gap-2">
             <button
               onClick={() => onTabChange("payments")}
-              className={`px-3 sm:px-4 py-1 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
+              className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
                 activeTab === "payments"
-                  ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                  : "text-muted-foreground hover:bg-muted"
+                  ? "bg-selection-surface text-selection border border-selection"
+                  : "text-muted-foreground hover:bg-canvas border border-transparent"
               }`}
             >
               Payments {yearFilter === "all" && monthFilter === "all" ? `(${payments.length})` : `(${filteredPayments.length})`}
             </button>
             <button
               onClick={() => onTabChange("expenses")}
-              className={`px-3 sm:px-4 py-1 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
+              className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base ${
                 activeTab === "expenses"
-                  ? "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400"
-                  : "text-muted-foreground hover:bg-muted"
+                  ? "bg-selection-surface text-selection border border-selection"
+                  : "text-muted-foreground hover:bg-canvas border border-transparent"
               }`}
             >
               Expenses {yearFilter === "all" && monthFilter === "all" ? `(${expenses.length})` : `(${filteredExpenses.length})`}
@@ -195,11 +205,11 @@ export default function TransactionHistory({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">MONTH</th>
-                  <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground hidden sm:table-cell">NAME</th>
-                  <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground hidden sm:table-cell">DATE</th>
-                  <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">AMOUNT</th>
-                  <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">ACTION</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground">Month</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground hidden sm:table-cell">Name</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground hidden sm:table-cell">Date</th>
+                  <th className="text-right py-3 px-2 sm:px-4 font-medium text-muted-foreground">Amount</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -209,81 +219,83 @@ export default function TransactionHistory({
                   </tr>
                 ) : (
                   paginated(filteredPayments).map((payment) => (
-                    <tr key={payment.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                    <tr key={payment.id} className="border-b border-border hover:bg-canvas/60 transition-colors">
                       <td className="py-3 px-2 sm:px-4 font-medium text-foreground">{payment.month}</td>
                       <td className="py-3 px-2 sm:px-4 text-foreground hidden sm:table-cell">{payment.name}</td>
-                      <td className="py-3 px-2 sm:px-4 text-muted-foreground hidden sm:table-cell">
+                      <td className="py-3 px-2 sm:px-4 text-muted-foreground hidden sm:table-cell tabular-nums">
                         {new Date(payment.transferDate).toLocaleDateString("id-ID")}
                       </td>
-                      <td className="py-3 px-2 sm:px-4">
-                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                      <td className="py-3 px-2 sm:px-4 text-right">
+                        <span className="text-success font-medium tabular-nums">
                           Rp {payment.amount.toLocaleString("id-ID")}
                         </span>
                       </td>
                       <td className="py-3 px-2 sm:px-4">
                         <button
                           onClick={() => onDeletePayment(payment.id)}
-                        disabled={!canDelete}
-                        className={`transition-colors ${
+                          disabled={!canDelete}
+                          aria-label="Delete payment"
+                          className={`p-2 rounded-lg transition-colors ${
                             canDelete
-                              ? "text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 cursor-pointer"
-                              : "text-rose-600 dark:text-rose-400 opacity-50 cursor-not-allowed"
+                              ? "text-danger hover:bg-danger-surface cursor-pointer"
+                              : "text-danger opacity-40 cursor-not-allowed"
                           }`}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-        <Pagination total={filteredPayments.length} />
-      </>
-    ) : (
-      <>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">DESCRIPTION</th>
-                <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground hidden sm:table-cell">CATEGORY</th>
-                <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">DATE</th>
-                <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">AMOUNT</th>
-                <th className="text-left py-3 px-2 sm:px-4 font-semibold text-muted-foreground">ACTION</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredExpenses.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-8 text-center text-muted-foreground">No expenses recorded yet</td>
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+          <Pagination total={filteredPayments.length} />
+        </>
+      ) : (
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground">Description</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground hidden sm:table-cell">Category</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground">Date</th>
+                  <th className="text-right py-3 px-2 sm:px-4 font-medium text-muted-foreground">Amount</th>
+                  <th className="text-left py-3 px-2 sm:px-4 font-medium text-muted-foreground">Action</th>
                 </tr>
-              ) : (
-                paginated(filteredExpenses).map((expense) => (
-                  <tr key={expense.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                    <td className="py-3 px-2 sm:px-4 font-medium text-foreground">{expense.description}</td>
-                    <td className="py-3 px-2 sm:px-4 hidden sm:table-cell">
-                      <span className="px-2 py-1 bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400 rounded text-xs font-medium">
-                        {expense.category}
-                      </span>
-                    </td>
-                    <td className="py-3 px-2 sm:px-4 text-muted-foreground">
-                      {new Date(expense.date).toLocaleDateString("id-ID")}
-                    </td>
-                    <td className="py-3 px-2 sm:px-4">
-                      <span className="text-rose-600 dark:text-rose-400 font-semibold">
-                        - Rp {expense.amount.toLocaleString("id-ID")}
-                      </span>
-                    </td>
-                    <td className="py-3 px-2 sm:px-4">
-                      <button
-                        onClick={() => onDeleteExpense(expense.id)}
-                        disabled={!canDelete}
-                        className={`transition-colors ${
+              </thead>
+              <tbody>
+                {filteredExpenses.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="py-8 text-center text-muted-foreground">No expenses recorded yet</td>
+                  </tr>
+                ) : (
+                  paginated(filteredExpenses).map((expense) => (
+                    <tr key={expense.id} className="border-b border-border hover:bg-canvas/60 transition-colors">
+                      <td className="py-3 px-2 sm:px-4 font-medium text-foreground">{expense.description}</td>
+                      <td className="py-3 px-2 sm:px-4 hidden sm:table-cell">
+                        <span className="px-2 py-1 bg-canvas border border-border text-foreground rounded-md text-xs font-medium">
+                          {expense.category}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 sm:px-4 text-muted-foreground tabular-nums">
+                        {new Date(expense.date).toLocaleDateString("id-ID")}
+                      </td>
+                      <td className="py-3 px-2 sm:px-4 text-right">
+                        <span className="text-danger font-medium tabular-nums">
+                          - Rp {expense.amount.toLocaleString("id-ID")}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 sm:px-4">
+                        <button
+                          onClick={() => onDeleteExpense(expense.id)}
+                          disabled={!canDelete}
+                          aria-label="Delete expense"
+                          className={`p-2 rounded-lg transition-colors ${
                             canDelete
-                              ? "text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 cursor-pointer"
-                              : "text-rose-600 dark:text-rose-400 opacity-50 cursor-not-allowed"
+                              ? "text-danger hover:bg-danger-surface cursor-pointer"
+                              : "text-danger opacity-40 cursor-not-allowed"
                           }`}
                         >
                           <Trash2 size={18} />

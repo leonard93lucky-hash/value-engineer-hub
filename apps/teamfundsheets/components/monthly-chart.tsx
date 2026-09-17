@@ -1,7 +1,7 @@
 "use client"
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
-import type { Payment, Expense } from "@/app/page"
+import type { Payment, Expense } from "@/lib/types"
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -27,7 +27,7 @@ export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) 
 
     return {
       month,
-      Income: income, // This is the key we use for the data
+      Income: income,
       Expenses: expense,
     }
   })
@@ -35,49 +35,49 @@ export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) 
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-6 mb-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-foreground">Income vs Expenses</h2>
-        <span className="text-muted-foreground text-sm">Monthly Comparison</span>
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground">Income vs Expenses</h2>
+        <span className="text-muted-foreground text-sm">Monthly comparison</span>
       </div>
 
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E7DDE1" />
             <XAxis 
               dataKey="month" 
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: '#66545E', fontSize: 12 }}
             />
             <YAxis 
               axisLine={false}
               tickLine={false}
-              tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+              tick={{ fill: '#66545E', fontSize: 12 }}
               tickFormatter={(value) => `Rp ${value.toLocaleString()}`}
             />
             <Tooltip
-              cursor={{ fill: 'rgba(0,0,0,0.05)' }}
+              cursor={{ fill: 'rgba(67,10,35,0.04)' }}
               contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #e2e8f0",
-                borderRadius: "0.5rem",
+                backgroundColor: "#FFFFFF",
+                border: "1px solid rgba(67,10,35,0.12)",
+                borderRadius: "8px",
+                color: "#430A23",
               }}
               formatter={(value: number) => `Rp ${value.toLocaleString("id-ID")}`}
             />
             <Legend verticalAlign="top" align="right" iconType="circle" />
-            
-            {/* FIX: Changed dataKey from "Inc: Lucky" to "Income" */}
+
             <Bar 
               dataKey="Income" 
               name="Income" 
-              fill="#10b981" 
+              fill="#24643C" 
               radius={[4, 4, 0, 0]} 
             />
             
             <Bar 
               dataKey="Expenses" 
               name="Expenses" 
-              fill="#ef4444" 
+              fill="#B01F40" 
               radius={[4, 4, 0, 0]} 
             />
           </BarChart>

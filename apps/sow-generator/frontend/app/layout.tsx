@@ -1,20 +1,11 @@
 import React from "react"
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Merriweather } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
-const _merriweather = Merriweather({ 
-  subsets: ["latin"],
-  weight: ["300", "400", "700"],
-});
-
 export const metadata: Metadata = {
-  title: 'Document Editor',
-  description: 'Create professional documents with live preview',
-  generator: 'v0.app',
+  title: 'SOW Generator — Value Engineering Hub',
+  description: 'Generate Privy SDK, API, and Credential statements of work',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '48x48' },

@@ -37,7 +37,7 @@ function DateTBC({
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     small?: boolean;
 }) {
-    const labelCls = small ? "text-xs text-gray-600" : "text-xs font-semibold text-gray-600";
+    const labelCls = small ? "text-xs text-muted-foreground" : "text-xs font-semibold text-muted-foreground";
     const heightCls = small ? "h-8" : "h-10";
 
     return (
@@ -45,7 +45,7 @@ function DateTBC({
             <Label className={labelCls}>{label}</Label>
             <div className="flex items-center gap-2">
                 {isTbc ? (
-                    <div className={`flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-[#F8001A]/40 bg-red-50 text-[#F8001A] font-bold text-xs tracking-widest ${heightCls}`}>
+                    <div className={`flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-warning/40 bg-warning-surface text-warning font-bold text-xs tracking-widest ${heightCls}`}>
                         TBC
                     </div>
                 ) : (
@@ -56,8 +56,8 @@ function DateTBC({
                     onClick={() => onToggleTbc(!isTbc)}
                     title={isTbc ? "Click to enter a date" : "Click if the date is not yet confirmed"}
                     className={`shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold border transition-all duration-150 ${heightCls} ${isTbc
-                        ? "bg-[#F8001A] border-[#F8001A] text-white shadow-sm"
-                        : "bg-white border-gray-300 text-gray-400 hover:border-[#F8001A] hover:text-[#F8001A]"
+                        ? "bg-warning border-warning text-white"
+                        : "bg-white border-input text-muted-foreground hover:border-warning hover:text-warning"
                         }`}
                 >
                     TBC
@@ -333,27 +333,27 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
     }
 
     return (
-        <div className="flex h-screen bg-neutral-100 font-sans overflow-hidden">
-            <div className="w-full md:w-[45%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 shadow-xl h-full">
+        <div className="flex h-screen bg-background font-sans overflow-hidden">
+            <div className="w-full md:w-[45%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10  h-full">
                 <div className="p-5 border-b bg-white flex items-center gap-3">
                     {onBack && (
                         <button
                             onClick={onBack}
-                            className="p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
+                            className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                             title="Back to Product Selection"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                         </button>
                     )}
-                    <h2 className="flex items-center gap-2 font-bold text-gray-800 text-xl">
-                        <FileText className="w-6 h-6 text-[#F8001A]" /> SOW API Privypass
+                    <h2 className="flex items-center gap-2 font-bold text-foreground text-xl">
+                        <FileText className="w-6 h-6 text-primary" /> SOW API Privypass
                     </h2>
                 </div>
 
                 <div className="flex-1 overflow-hidden flex flex-col px-6 w-full max-w-2xl mx-auto">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
                         <div className="sticky top-0 z-30 bg-white pt-4 pb-2 shadow-sm">
-                            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+                            <TabsList className="grid w-full grid-cols-2 bg-muted">
                                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                                 <TabsTrigger value="product" className="gap-2">
                                     API Specs
@@ -419,7 +419,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                 </section>
 
                                 <section className="space-y-4">
-                                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">Timeline</h3>
+                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Timeline</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <DateTBC label="Trial Plan on STG" name="trialPlanStg" value={data.trialPlanStg} isTbc={!!data.tbcFields?.trialPlanStg} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, trialPlanStg: v })} onChange={handleInputChange} />
                                         <DateTBC label="UAT" name="uat" value={data.uat} isTbc={!!data.tbcFields?.uat} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, uat: v })} onChange={handleInputChange} />
@@ -429,8 +429,8 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                         <DateTBC label="Live on Market" name="liveOnMarket" value={data.liveOnMarket} isTbc={!!data.tbcFields?.liveOnMarket} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, liveOnMarket: v })} onChange={handleInputChange} />
                                     </div>
 
-                                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3 mt-2">
-                                        <h4 className="text-xs font-bold text-[#F8001A] uppercase tracking-wide border-b border-[#F8001A]/20 pb-2">Internal VE Timeline</h4>
+                                    <div className="p-4 bg-canvas rounded-lg border border-border space-y-3 mt-2">
+                                        <h4 className="text-xs font-bold text-primary uppercase tracking-wide border-b border-selection/20 pb-2">Internal VE Timeline</h4>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <DateTBC label="STG Request" name="stgRequest" value={data.stgRequest} isTbc={!!data.tbcFields?.stgRequest} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, stgRequest: v })} onChange={handleInputChange} small />
                                             <DateTBC label="Expected Approved" name="expectedApproved" value={data.expectedApproved} isTbc={!!data.tbcFields?.expectedApproved} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, expectedApproved: v })} onChange={handleInputChange} small />
@@ -446,23 +446,23 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                             <TabsContent value="product" className="mt-0 space-y-6 pb-10 focus-visible:outline-none">
                                 <Accordion type="single" defaultValue="api-specs" collapsible className="w-full space-y-4">
-                                    <AccordionItem value="api-specs" className="border rounded-lg bg-gray-50 overflow-hidden">
+                                    <AccordionItem value="api-specs" className="border rounded-lg bg-canvas overflow-hidden">
                                         <AccordionTrigger className="flex items-center justify-between py-4 px-5 hover:no-underline group data-[state=open]:border-b data-[state=open]:bg-white transition-all">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">API Configuration</span>
-                                                {!isDefault() && <span className="ml-2 text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full border border-orange-200">Custom</span>}
-                                                {isDefault() && <span className="ml-2 text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full border border-green-200">Default</span>}
+                                                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">API Configuration</span>
+                                                {!isDefault() && <span className="ml-2 text-[10px] bg-warning-surface text-warning px-2 py-0.5 rounded-full border border-warning/30">Custom</span>}
+                                                {isDefault() && <span className="ml-2 text-[10px] bg-success-surface text-success px-2 py-0.5 rounded-full border border-success/30">Default</span>}
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent className="p-5 space-y-5">
                                             {/* Subscription Type */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Subscription Type</Label>
+                                                <Label className="font-bold text-foreground text-xs">Subscription Type</Label>
                                                 <div className="flex gap-3">
                                                     {["purchase", "freemium"].map((p) => (
                                                         <div
                                                             key={p}
-                                                            className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.subscriptionType.includes(p) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.subscriptionType.includes(p) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => toggleProductList('subscriptionType', p)}
                                                         >
                                                             <Checkbox checked={data.productConfig.subscriptionType.includes(p)} />
@@ -474,7 +474,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Digital ID Version */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Digital ID Version <span className="text-red-500">*</span></Label>
+                                                <Label className="font-bold text-foreground text-xs">Digital ID Version <span className="text-danger">*</span></Label>
                                                 <div className="flex gap-3">
                                                     {[
                                                         { value: "V1", label: "V1 (Redirect Privy Apps)" },
@@ -482,7 +482,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                                     ].map(({ value, label }) => (
                                                         <div
                                                             key={value}
-                                                            className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.digitalIdVersion === value ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.digitalIdVersion === value ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => {
                                                                 if (data.productConfig.digitalIdVersion === value) return;
                                                                 if (value === "V2") {
@@ -520,12 +520,12 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                                 <>
                                                     {/* Identifier */}
                                                     <div className="space-y-3">
-                                                        <Label className="font-bold text-gray-700 text-xs">Identifier</Label>
+                                                        <Label className="font-bold text-foreground text-xs">Identifier</Label>
                                                         <div className="flex gap-3 flex-wrap">
                                                             {["Phone", "PrivyID", "NIK", "Email"].map((p) => (
                                                                 <div
                                                                     key={p}
-                                                                    className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.identifier.includes(p) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                                    className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.identifier.includes(p) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                                     onClick={() => toggleProductList('identifier', p)}
                                                                 >
                                                                     <Checkbox checked={data.productConfig.identifier.includes(p)} />
@@ -537,12 +537,12 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                                     {/* SSO */}
                                                     <div className="space-y-3">
-                                                        <Label className="font-bold text-gray-700 text-xs">SSO</Label>
+                                                        <Label className="font-bold text-foreground text-xs">SSO</Label>
                                                         <div className="flex gap-3">
                                                             {["Enabled", "Disabled"].map((value) => (
                                                                 <div
                                                                     key={value}
-                                                                    className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.sso === value ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                                    className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${data.productConfig.sso === value ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                                     onClick={() => handleProductChange('sso', value)}
                                                                 >
                                                                     <Checkbox checked={data.productConfig.sso === value} />
@@ -556,14 +556,14 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Data Share */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Data Share</Label>
+                                                <Label className="font-bold text-foreground text-xs">Data Share</Label>
                                                 <div className="grid grid-cols-2 gap-2">
                                                     {["PrivyID", "Fullname", "Email", "Phone", "Date of Birth", "Selfie Image", "KTP Image", "Active Subscription", "Enterprise Account status"].map((p) => {
                                                         const isDef = PRIVYPASS_DEFAULTS.dataShare.includes(p);
                                                         return (
                                                             <div
                                                                 key={p}
-                                                                className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.dataShare.includes(p) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                                className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.dataShare.includes(p) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                                 onClick={() => toggleProductList('dataShare', p)}
                                                             >
                                                                 <Checkbox checked={data.productConfig.dataShare.includes(p)} />
@@ -576,10 +576,10 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Expiration User */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Expiration User</Label>
+                                                <Label className="font-bold text-foreground text-xs">Expiration User</Label>
                                                 <div className="flex gap-3">
                                                     <div
-                                                        className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${!data.productConfig.isExpirationOther ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                        className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${!data.productConfig.isExpirationOther ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                         onClick={() => {
                                                             handleProductChange('isExpirationOther', false);
                                                             handleProductChange('expirationUser', "5 Minutes");
@@ -589,7 +589,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                                         <Label className="text-xs cursor-pointer">5 Minutes (Default)</Label>
                                                     </div>
 
-                                                    <div className={`flex flex-1 items-center space-x-2 bg-white p-2 border rounded transition-all ${data.productConfig.isExpirationOther ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}>
+                                                    <div className={`flex flex-1 items-center space-x-2 bg-white p-2 border rounded transition-all ${data.productConfig.isExpirationOther ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}>
                                                         <Checkbox
                                                             id="other-expiration"
                                                             checked={data.productConfig.isExpirationOther}
@@ -614,12 +614,12 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Send Notification */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Send Notification</Label>
+                                                <Label className="font-bold text-foreground text-xs">Send Notification</Label>
                                                 <div className="flex gap-3">
                                                     {["Email", "SMS"].map((p) => (
                                                         <div
                                                             key={p}
-                                                            className={`flex items-center space-x-2 p-2 px-4 border rounded bg-white cursor-pointer transition-all ${data.productConfig.sendNotification.includes(p) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 px-4 border rounded bg-white cursor-pointer transition-all ${data.productConfig.sendNotification.includes(p) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => toggleProductList('sendNotification', p)}
                                                         >
                                                             <Checkbox checked={data.productConfig.sendNotification.includes(p)} />
@@ -631,12 +631,12 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Level Account */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Level Account</Label>
+                                                <Label className="font-bold text-foreground text-xs">Level Account</Label>
                                                 <div className="flex gap-3">
                                                     {["Verified Trusted", "Verified Untrusted"].map((p) => (
                                                         <div
                                                             key={p}
-                                                            className={`flex items-center space-x-2 p-2 px-4 border rounded bg-white cursor-pointer transition-all ${data.productConfig.levelAccount.includes(p) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 px-4 border rounded bg-white cursor-pointer transition-all ${data.productConfig.levelAccount.includes(p) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => toggleProductList('levelAccount', p)}
                                                         >
                                                             <Checkbox checked={data.productConfig.levelAccount.includes(p)} />
@@ -648,7 +648,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Callback URL */}
                                             <div className="space-y-1">
-                                                <Label className="font-bold text-gray-700 text-xs">Callback URL</Label>
+                                                <Label className="font-bold text-foreground text-xs">Callback URL</Label>
                                                 <Input
                                                     placeholder="e.g., https://api.merchant.com/callback"
                                                     value={data.productConfig.callbackUrl}
@@ -659,7 +659,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Deeplink Merchant */}
                                             <div className="space-y-1">
-                                                <Label className="font-bold text-gray-700 text-xs">Deeplink Merchant</Label>
+                                                <Label className="font-bold text-foreground text-xs">Deeplink Merchant</Label>
                                                 <Input
                                                     placeholder="e.g., merchantapp://redirect"
                                                     value={data.productConfig.deeplink}
@@ -670,7 +670,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
 
                                             {/* Purpose */}
                                             <div className="space-y-1">
-                                                <Label className="font-bold text-gray-700 text-xs">Purpose</Label>
+                                                <Label className="font-bold text-foreground text-xs">Purpose</Label>
                                                 <Input
                                                     placeholder="Input purpose..."
                                                     value={data.productConfig.purpose}
@@ -691,7 +691,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                 <div className="p-5 border-t bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20 relative">
                     {activeTab === "basic" ? (
                         <Button
-                            className="w-full bg-[#F8001A] hover:bg-[#D00015] h-12 text-white font-bold text-md rounded-xl"
+                            className="w-full bg-primary hover:bg-primary-hover h-12 text-white font-medium text-base rounded-lg"
                             onClick={() => setActiveTab("product")}
                         >
                             Next: API Configuration <ChevronRight className="w-5 h-5 ml-2" />
@@ -700,7 +700,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                         <Button
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="w-full bg-[#F8001A] hover:bg-[#D00015] h-12 text-white shadow-md hover:shadow-lg transition-all rounded-xl font-bold flex items-center justify-center gap-2 group"
+                            className="w-full bg-primary hover:bg-primary-hover h-12 text-white transition-colors rounded-lg font-medium flex items-center justify-center gap-2 group"
                         >
                             {isSubmitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</> : <><Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" /> Submit Request</>}
                         </Button>
@@ -709,11 +709,11 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
             </div>
 
             {/* --- RIGHT PANEL: PREVIEW --- */}
-            <div className="hidden md:flex flex-1 bg-gray-200 relative overflow-hidden flex-col items-center">
-                <div className="absolute top-6 z-50 flex gap-3 bg-white p-2 rounded-full shadow-xl border border-gray-100">
-                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.3, z - 0.1))}><ZoomOut className="w-4 h-4 text-gray-600" /></Button>
-                    <span className="text-xs font-mono self-center w-12 text-center text-gray-600">{Math.round(zoom * 100)}%</span>
-                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(1.5, z + 0.1))}><ZoomIn className="w-4 h-4 text-gray-600" /></Button>
+            <div className="hidden md:flex flex-1 bg-muted relative overflow-hidden flex-col items-center">
+                <div className="absolute top-6 z-50 flex gap-3 bg-white p-2 rounded-full  border border-border">
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.3, z - 0.1))}><ZoomOut className="w-4 h-4 text-muted-foreground" /></Button>
+                    <span className="text-xs font-mono self-center w-12 text-center text-muted-foreground">{Math.round(zoom * 100)}%</span>
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(1.5, z + 0.1))}><ZoomIn className="w-4 h-4 text-muted-foreground" /></Button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto w-full p-10 flex flex-col items-center gap-10">

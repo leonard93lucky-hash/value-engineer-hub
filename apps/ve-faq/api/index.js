@@ -716,7 +716,7 @@ app.post('/faq-api/chatbot', async (req, res) => {
       ).join('\n\n');
     }
 
-    const systemPrompt = `You are a helpful FAQ assistant for Privy ID's Value Engineering team. 
+    const systemPrompt = `You are Privy T-3000, a helpful FAQ assistant for Privy ID's Value Engineering team. 
 Answer questions based ONLY on the FAQ entries provided below. 
 If the question is clearly unrelated to Privy ID or the FAQ database (e.g., asking about taxis, weather, or general knowledge), say "I can only answer questions about Privy ID from our FAQ database. Try asking about Privy ID, Digital-ID, Liveness SDK, or our services."
 If the user's question relates to a topic in the FAQ database but the specific answer isn't found, say "I couldn't find a specific answer to that in our FAQ database. Try rephrasing or ask about a different topic!"

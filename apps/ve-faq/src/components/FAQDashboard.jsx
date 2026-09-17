@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   FiSearch, FiPlus, FiChevronDown, FiEdit2, FiTrash2,
   FiClock, FiUser, FiFilter, FiX, FiRefreshCw,
-  FiArrowUp, FiArrowDown, FiAward, FiStar, FiLink, FiAlertTriangle, FiTrendingUp, FiBarChart2
+  FiArrowUp, FiArrowDown, FiAward, FiStar, FiLink, FiAlertTriangle, FiTrendingUp, FiBarChart2,
+  FiCalendar, FiBriefcase, FiCheckCircle
 } from 'react-icons/fi';
 
 function renderWithLinks(text) {
@@ -315,12 +316,6 @@ export default function FAQDashboard({
   return (
     <div className="dashboard-container ro-theme animate-fade-in">
 
-      {/* RO Background decorations */}
-      <div className="ro-bg-orb ro-bg-orb-1" />
-      <div className="ro-bg-orb ro-bg-orb-2" />
-      <div className="ro-bg-orb ro-bg-orb-3" />
-      <div className="ro-bg-orb ro-bg-orb-4" />
-
       {/* Sub-header bar */}
       <div className="faq-subheader glass">
         <div className="faq-subheader-left">
@@ -447,7 +442,7 @@ export default function FAQDashboard({
         <span>{sortedFaqs.length} {sortedFaqs.length === 1 ? 'result' : 'results'}</span>
         {showLowRated && (
           <span className="low-rated-notice">
-            <FiAlertTriangle /> Showing FAQs that need review (average &lt; 3.0 ★)
+            <FiAlertTriangle /> Showing FAQs that need review (average below 3.0 <FiStar size={12} style={{ verticalAlign: '-1px' }} />)
           </span>
         )}
         {(searchQuery || activeCategory !== 'All' || activeContributor !== 'All' || showLowRated) && (
@@ -486,7 +481,7 @@ export default function FAQDashboard({
                   <div className="faq-question-right">
                     {faqRating.total > 0 && (
                       <span className={`rating-preview ${faqRating.average >= 4.0 ? 'positive' : faqRating.average < 3.0 ? 'negative' : 'neutral'}`}>
-                        ★ {faqRating.average}
+                        <FiStar size={12} style={{ verticalAlign: '-1px' }} /> {faqRating.average}
                       </span>
                     )}
                     {isLowRated && (
@@ -523,20 +518,21 @@ export default function FAQDashboard({
                             })}
                             disabled={ratingInFlight[faq.id]}
                             title={`${star} Star${star > 1 ? 's' : ''}${userVote === star ? ' (Click to cancel)' : ''}`}
+                            aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
                           >
-                            ✦
+                            <FiStar size={22} style={{ fill: (isSelected || isHovered) ? 'currentColor' : 'none' }} />
                           </button>
                         );
                       })}
                     </div>
                     {faqRating.total > 0 && (
                       <span className="rating-total-votes">
-                        Average: {faqRating.average} ★ ({faqRating.total} {faqRating.total === 1 ? 'review' : 'reviews'})
+                        Average: {faqRating.average} <FiStar size={12} style={{ verticalAlign: '-1px' }} /> ({faqRating.total} {faqRating.total === 1 ? 'review' : 'reviews'})
                       </span>
                     )}
                     {userVote && (
                       <span className="user-rating-tip" style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-                        (You rated: {userVote} ★. Click it again to cancel)
+                        (You rated: {userVote} <FiStar size={11} style={{ verticalAlign: '-1px' }} />. Click it again to cancel)
                       </span>
                     )}
                   </div>
@@ -609,9 +605,9 @@ export default function FAQDashboard({
                   )}
 
                   <div className="faq-meta">
-                    <span className="faq-meta-item">📅 {faq.date}</span>
-                    <span className="faq-meta-item">👤 {faq.reporter}</span>
-                    {faq.merchant && <span className="faq-meta-item">🏢 {faq.merchant}</span>}
+                    <span className="faq-meta-item"><FiCalendar size={12} /> {faq.date}</span>
+                    <span className="faq-meta-item"><FiUser size={12} /> {faq.reporter}</span>
+                    {faq.merchant && <span className="faq-meta-item"><FiBriefcase size={12} /> {faq.merchant}</span>}
                     {faq.lastEditor && (
                       <span className="faq-meta-item" style={{ width: '100%', marginTop: '0.25rem', color: 'var(--primary)', opacity: 0.8, fontSize: '0.75rem' }}>
                         <FiEdit2 style={{ fontSize: '0.7rem', marginRight: '0.3rem' }} />
@@ -645,7 +641,7 @@ export default function FAQDashboard({
           })
         ) : (
           <div className="empty-state glass">
-            <div className="empty-state-icon">{showLowRated ? '✅' : '🔍'}</div>
+            <div className="empty-state-icon">{showLowRated ? <FiCheckCircle /> : <FiSearch />}</div>
             <h3>{showLowRated ? 'No low-rated FAQs!' : 'No results found'}</h3>
             <p>{showLowRated ? 'All FAQs have average ratings above 3.0 ★. Great job!' : 'Try adjusting your search or filters, or add a new FAQ.'}</p>
             {!showLowRated && (

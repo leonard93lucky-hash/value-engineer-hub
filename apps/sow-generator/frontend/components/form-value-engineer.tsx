@@ -47,7 +47,7 @@ function DateTBC({
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     small?: boolean;
 }) {
-    const labelCls = small ? "text-xs text-gray-600" : "text-xs font-semibold text-gray-600";
+    const labelCls = small ? "text-xs text-muted-foreground" : "text-xs font-semibold text-muted-foreground";
     const heightCls = small ? "h-8" : "h-10";
 
     return (
@@ -55,7 +55,7 @@ function DateTBC({
             <Label className={labelCls}>{label}</Label>
             <div className="flex items-center gap-2">
                 {isTbc ? (
-                    <div className={`flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-[#F8001A]/40 bg-red-50 text-[#F8001A] font-bold text-xs tracking-widest ${heightCls}`}>
+                    <div className={`flex-1 flex items-center justify-center rounded-md border-2 border-dashed border-warning/40 bg-warning-surface text-warning font-bold text-xs tracking-widest ${heightCls}`}>
                         TBC
                     </div>
                 ) : (
@@ -66,8 +66,8 @@ function DateTBC({
                     onClick={() => onToggleTbc(!isTbc)}
                     title={isTbc ? "Click to enter a date" : "Click if the date is not yet confirmed"}
                     className={`shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold border transition-all duration-150 ${heightCls} ${isTbc
-                        ? "bg-[#F8001A] border-[#F8001A] text-white shadow-sm"
-                        : "bg-white border-gray-300 text-gray-400 hover:border-[#F8001A] hover:text-[#F8001A]"
+                        ? "bg-warning border-warning text-white"
+                        : "bg-white border-input text-muted-foreground hover:border-warning hover:text-warning"
                         }`}
                 >
                     TBC
@@ -338,8 +338,8 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                             <img src={LOGO_URL} alt="Logo" className="h-10 object-contain" />
                         </td>
                         <td className="pb-2 align-bottom w-1/2 text-right">
-                            <div className="text-[10pt] font-bold text-gray-700 uppercase">Scope of Works</div>
-                            <div className="text-[9pt] text-gray-500 italic">SDK Liveness Document - {data.enterpriseName || "Enterprise"}</div>
+                            <div className="text-[10pt] font-bold text-foreground uppercase">Scope of Works</div>
+                            <div className="text-[9pt] text-muted-foreground italic">SDK Liveness Document - {data.enterpriseName || "Enterprise"}</div>
                         </td>
                     </tr>
                 </tbody>
@@ -356,9 +356,9 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
         const isDefault = JSON.stringify(current) === JSON.stringify(defaultValue);
 
         return isDefault ? (
-            <span className="ml-2 text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full border border-green-200">Default</span>
+            <span className="ml-2 text-[10px] bg-success-surface text-success px-2 py-0.5 rounded-full border border-success/30">Default</span>
         ) : (
-            <span className="ml-2 text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full border border-orange-200">Custom</span>
+            <span className="ml-2 text-[10px] bg-warning-surface text-warning px-2 py-0.5 rounded-full border border-warning/30">Custom</span>
         );
     };
 
@@ -387,29 +387,29 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
     };
 
     return (
-        <div className="flex h-screen bg-neutral-100 font-sans overflow-hidden">
+        <div className="flex h-screen bg-background font-sans overflow-hidden">
 
             {/* --- LEFT PANEL: FORM INPUT --- */}
-            <div className="w-full md:w-[40%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 shadow-xl">
+            <div className="w-full md:w-[40%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 ">
                 <div className="p-5 border-b bg-white flex items-center gap-3">
                     {onBack && (
                         <button
                             onClick={onBack}
-                            className="p-1 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition-colors"
+                            className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                             title="Back to Product Selection"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                         </button>
                     )}
-                    <h2 className="flex items-center gap-2 font-bold text-gray-800 text-xl">
-                        <FileText className="w-6 h-6 text-[#F8001A]" /> SOW SDK Liveness
+                    <h2 className="flex items-center gap-2 font-bold text-foreground text-xl">
+                        <FileText className="w-6 h-6 text-primary" /> SOW SDK Liveness
                     </h2>
                 </div>
 
                 <div className="flex-1 overflow-hidden flex flex-col px-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
                         <div className="sticky top-0 z-30 bg-white px-6 pt-4 pb-2 shadow-sm">
-                            <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+                            <TabsList className="grid w-full grid-cols-2 bg-muted">
                                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                                 <TabsTrigger value="product" className="gap-2">
                                     Product Config
@@ -478,15 +478,15 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                 {/* GROUP 2: CONFIGURATION */}
                                 <section className="space-y-4">
-                                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">System Config</h3>
+                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">System Config</h3>
 
                                     {/* SDK Platforms */}
                                     <div>
-                                        <Label className="mb-3 block font-semibold text-xs text-gray-500">SDK PLATFORM</Label>
+                                        <Label className="mb-3 block font-semibold text-xs text-muted-foreground">SDK PLATFORM</Label>
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                             {["ios", "android", "web"].map(p => (
-                                                <div key={p} className={`flex items-center gap-2 border px-3 py-2 rounded cursor-pointer transition-colors ${data.sdkType.includes(p) ? 'bg-[#F8001A]/10 border-[#F8001A]' : 'bg-gray-50 border-gray-200'}`} onClick={() => toggleList("sdkType", p)}>
-                                                    <Checkbox checked={data.sdkType.includes(p)} className="data-[state=checked]:bg-[#F8001A] data-[state=checked]:border-[#F8001A]" />
+                                                <div key={p} className={`flex items-center gap-2 border px-3 py-2 rounded cursor-pointer transition-colors ${data.sdkType.includes(p) ? 'bg-selection-surface border-selection' : 'bg-canvas border-border'}`} onClick={() => toggleList("sdkType", p)}>
+                                                    <Checkbox checked={data.sdkType.includes(p)} className="data-[state=checked]:bg-selection data-[state=checked]:border-selection" />
                                                     <Label className="capitalize cursor-pointer">{p}</Label>
                                                 </div>
                                             ))}
@@ -496,9 +496,9 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                     {/* Credentials Inputs (Password Visible) */}
                                     <div className="space-y-4">
                                         {data.sdkType.map(p => (
-                                            <div key={p} className="p-3 bg-[#F8001A]/5 border border-[#F8001A]/20 rounded-lg text-sm space-y-2">
-                                                <span className="font-bold capitalize text-[#F8001A] flex items-center gap-2">
-                                                    <div className="w-2 h-2 rounded-full bg-[#F8001A]"></div> {p} Credentials
+                                            <div key={p} className="p-3 bg-primary/5 border border-selection/20 rounded-lg text-sm space-y-2">
+                                                <span className="font-bold capitalize text-primary flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-primary"></div> {p} Credentials
                                                 </span>
                                                 <Input placeholder="Merchant Key" value={(data.sdkCredentials as any)[p].merchantKey} onChange={e => handleCredential(p as any, "merchantKey", e.target.value)} className="bg-white" />
                                                 <div className="grid grid-cols-2 gap-2">
@@ -512,11 +512,11 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                     {/* Merchant App with Title */}
                                     <div className="space-y-2">
-                                        <Label className="font-bold text-gray-700 block border-b pb-1 mb-2">Merchant Main Apps</Label>
+                                        <Label className="font-bold text-foreground block border-b pb-1 mb-2">Merchant Main Apps</Label>
                                         <div className="grid grid-cols-2 gap-2">
                                             {MERCHANT_APPS_OPTIONS.map(a => (
-                                                <div key={a} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded">
-                                                    <Checkbox id={a} checked={data.merchantMainApps.includes(a)} onCheckedChange={() => toggleList("merchantMainApps", a)} className="data-[state=checked]:bg-[#F8001A] data-[state=checked]:border-[#F8001A]" />
+                                                <div key={a} className="flex items-center gap-2 p-2 hover:bg-canvas rounded">
+                                                    <Checkbox id={a} checked={data.merchantMainApps.includes(a)} onCheckedChange={() => toggleList("merchantMainApps", a)} className="data-[state=checked]:bg-selection data-[state=checked]:border-selection" />
                                                     <Label htmlFor={a} className="cursor-pointer">{a}</Label>
                                                 </div>
                                             ))}
@@ -524,41 +524,41 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                     </div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                                        <div className="space-y-2 p-3 border rounded bg-gray-50">
-                                            <Label className="font-bold text-gray-700">RASP Config</Label>
+                                        <div className="space-y-2 p-3 border rounded bg-canvas">
+                                            <Label className="font-bold text-foreground">RASP Config</Label>
                                             <RadioGroup value={data.rasp ? "enable" : "disable"} onValueChange={v => handleChange("rasp", v === "enable")} className="flex gap-4 pt-1">
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="enable" id="rasp-en" className="border-gray-300 text-gray-900 focus:border-gray-400" />
+                                                    <RadioGroupItem value="enable" id="rasp-en" className="border-input text-foreground focus:border-input" />
                                                     <Label htmlFor="rasp-en">Enable</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="disable" id="rasp-dis" className="border-gray-300 text-gray-900 focus:border-gray-400" />
+                                                    <RadioGroupItem value="disable" id="rasp-dis" className="border-input text-foreground focus:border-input" />
                                                     <Label htmlFor="rasp-dis">Disable</Label>
                                                 </div>
                                             </RadioGroup>
                                         </div>
-                                        <div className="space-y-2 p-3 border rounded bg-gray-50">
-                                            <Label className="font-bold text-gray-700">RGB Config</Label>
+                                        <div className="space-y-2 p-3 border rounded bg-canvas">
+                                            <Label className="font-bold text-foreground">RGB Config</Label>
                                             <RadioGroup value={data.rgb ? "enable" : "disable"} onValueChange={v => handleChange("rgb", v === "enable")} className="flex gap-4 pt-1">
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="enable" id="rgb-en" className="border-gray-300 text-gray-900 focus:border-gray-400" />
+                                                    <RadioGroupItem value="enable" id="rgb-en" className="border-input text-foreground focus:border-input" />
                                                     <Label htmlFor="rgb-en">Enable</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="disable" id="rgb-dis" className="border-gray-300 text-gray-900 focus:border-gray-400" />
+                                                    <RadioGroupItem value="disable" id="rgb-dis" className="border-input text-foreground focus:border-input" />
                                                     <Label htmlFor="rgb-dis">Disable</Label>
                                                 </div>
                                             </RadioGroup>
                                         </div>
-                                        <div className="space-y-2 p-3 border rounded bg-gray-50">
-                                            <Label className="font-bold text-gray-700">NFC Feature</Label>
+                                        <div className="space-y-2 p-3 border rounded bg-canvas">
+                                            <Label className="font-bold text-foreground">NFC Feature</Label>
                                             <RadioGroup value={data.nfc} onValueChange={v => handleChange("nfc", v)} className="flex gap-4 pt-1">
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="Active" id="nfc-active" className="border-gray-300 text-gray-900" />
+                                                    <RadioGroupItem value="Active" id="nfc-active" className="border-input text-foreground" />
                                                     <Label htmlFor="nfc-active">Active</Label>
                                                 </div>
                                                 <div className="flex items-center space-x-2">
-                                                    <RadioGroupItem value="Non Active" id="nfc-nonactive" className="border-gray-300 text-gray-900" />
+                                                    <RadioGroupItem value="Non Active" id="nfc-nonactive" className="border-input text-foreground" />
                                                     <Label htmlFor="nfc-nonactive">Non Active</Label>
                                                 </div>
                                             </RadioGroup>
@@ -568,7 +568,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                 {/* GROUP 3: TIMELINE */}
                                 <section className="space-y-4">
-                                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wider border-b pb-2">Timeline</h3>
+                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Timeline</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <DateTBC label="Trial Plan on STG" name="trialPlanStg" value={data.trialPlanStg} isTbc={!!data.tbcFields?.trialPlanStg} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, trialPlanStg: v })} onChange={handleInputChange} />
                                         <DateTBC label="UAT" name="uat" value={data.uat} isTbc={!!data.tbcFields?.uat} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, uat: v })} onChange={handleInputChange} />
@@ -578,8 +578,8 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                         <DateTBC label="Live on Market" name="liveOnMarket" value={data.liveOnMarket} isTbc={!!data.tbcFields?.liveOnMarket} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, liveOnMarket: v })} onChange={handleInputChange} />
                                     </div>
 
-                                    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-3 mt-2">
-                                        <h4 className="text-xs font-bold text-[#F8001A] uppercase tracking-wide border-b border-[#F8001A]/20 pb-2">Internal VE Timeline</h4>
+                                    <div className="p-4 bg-canvas rounded-lg border border-border space-y-3 mt-2">
+                                        <h4 className="text-xs font-bold text-primary uppercase tracking-wide border-b border-selection/20 pb-2">Internal VE Timeline</h4>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <DateTBC label="STG Request" name="stgRequest" value={data.stgRequest} isTbc={!!data.tbcFields?.stgRequest} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, stgRequest: v })} onChange={handleInputChange} small />
                                             <DateTBC label="Expected Approved" name="expectedApproved" value={data.expectedApproved} isTbc={!!data.tbcFields?.expectedApproved} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, expectedApproved: v })} onChange={handleInputChange} small />
@@ -598,22 +598,22 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                 <Accordion type="single" collapsible className="w-full space-y-4">
 
                                     {/* --- SECTION: BASIC SETUP --- */}
-                                    <AccordionItem value="provider" className="border rounded-lg bg-gray-50 overflow-hidden">
+                                    <AccordionItem value="provider" className="border rounded-lg bg-canvas overflow-hidden">
                                         <AccordionTrigger className="flex items-center justify-between py-4 px-5 hover:no-underline group data-[state=open]:border-b data-[state=open]:bg-white transition-all">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Basic Setup</span>
+                                                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Basic Setup</span>
                                                 {getStatusBadge('basic')} {/* TAMBAHKAN INI */}
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent className="p-5 space-y-6">
                                             {/* 1. Liveness Provider */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Liveness Provider</Label>
+                                                <Label className="font-bold text-foreground text-xs">Liveness Provider</Label>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     {PROVIDER_OPTIONS.map((p) => (
                                                         <div
                                                             key={p.id}
-                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.livenessProviders.includes(p.id) ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.livenessProviders.includes(p.id) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => toggleProductList('basic', 'livenessProviders', p.id)}
                                                         >
                                                             <Checkbox checked={data.productConfig.basic.livenessProviders.includes(p.id)} />
@@ -625,12 +625,12 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 2. Liveness Threshold */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Liveness Threshold</Label>
+                                                <Label className="font-bold text-foreground text-xs">Liveness Threshold</Label>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     {THRESHOLD_OPTIONS.map((p) => (
                                                         <div
                                                             key={p.id}
-                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.livenessThreshold === p.id ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.livenessThreshold === p.id ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => {
                                                                 handleProductChange('basic', 'livenessThreshold', p.id);
                                                                 handleProductChange('basic', 'isOtherChecked', false); // Matikan "Other" jika pilih opsi standar
@@ -642,7 +642,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                     ))}
 
                                                     {/* Opsi Other untuk Threshold */}
-                                                    <div className={`col-span-2 flex items-center space-x-2 bg-white p-2 border rounded transition-all ${data.productConfig.basic.isOtherChecked ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}>
+                                                    <div className={`col-span-2 flex items-center space-x-2 bg-white p-2 border rounded transition-all ${data.productConfig.basic.isOtherChecked ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}>
                                                         <Checkbox
                                                             id="other-threshold"
                                                             checked={data.productConfig.basic.isOtherChecked}
@@ -666,12 +666,12 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 3. Masking Threshold (DARI PDF) */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Masking Threshold</Label>
+                                                <Label className="font-bold text-foreground text-xs">Masking Threshold</Label>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     {MASKING_THRESHOLD_OPTIONS.map((p) => (
                                                         <div
                                                             key={p.id}
-                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.maskingThreshold === p.id ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.maskingThreshold === p.id ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => handleProductChange('basic', 'maskingThreshold', p.id)}
                                                         >
                                                             <Checkbox checked={data.productConfig.basic.maskingThreshold === p.id} />
@@ -683,12 +683,12 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 4. Liveness Face Flow */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Liveness Face Flow</Label>
+                                                <Label className="font-bold text-foreground text-xs">Liveness Face Flow</Label>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     {FACEFLOW_OPTIONS.map((p) => (
                                                         <div
                                                             key={p.id}
-                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.livenessFaceFlow === p.id ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.basic.livenessFaceFlow === p.id ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
                                                             onClick={() => handleProductChange('basic', 'livenessFaceFlow', p.id)}
                                                         >
                                                             <Checkbox checked={data.productConfig.basic.livenessFaceFlow === p.id} />
@@ -701,10 +701,10 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                     </AccordionItem>
 
                                     {/* --- SECTION: UI SETUP --- */}
-                                    <AccordionItem value="ui-setup" className="border rounded-lg bg-gray-50 overflow-hidden">
+                                    <AccordionItem value="ui-setup" className="border rounded-lg bg-canvas overflow-hidden">
                                         <AccordionTrigger className="flex items-center justify-between py-4 px-5 hover:no-underline group data-[state=open]:border-b data-[state=open]:bg-white transition-all">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">UI Customization</span>
+                                                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">UI Customization</span>
                                                 {getStatusBadge('ui')} {/* TAMBAHKAN INI */}
                                             </div>
                                         </AccordionTrigger>
@@ -724,7 +724,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                 const isCustom = currentVal !== 'Show' && currentVal !== 'Hide';
                                                 return (
                                                     <div key={item.id} className="space-y-2">
-                                                        <Label className="font-bold text-gray-700 text-xs">{item.label}</Label>
+                                                        <Label className="font-bold text-foreground text-xs">{item.label}</Label>
                                                         <div className="flex gap-2">
                                                             {['Show', 'Hide'].map((val) => (
                                                                 <div
@@ -733,7 +733,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                         handleProductChange('ui', item.id, val);
                                                                         handleProductChange('ui', customTextKey, '');
                                                                     }}
-                                                                    className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${currentVal === val ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                                    className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${currentVal === val ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                                         }`}
                                                                 >
                                                                     <Checkbox checked={currentVal === val} />
@@ -745,7 +745,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                 onClick={() => {
                                                                     if (!isCustom) handleProductChange('ui', item.id, 'Custom');
                                                                 }}
-                                                                className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${isCustom ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                                className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${isCustom ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                                     }`}
                                                             >
                                                                 <Checkbox checked={isCustom} />
@@ -766,20 +766,20 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 2. Button Color Setup  */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Button Color (Hex)</Label>
+                                                <Label className="font-bold text-foreground text-xs">Button Color (Hex)</Label>
                                                 <div className="flex gap-2">
                                                     <div
                                                         onClick={() => handleProductChange('ui', 'buttonColor', 'Red')}
-                                                        className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.ui.buttonColor === 'Red' ? 'border-[#F8001A]' : ''}`}
+                                                        className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.ui.buttonColor === 'Red' ? 'border-selection' : ''}`}
                                                     >
                                                         <Checkbox checked={data.productConfig.ui.buttonColor === 'Red'} />
                                                         <Label className="text-xs">Red (Default)</Label>
                                                     </div>
-                                                    <div className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white ${data.productConfig.ui.buttonColor !== 'Red' ? 'border-[#F8001A]' : ''}`}>
+                                                    <div className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white ${data.productConfig.ui.buttonColor !== 'Red' ? 'border-selection' : ''}`}>
                                                         <Input
                                                             type="color"
                                                             className="w-6 h-6 p-0 border-none bg-transparent cursor-pointer"
-                                                            value={data.productConfig.ui.buttonColor === 'Red' ? '#F8001A' : data.productConfig.ui.buttonColor}
+                                                            value={data.productConfig.ui.buttonColor === 'Red' ? '#E60034' : data.productConfig.ui.buttonColor}
                                                             onChange={(e) => handleProductChange('ui', 'buttonColor', e.target.value)}
                                                         />
                                                         <Input
@@ -794,16 +794,16 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 3. Button Wording Setup  */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Button Wording</Label>
+                                                <Label className="font-bold text-foreground text-xs">Button Wording</Label>
                                                 <div className="flex gap-2">
                                                     <div
                                                         onClick={() => handleProductChange('ui', 'buttonWording', "I'm Ready!")}
-                                                        className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.ui.buttonWording === "I'm Ready!" ? 'border-[#F8001A]' : ''}`}
+                                                        className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.ui.buttonWording === "I'm Ready!" ? 'border-selection' : ''}`}
                                                     >
                                                         <Checkbox checked={data.productConfig.ui.buttonWording === "I'm Ready!"} />
                                                         <Label className="text-xs">"I'm Ready!" (Default)</Label>
                                                     </div>
-                                                    <div className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white ${data.productConfig.ui.buttonWording !== "I'm Ready!" ? 'border-[#F8001A]' : ''}`}>
+                                                    <div className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white ${data.productConfig.ui.buttonWording !== "I'm Ready!" ? 'border-selection' : ''}`}>
                                                         <Input
                                                             className="h-7 text-[10px] border-none p-0 focus-visible:ring-0"
                                                             placeholder="Custom wording..."
@@ -816,13 +816,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 4. Face Scanner Shape  */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Face Scanner Shape</Label>
+                                                <Label className="font-bold text-foreground text-xs">Face Scanner Shape</Label>
                                                 <div className="flex gap-3">
                                                     {['Ellipse', 'Circle'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'faceScannerShape', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.faceScannerShape === val ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.faceScannerShape === val ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.faceScannerShape === val} />
                                                             <Label className="text-xs cursor-pointer">{val} {val === 'Ellipse' && '(Default)'}</Label>
@@ -831,13 +831,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                 </div>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Face Camera Overlay</Label>
+                                                <Label className="font-bold text-foreground text-xs">Face Camera Overlay</Label>
                                                 <div className="flex gap-3">
                                                     {['White', 'Transparent'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'frameOverlay', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.frameOverlay === val ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.frameOverlay === val ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.frameOverlay === val} />
                                                             <Label className="text-xs cursor-pointer">{val} {val === 'Ellipse' && '(Default)'}</Label>
@@ -848,13 +848,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* 5. Instruction Colors (Wording & Background)  */}
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Instruction Wording Color</Label>
+                                                <Label className="font-bold text-foreground text-xs">Instruction Wording Color</Label>
                                                 <div className="flex gap-3">
                                                     {['Black', 'White'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'instructionColor', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.instructionColor === val ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.instructionColor === val ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.instructionColor === val} />
                                                             <Label className="text-xs cursor-pointer">{val} {val === 'Black' && '(Default)'}</Label>
@@ -864,13 +864,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                             </div>
 
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Instruction BG Color</Label>
+                                                <Label className="font-bold text-foreground text-xs">Instruction BG Color</Label>
                                                 <div className="flex gap-3">
                                                     {['White', 'Black'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'instructionBg', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.instructionBg === val ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.instructionBg === val ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.instructionBg === val} />
                                                             <Label className="text-xs cursor-pointer">{val} {val === 'White' && '(Default)'}</Label>
@@ -879,13 +879,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                 </div>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Liveness Animation</Label>
+                                                <Label className="font-bold text-foreground text-xs">Liveness Animation</Label>
                                                 <div className="flex gap-3">
                                                     {['Show', 'Hide'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'livenessAnimation', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.livenessAnimation === val ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.livenessAnimation === val ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.livenessAnimation === val} />
                                                             <Label className="text-xs cursor-pointer">{val} {val === 'Show' && '(Default)'}</Label>
@@ -894,13 +894,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                 </div>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Liveness Countdown</Label>
+                                                <Label className="font-bold text-foreground text-xs">Liveness Countdown</Label>
                                                 <div className="flex gap-3">
                                                     {['Show', 'Hide'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'livenessCountdown', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.livenessCountdown === val ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.livenessCountdown === val ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.livenessCountdown === val} />
                                                             <Label className="text-xs cursor-pointer">{val}{val === 'Show' ? ' (Default)' : ''}</Label>
@@ -911,7 +911,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* Default Language */}
                                             <div className="space-y-2">
-                                                <Label className="font-bold text-gray-700 text-xs">Default Language</Label>
+                                                <Label className="font-bold text-foreground text-xs">Default Language</Label>
                                                 <div className="flex gap-2">
                                                     {['Bahasa Indonesia', 'English'].map((val) => (
                                                         <div
@@ -920,7 +920,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                 handleProductChange('ui', 'defaultLanguage', val);
                                                                 handleProductChange('ui', 'defaultLanguageCustomText', '');
                                                             }}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.defaultLanguage === val ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.defaultLanguage === val ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                                 }`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.defaultLanguage === val} />
@@ -934,7 +934,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                             }
                                                         }}
                                                         className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.defaultLanguage !== 'Bahasa Indonesia' && data.productConfig.ui.defaultLanguage !== 'English'
-                                                            ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                            ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                             }`}
                                                     >
                                                         <Checkbox checked={data.productConfig.ui.defaultLanguage !== 'Bahasa Indonesia' && data.productConfig.ui.defaultLanguage !== 'English'} />
@@ -956,13 +956,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                             {/* Support Android */}
                                             <div className="space-y-2">
-                                                <Label className="font-bold text-gray-700 text-xs">Support Android</Label>
+                                                <Label className="font-bold text-foreground text-xs">Support Android</Label>
                                                 <div className="flex gap-3">
                                                     {['Yes', 'No'].map((val) => (
                                                         <div
                                                             key={val}
                                                             onClick={() => handleProductChange('ui', 'supportAndroid', val)}
-                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.supportAndroid === val ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                            className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${data.productConfig.ui.supportAndroid === val ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                                 }`}
                                                         >
                                                             <Checkbox checked={data.productConfig.ui.supportAndroid === val} />
@@ -972,13 +972,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                 </div>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Random Instructions</Label>
+                                                <Label className="font-bold text-foreground text-xs">Random Instructions</Label>
                                                 <div className="grid grid-cols-3 gap-3">
                                                     {['Blink Eyes', 'Smile', 'Open Mouth', 'Nod Twice', 'Turn Left', 'Turn Right'].map((item) => (
                                                         <div
                                                             key={item}
                                                             onClick={() => toggleProductList('liveness', 'randomInstruction', item)}
-                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.liveness.randomInstruction.includes(item) ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.liveness.randomInstruction.includes(item) ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.liveness.randomInstruction.includes(item)} />
                                                             <Label className="text-xs cursor-pointer">{item}</Label>
@@ -987,13 +987,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                 </div>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="font-bold text-gray-700 text-xs">Face Validation</Label>
+                                                <Label className="font-bold text-foreground text-xs">Face Validation</Label>
                                                 <div className="grid grid-cols-3 gap-3">
                                                     {['Face Detection', 'Face Position', 'Face Distance', 'Face Angle', 'Brightness Detection', 'Multiple Face Detection'].map((item) => (
                                                         <div
                                                             key={item}
                                                             onClick={() => toggleProductList('liveness', 'faceValidation', item)}
-                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.liveness.faceValidation.includes(item) ? 'border-[#F8001A]' : 'border-gray-200'}`}
+                                                            className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer ${data.productConfig.liveness.faceValidation.includes(item) ? 'border-selection' : 'border-border'}`}
                                                         >
                                                             <Checkbox checked={data.productConfig.liveness.faceValidation.includes(item)} />
                                                             <Label className="text-xs cursor-pointer">{item}</Label>
@@ -1003,7 +1003,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                             </div>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="space-y-3">
-                                                    <Label className="font-bold text-gray-700 text-xs">Time Out (Seconds)</Label>
+                                                    <Label className="font-bold text-foreground text-xs">Time Out (Seconds)</Label>
                                                     <Input
                                                         className="h-8 text-xs bg-white"
                                                         value={data.productConfig.liveness.timeout}
@@ -1011,7 +1011,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                     />
                                                 </div>
                                                 <div className="space-y-3">
-                                                    <Label className="font-bold text-gray-700 text-xs">Max Attempt</Label>
+                                                    <Label className="font-bold text-foreground text-xs">Max Attempt</Label>
                                                     <Input
                                                         className="h-8 text-xs bg-white"
                                                         value={data.productConfig.liveness.maxAttempt}
@@ -1032,7 +1032,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                                     return (
                                                         <div key={key} className="space-y-3">
-                                                            <Label className="font-bold text-gray-700 text-xs capitalize">
+                                                            <Label className="font-bold text-foreground text-xs capitalize">
                                                                 {key.replace(/([A-Z])/g, ' $1').replace(/(\d+)/g, ' $1')}
                                                             </Label>
 
@@ -1040,7 +1040,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                 {/* OPSI DEFAULT */}
                                                                 <div
                                                                     onClick={() => handleProductChange('assets', key, DEFAULTS.assets[key])}
-                                                                    className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${isDefault ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                                    className={`flex items-center space-x-2 p-2 border rounded bg-white cursor-pointer transition-all ${isDefault ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                                         }`}
                                                                 >
                                                                     <Checkbox checked={isDefault} />
@@ -1048,7 +1048,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                 </div>
 
                                                                 {/* OPSI CUSTOM / OTHER */}
-                                                                <div className={`flex flex-col space-y-2 p-2 border rounded bg-white transition-all ${!isDefault ? 'border-[#F8001A] ring-1 ring-[#F8001A]/10' : 'border-gray-200'
+                                                                <div className={`flex flex-col space-y-2 p-2 border rounded bg-white transition-all ${!isDefault ? 'border-selection ring-1 ring-selection/20' : 'border-border'
                                                                     }`}>
                                                                     <div className="flex items-center space-x-2">
                                                                         <Checkbox
@@ -1066,13 +1066,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                                 // Layout Dua Input untuk Legal (ID & EN) 
                                                                                 <>
                                                                                     <Input
-                                                                                        className="h-7 text-[10px] bg-gray-50"
+                                                                                        className="h-7 text-[10px] bg-canvas"
                                                                                         placeholder="(Link File ID)"
                                                                                         value={data.productConfig.assets[`${key}ID`]}
                                                                                         onChange={(e) => handleProductChange('assets', `${key}ID`, e.target.value)}
                                                                                     />
                                                                                     <Input
-                                                                                        className="h-7 text-[10px] bg-gray-50"
+                                                                                        className="h-7 text-[10px] bg-canvas"
                                                                                         placeholder="(Link File EN)"
                                                                                         value={data.productConfig.assets[`${key}EN`]}
                                                                                         onChange={(e) => handleProductChange('assets', `${key}EN`, e.target.value)}
@@ -1081,7 +1081,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                             ) : (
                                                                                 // Layout Satu Input untuk Asset Gambar 
                                                                                 <Input
-                                                                                    className="h-7 text-[10px] bg-gray-50"
+                                                                                    className="h-7 text-[10px] bg-canvas"
                                                                                     placeholder="Link File Custom..."
                                                                                     value={data.productConfig.assets[key] === "Other" ? "" : data.productConfig.assets[key]}
                                                                                     onChange={(e) => handleProductChange('assets', key, e.target.value)}
@@ -1106,14 +1106,14 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                 <div className="p-5 border-t bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20 relative">
                     {activeTab === "basic" ? (
                         <Button
-                            className="w-full bg-[#F8001A] hover:bg-[#C00014] h-12 text-white font-bold text-md"
+                            className="w-full bg-primary hover:bg-primary-hover h-12 text-white font-medium text-base rounded-lg"
                             onClick={() => setActiveTab("product")}
                         >
                             Next: Product Configuration <ChevronRight className="w-5 h-5 ml-2" />
                         </Button>
                     ) : (
                         <Button
-                            className="w-full bg-[#F8001A] hover:bg-[#C00014] h-12 text-white font-bold text-md"
+                            className="w-full bg-primary hover:bg-primary-hover h-12 text-white font-medium text-base rounded-lg"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
                         >
@@ -1125,12 +1125,12 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
             </div>
 
             {/* --- RIGHT PANEL: PREVIEW --- */}
-            <div className="hidden md:flex flex-1 bg-gray-200 relative overflow-hidden flex-col items-center">
+            <div className="hidden md:flex flex-1 bg-muted relative overflow-hidden flex-col items-center">
                 {/* Zoom Controls */}
-                <div className="absolute top-6 z-50 flex gap-3 bg-white p-2 rounded-full shadow-xl border border-gray-100">
-                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.3, z - 0.1))}><ZoomOut className="w-4 h-4 text-gray-600" /></Button>
-                    <span className="text-xs font-mono self-center w-12 text-center text-gray-600">{Math.round(zoom * 100)}%</span>
-                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(1.5, z + 0.1))}><ZoomIn className="w-4 h-4 text-gray-600" /></Button>
+                <div className="absolute top-6 z-50 flex gap-3 bg-white p-2 rounded-full  border border-border">
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.max(0.3, z - 0.1))}><ZoomOut className="w-4 h-4 text-muted-foreground" /></Button>
+                    <span className="text-xs font-mono self-center w-12 text-center text-muted-foreground">{Math.round(zoom * 100)}%</span>
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(z => Math.min(1.5, z + 0.1))}><ZoomIn className="w-4 h-4 text-muted-foreground" /></Button>
                 </div>
 
                 <div className="flex-1 overflow-y-auto w-full p-10 flex flex-col items-center gap-10">
