@@ -2,6 +2,14 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.1.0 — 2026-09-23 — Team Fund page header + latest-first sorting
+
+> Reversibility: baseline `v4.0.0`. Revert with `git checkout v4.0.0 -- apps/teamfundsheets/`.
+
+### Changed
+- **Team Fund header** (`apps/teamfundsheets/components/header.tsx`): removed sticky nav-bar treatment (sticky top bar, Privy logo, divider) that stacked under the hub AppNav as "header within header". Now a FAQ-style centered page header (28px/600 title + muted subtitle + centered action row). User shown as "Signed in as …" subtitle.
+- **Transaction ordering** (`apps/teamfundsheets/components/transaction-history.tsx`, `home-content.tsx` CSV export): payments sorted by `transferDate` desc, expenses by `date` desc, tiebreak by numeric `id` (creation timestamp) desc. Invalid dates sort last.
+
 ## v4.0.0 — 2026-09-17 — Privy App Design Guideline V2 Revamp (all apps)
 
 > Reversibility: baseline `v3.0.0`. Revert all with `git checkout v3.0.0 -- apps/` (per app: `apps/ve-faq/`, `apps/sow-generator/`, `apps/teamfundsheets/`).

@@ -47,6 +47,16 @@ export default function TransactionHistory({
     return Array.from(years).sort((a, b) => b - a)
   }, [payments, expenses])
 
+  const getTime = (value: string) => {
+    const t = new Date(value).getTime()
+    return isNaN(t) ? 0 : t
+  }
+
+  const getIdTime = (id: string) => {
+    const n = Number(id)
+    return isNaN(n) ? 0 : n
+  }
+
   const filteredPayments = useMemo(() => {
     let list = [...payments]
     if (yearFilter !== "all") {
@@ -55,6 +65,11 @@ export default function TransactionHistory({
     if (monthFilter !== "all") {
       list = list.filter(p => p.month === monthFilter)
     }
+    list.sort((a, b) => {
+      const dateDiff = getTime(b.transferDate) - getTime(a.transferDate)
+      if (dateDiff !== 0) return dateDiff
+      return getIdTime(b.id) - getIdTime(a.id)
+    })
     return list
   }, [payments, yearFilter, monthFilter])
 
@@ -66,6 +81,11 @@ export default function TransactionHistory({
     if (monthFilter !== "all") {
       list = list.filter(e => MONTHS[new Date(e.date).getMonth()] === monthFilter)
     }
+    list.sort((a, b) => {
+      const dateDiff = getTime(b.date) - getTime(a.date)
+      if (dateDiff !== 0) return dateDiff
+      return getIdTime(b.id) - getIdTime(a.id)
+    })
     return list
   }, [expenses, yearFilter, monthFilter])
 

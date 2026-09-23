@@ -198,13 +198,24 @@ export default function HomeContent() {
   const handleExportCSV = () => {
     const csvRows: string[] = []
 
+    const sortedPayments = [...payments].sort((a, b) => {
+      const dateDiff = new Date(b.transferDate).getTime() - new Date(a.transferDate).getTime()
+      if (!isNaN(dateDiff) && dateDiff !== 0) return dateDiff
+      return Number(b.id || 0) - Number(a.id || 0)
+    })
+    const sortedExpenses = [...expenses].sort((a, b) => {
+      const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime()
+      if (!isNaN(dateDiff) && dateDiff !== 0) return dateDiff
+      return Number(b.id || 0) - Number(a.id || 0)
+    })
+
     csvRows.push("TeamFund IDR Tracker - Report")
     csvRows.push(new Date().toLocaleString())
     csvRows.push("")
 
     csvRows.push("PAYMENTS")
     csvRows.push("Month,Name,Transfer Date,Amount (IDR)")
-    payments.forEach((p) => {
+    sortedPayments.forEach((p) => {
       csvRows.push(`${p.month},${p.name},${p.transferDate},${p.amount}`)
     })
     csvRows.push("")
@@ -213,7 +224,7 @@ export default function HomeContent() {
 
     csvRows.push("EXPENSES")
     csvRows.push("Description,Category,Date,Amount (IDR)")
-    expenses.forEach((e) => {
+    sortedExpenses.forEach((e) => {
       csvRows.push(`${e.description},${e.category},${e.date},${e.amount}`)
     })
     csvRows.push("")
