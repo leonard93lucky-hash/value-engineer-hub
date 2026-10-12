@@ -258,6 +258,7 @@ class DraftRequest(BaseModel):
     created_by: Optional[str] = None
     enterprise_name: str
     enterprise_initial: Optional[str] = ""
+    enterprise_privyid: Optional[str] = ""
     merchant_name: str
     revision_number: str
     environment: str
@@ -746,6 +747,8 @@ def admin_generate(submission_id: str, bg_tasks: BackgroundTasks, x_admin_id: Op
                 "prod_request": format_tgl_indo(sub.get("prod_request")),
                 "expected_deliver_prod": format_tgl_indo(sub.get("expected_deliver_prod")),
                 
+                "enterprise_privyid": sub.get("enterprise_privyid", "-") or "-",
+                "citizenship": ", ".join(p_cfg.get("citizenship", [])) if isinstance(p_cfg.get("citizenship"), list) else "-",
                 "subsciption_type": ", ".join(p_cfg.get("subscriptionType", [])) if isinstance(p_cfg.get("subscriptionType"), list) else "-",
                 "digitalid_version": p_cfg.get("digitalIdVersion", "") or "-",
                 "identifier": ", ".join(p_cfg.get("identifier", [])) if isinstance(p_cfg.get("identifier"), list) and p_cfg.get("identifier") else "-",

@@ -184,7 +184,7 @@ function saveDraft(body) {
       "stg_request","expected_approved","expected_deliver_stg",
       "prod_request","expected_deliver_prod",
       "rasp","rgb", "nfc",
-      "sdk_list","app_list","product_config"
+      "sdk_list","app_list","product_config","enterprise_privyid"
     ]);
   }
 
@@ -222,7 +222,8 @@ function saveDraft(body) {
     body.nfc                   || "Non Active",
     JSON.stringify(body.sdk_list      || []),
     JSON.stringify(body.app_list      || []),
-    JSON.stringify(body.product_config || {})
+    JSON.stringify(body.product_config || {}),
+    body.enterprise_privyid            || ""
   ]);
 
   return { status: "success", submission_id: submission_id };
