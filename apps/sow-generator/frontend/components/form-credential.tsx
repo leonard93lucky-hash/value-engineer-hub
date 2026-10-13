@@ -59,9 +59,11 @@ const CATEGORY_LABEL: Record<ServiceCategory, string> = {
   connect:  "Connect",
 }
 
-const initialAvengersCredential = { username: "", password: "", merchant_key: "", url: "", channel_id: "" }
-const initialGeneralCredential  = { username: "", password: "", api_key: "", secret_key: "", channel_id: "", enterprise_token: "", base_url: "", doc_owner: "", ip_address: "" }
-const initialConnectCredential  = { username: "", password: "", merchant_key: "", enterprise_token: "", base_url: "" }
+type UrlEntry = { label: string; url: string }
+
+const initialAvengersCredential = { username: "", password: "", merchant_key: "", url_list: [{ label: "", url: "" }] as UrlEntry[], channel_id: "" }
+const initialGeneralCredential  = { username: "", password: "", api_key: "", secret_key: "", channel_id: "", enterprise_token: "", base_urls: [{ label: "", url: "" }] as UrlEntry[], doc_owner: "", ip_address: "" }
+const initialConnectCredential  = { username: "", password: "", merchant_key: "", enterprise_token: "", base_urls: [{ label: "", url: "" }] as UrlEntry[] }
 
 const initialFormData = {
   picVeId: "",
@@ -111,7 +113,9 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
     if (data.environment === "Staging") {
       setGeneralCredential(prev => ({
         ...prev,
-        base_url:         prev.base_url         || process.env.NEXT_PUBLIC_STAGING_BASE_URL         || "",
+        base_urls: prev.base_urls.length === 1 && !prev.base_urls[0].url
+          ? [{ label: "", url: process.env.NEXT_PUBLIC_STAGING_BASE_URL || "" }]
+          : prev.base_urls,
         ip_address:       prev.ip_address        || process.env.NEXT_PUBLIC_STAGING_IP_ADDRESS       || "",
         doc_owner:        prev.doc_owner         || process.env.NEXT_PUBLIC_STAGING_DOC_OWNER        || "",
         enterprise_token: prev.enterprise_token  || process.env.NEXT_PUBLIC_STAGING_ENTERPRISE_TOKEN || "",
@@ -119,7 +123,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
     } else {
       setGeneralCredential(prev => ({
         ...prev,
-        base_url:         "",
+        base_urls:        [{ label: "", url: "" }],
         ip_address:       "",
         doc_owner:        "",
         enterprise_token: "",
@@ -210,6 +214,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
       result.push({ service_type: generalSelected.join(", "), ...generalCredential, avengers: false, general: true, connect: false })
     if (connectSelected.length > 0)
       result.push({ service_type: connectSelected.join(", "), ...connectCredential, avengers: false, general: false, connect: true })
+
     return result
   }
 
@@ -465,7 +470,11 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     <div className="space-y-1"><Label className="text-xs">Password</Label><Input className="h-8 text-xs bg-white" value={avengersCredential.password} onChange={e => setAvengersCredential(p => ({ ...p, password: e.target.value }))} /></div>
                   </div>
                   <div className="space-y-1"><Label className="text-xs">Merchant Key</Label><Input className="h-8 text-xs bg-white" value={avengersCredential.merchant_key} onChange={e => setAvengersCredential(p => ({ ...p, merchant_key: e.target.value }))} /></div>
-                  <div className="space-y-1"><Label className="text-xs">URL</Label><Input className="h-8 text-xs bg-white" value={avengersCredential.url} onChange={e => setAvengersCredential(p => ({ ...p, url: e.target.value }))} /></div>
+                  <UrlListInput
+                    label="URL"
+                    entries={avengersCredential.url_list}
+                    onChange={list => setAvengersCredential(p => ({ ...p, url_list: list }))}
+                  />
                   <div className="space-y-1"><Label className="text-xs">Channel ID</Label><Input className="h-8 text-xs bg-white" value={avengersCredential.channel_id} onChange={e => setAvengersCredential(p => ({ ...p, channel_id: e.target.value }))} /></div>
                 </div>
               </div>
@@ -490,7 +499,11 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     <div className="space-y-1"><Label className="text-xs">Channel ID</Label><Input className="h-8 text-xs bg-white" value={generalCredential.channel_id} onChange={e => setGeneralCredential(p => ({ ...p, channel_id: e.target.value }))} /></div>
                     <div className="space-y-1"><Label className="text-xs">Enterprise Token</Label><Input className="h-8 text-xs bg-white" value={generalCredential.enterprise_token} onChange={e => setGeneralCredential(p => ({ ...p, enterprise_token: e.target.value }))} /></div>
                   </div>
-                  <div className="space-y-1"><Label className="text-xs">Base URL</Label><Input className="h-8 text-xs bg-white" value={generalCredential.base_url} onChange={e => setGeneralCredential(p => ({ ...p, base_url: e.target.value }))} /></div>
+                  <UrlListInput
+                    label="Base URL"
+                    entries={generalCredential.base_urls}
+                    onChange={list => setGeneralCredential(p => ({ ...p, base_urls: list }))}
+                  />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1"><Label className="text-xs">Doc Owner</Label><Input className="h-8 text-xs bg-white" value={generalCredential.doc_owner} onChange={e => setGeneralCredential(p => ({ ...p, doc_owner: e.target.value }))} /></div>
                     <div className="space-y-1"><Label className="text-xs">IP Address</Label><Input className="h-8 text-xs bg-white" value={generalCredential.ip_address} onChange={e => setGeneralCredential(p => ({ ...p, ip_address: e.target.value }))} /></div>
@@ -512,7 +525,11 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                   </div>
                   <div className="space-y-1"><Label className="text-xs">Merchant Key</Label><Input className="h-8 text-xs bg-white" value={connectCredential.merchant_key} onChange={e => setConnectCredential(p => ({ ...p, merchant_key: e.target.value }))} /></div>
                   <div className="space-y-1"><Label className="text-xs">Enterprise Token</Label><Input className="h-8 text-xs bg-white" value={connectCredential.enterprise_token} onChange={e => setConnectCredential(p => ({ ...p, enterprise_token: e.target.value }))} /></div>
-                  <div className="space-y-1"><Label className="text-xs">Base URL</Label><Input className="h-8 text-xs bg-white" value={connectCredential.base_url} onChange={e => setConnectCredential(p => ({ ...p, base_url: e.target.value }))} /></div>
+                  <UrlListInput
+                    label="Base URL"
+                    entries={connectCredential.base_urls}
+                    onChange={list => setConnectCredential(p => ({ ...p, base_urls: list }))}
+                  />
                 </div>
               </div>
             )}
@@ -545,6 +562,50 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
       </div>
 
       <Toaster position="top-center" richColors closeButton />
+    </div>
+  )
+}
+
+function UrlListInput({ label, entries, onChange }: { label: string; entries: UrlEntry[]; onChange: (list: UrlEntry[]) => void }) {
+  const update = (idx: number, field: keyof UrlEntry, value: string) => {
+    const next = entries.map((e, i) => i === idx ? { ...e, [field]: value } : e)
+    onChange(next)
+  }
+  const add    = () => onChange([...entries, { label: "", url: "" }])
+  const remove = (idx: number) => onChange(entries.filter((_, i) => i !== idx))
+  const multi  = entries.length > 1
+
+  return (
+    <div className="space-y-1">
+      <Label className="text-xs">{label}</Label>
+      <div className="space-y-2">
+        {entries.map((entry, idx) => (
+          <div key={idx} className="flex gap-1.5 items-center">
+            {multi && (
+              <Input
+                className="h-8 text-xs bg-white w-28 shrink-0"
+                placeholder="Label"
+                value={entry.label}
+                onChange={e => update(idx, "label", e.target.value)}
+              />
+            )}
+            <Input
+              className="h-8 text-xs bg-white flex-1"
+              placeholder="https://..."
+              value={entry.url}
+              onChange={e => update(idx, "url", e.target.value)}
+            />
+            {multi && (
+              <button type="button" onClick={() => remove(idx)} className="text-muted-foreground hover:text-destructive p-1">
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button type="button" onClick={add} className="flex items-center gap-1 text-[10px] text-success hover:text-success/80 font-semibold mt-1">
+        <Plus className="w-3 h-3" /> Add URL
+      </button>
     </div>
   )
 }
