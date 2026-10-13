@@ -131,6 +131,32 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
     }
   }, [data.environment])
 
+  // Sync URL list entries to match selected sub-services (autofill labels)
+  useEffect(() => {
+    const syncUrls = (
+      names: string[],
+      prev: UrlEntry[]
+    ): UrlEntry[] => {
+      if (names.length <= 1) {
+        const matched = prev.find(e => e.label === names[0]) || prev[0]
+        return [{ label: "", url: matched?.url || "" }]
+      }
+      return names.map(name => {
+        const existing = prev.find(e => e.label === name)
+        return { label: name, url: existing?.url || "" }
+      })
+    }
+
+    const avengersNames = selectedServicesTemp.filter(s => s.category === "avengers").map(s => s.name)
+    setAvengersCredential(prev => ({ ...prev, url_list: syncUrls(avengersNames, prev.url_list) }))
+
+    const generalNames = selectedServicesTemp.filter(s => s.category === "general").map(s => s.name)
+    setGeneralCredential(prev => ({ ...prev, base_urls: syncUrls(generalNames, prev.base_urls) }))
+
+    const connectNames = selectedServicesTemp.filter(s => s.category === "connect").map(s => s.name)
+    setConnectCredential(prev => ({ ...prev, base_urls: syncUrls(connectNames, prev.base_urls) }))
+  }, [selectedServicesTemp])
+
   useEffect(() => {
     fetchMasterData()
   }, [])
