@@ -474,6 +474,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     label="URL"
                     entries={avengersCredential.url_list}
                     onChange={list => setAvengersCredential(p => ({ ...p, url_list: list }))}
+                    suggestions={selectedServicesTemp.filter(s => s.category === "avengers").map(s => s.name)}
                   />
                   <div className="space-y-1"><Label className="text-xs">Channel ID</Label><Input className="h-8 text-xs bg-white" value={avengersCredential.channel_id} onChange={e => setAvengersCredential(p => ({ ...p, channel_id: e.target.value }))} /></div>
                 </div>
@@ -503,6 +504,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     label="Base URL"
                     entries={generalCredential.base_urls}
                     onChange={list => setGeneralCredential(p => ({ ...p, base_urls: list }))}
+                    suggestions={selectedServicesTemp.filter(s => s.category === "general").map(s => s.name)}
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1"><Label className="text-xs">Doc Owner</Label><Input className="h-8 text-xs bg-white" value={generalCredential.doc_owner} onChange={e => setGeneralCredential(p => ({ ...p, doc_owner: e.target.value }))} /></div>
@@ -529,6 +531,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     label="Base URL"
                     entries={connectCredential.base_urls}
                     onChange={list => setConnectCredential(p => ({ ...p, base_urls: list }))}
+                    suggestions={selectedServicesTemp.filter(s => s.category === "connect").map(s => s.name)}
                   />
                 </div>
               </div>
@@ -566,12 +569,16 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
   )
 }
 
-function UrlListInput({ label, entries, onChange }: { label: string; entries: UrlEntry[]; onChange: (list: UrlEntry[]) => void }) {
+function UrlListInput({ label, entries, onChange, suggestions = [] }: { label: string; entries: UrlEntry[]; onChange: (list: UrlEntry[]) => void; suggestions?: string[] }) {
   const update = (idx: number, field: keyof UrlEntry, value: string) => {
     const next = entries.map((e, i) => i === idx ? { ...e, [field]: value } : e)
     onChange(next)
   }
-  const add    = () => onChange([...entries, { label: "", url: "" }])
+  const add = () => {
+    const usedLabels = entries.map(e => e.label)
+    const nextLabel = suggestions.find(s => !usedLabels.includes(s)) ?? ""
+    onChange([...entries, { label: nextLabel, url: "" }])
+  }
   const remove = (idx: number) => onChange(entries.filter((_, i) => i !== idx))
   const multi  = entries.length > 1
 

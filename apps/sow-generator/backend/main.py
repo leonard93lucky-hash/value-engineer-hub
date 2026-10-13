@@ -1070,7 +1070,7 @@ def admin_credential_generate(
                 label = u.get("label", "")
                 url   = u.get("url", "")
                 parts.append(f"{label}:\n{url}" if label else url)
-            return "\n\n".join(parts)
+            return "\n" + "\n\n".join(parts) + "\n"
 
         for svc in services:
             svc["base_url"] = format_url_list(svc.get("base_urls") or [], svc.get("base_url", ""))
