@@ -131,32 +131,6 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
     }
   }, [data.environment])
 
-  // Sync URL list entries to match selected sub-services (autofill labels)
-  useEffect(() => {
-    const syncUrls = (
-      names: string[],
-      prev: UrlEntry[]
-    ): UrlEntry[] => {
-      if (names.length <= 1) {
-        const matched = prev.find(e => e.label === names[0]) || prev[0]
-        return [{ label: "", url: matched?.url || "" }]
-      }
-      return names.map(name => {
-        const existing = prev.find(e => e.label === name)
-        return { label: name, url: existing?.url || "" }
-      })
-    }
-
-    const avengersNames = selectedServicesTemp.filter(s => s.category === "avengers").map(s => s.name)
-    setAvengersCredential(prev => ({ ...prev, url_list: syncUrls(avengersNames, prev.url_list) }))
-
-    const generalNames = selectedServicesTemp.filter(s => s.category === "general").map(s => s.name)
-    setGeneralCredential(prev => ({ ...prev, base_urls: syncUrls(generalNames, prev.base_urls) }))
-
-    const connectNames = selectedServicesTemp.filter(s => s.category === "connect").map(s => s.name)
-    setConnectCredential(prev => ({ ...prev, base_urls: syncUrls(connectNames, prev.base_urls) }))
-  }, [selectedServicesTemp])
-
   useEffect(() => {
     fetchMasterData()
   }, [])
@@ -601,9 +575,13 @@ function UrlListInput({ label, entries, onChange, suggestions = [] }: { label: s
     onChange(next)
   }
   const add = () => {
-    const usedLabels = entries.map(e => e.label)
+    let updatedEntries = entries
+    if (entries.length === 1 && !entries[0].label && suggestions.length > 0) {
+      updatedEntries = [{ ...entries[0], label: suggestions[0] }]
+    }
+    const usedLabels = updatedEntries.map(e => e.label)
     const nextLabel = suggestions.find(s => !usedLabels.includes(s)) ?? ""
-    onChange([...entries, { label: nextLabel, url: "" }])
+    onChange([...updatedEntries, { label: nextLabel, url: "" }])
   }
   const remove = (idx: number) => onChange(entries.filter((_, i) => i !== idx))
   const multi  = entries.length > 1
