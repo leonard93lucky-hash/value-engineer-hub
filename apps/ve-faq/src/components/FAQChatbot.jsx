@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { FiSend, FiX } from 'react-icons/fi';
-import privyLogo from '../assets/Privy_Logo_Red.png';
+import marcieIcon from '../assets/marcie.png';
 
 function renderWithLinks(text) {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -13,11 +13,11 @@ function renderWithLinks(text) {
   });
 }
 
-const BOT_NAME = 'Privy T-3000';
+const BOT_NAME = 'Marcie';
 
 const WELCOME_MSG = {
   role: 'bot',
-  text: 'Hey there! I\'m Privy T-3000, your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
+  text: 'Hey there! I\'m Marcie, your FAQ assistant. Ask me anything about Privy ID, integrations, or our services — I\'ll find the answer in our database.',
 };
 
 
@@ -82,8 +82,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
         <button className="ro-chat-fab" onClick={() => setIsOpen(true)} aria-label="Open FAQ Chatbot">
           <div className="ro-chat-fab-character">
             <img
-              src={privyLogo}
-              alt="Privy"
+              src={marcieIcon}
+              alt=""
               className="angeling-fab"
             />
           </div>
@@ -97,8 +97,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
             <div className="ro-chat-header-left">
               <div className="ro-chat-avatar">
                 <img
-                  src={privyLogo}
-                  alt="Privy"
+                  src={marcieIcon}
+                  alt=""
                   className="angeling-header"
                 />
               </div>
@@ -118,8 +118,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
                 {msg.role === 'bot' && (
                   <div className="ro-msg-avatar">
                     <img
-                      src={privyLogo}
-                      alt="Privy"
+                      src={marcieIcon}
+                      alt=""
                       className="angeling-msg"
                     />
                   </div>
@@ -148,8 +148,8 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               <div className="ro-msg bot">
                 <div className="ro-msg-avatar">
                   <img
-                    src={privyLogo}
-                    alt="Privy"
+                    src={marcieIcon}
+                    alt=""
                     className="angeling-msg"
                   />
                 </div>
@@ -171,7 +171,7 @@ export default function FAQChatbot({ faqs, onScrollToFaq }) {
               ref={inputRef}
               type="text"
               className="ro-chat-input"
-              placeholder="Ask Privy T-3000..."
+              placeholder="Ask Marcie..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading}

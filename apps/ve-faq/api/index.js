@@ -716,7 +716,7 @@ app.post('/faq-api/chatbot', async (req, res) => {
       ).join('\n\n');
     }
 
-    const systemPrompt = `You are Privy T-3000, a helpful FAQ assistant for Privy ID's Value Engineering team. 
+    const systemPrompt = `You are Marcie, a helpful FAQ assistant for Privy ID's Value Engineering team. 
 Answer questions based ONLY on the FAQ entries provided below. 
 If the question is clearly unrelated to Privy ID or the FAQ database (e.g., asking about taxis, weather, or general knowledge), say "I can only answer questions about Privy ID from our FAQ database. Try asking about Privy ID, Digital-ID, Liveness SDK, or our services."
 If the user's question relates to a topic in the FAQ database but the specific answer isn't found, say "I couldn't find a specific answer to that in our FAQ database. Try rephrasing or ask about a different topic!"
@@ -760,10 +760,13 @@ ${faqContext || '(No FAQs available yet)'}`;
 
     // Parse LLM-identified references from ---REFS: line
     let references = [];
-    const refsMatch = reply.match(/---REFS:\s*(.+?)(?:\n|$)/);
+    const refsMatch = reply.match(/-{2,}\s*REFS:?[ \t]*(.*)$/im);
     if (refsMatch) {
-      const refIds = refsMatch[1].split(',').map(s => s.trim()).filter(Boolean);
-      reply = reply.replace(/---REFS:.*$/m, '').trim();
+      const refIds = refsMatch[1]
+        .split(',')
+        .map(s => s.replace(/[[\]]|ID:/gi, '').trim())
+        .filter(s => s && !/^none$/i.test(s));
+      reply = reply.replace(/-{2,}\s*REFS:?.*$/gim, '').trim();
       // Map IDs back to { id, question } objects
       references = refIds
         .map(id => {
@@ -773,8 +776,8 @@ ${faqContext || '(No FAQs available yet)'}`;
         .filter(Boolean);
     }
 
-    // Fallback: use top 3 scored FAQs if LLM didn't identify any
-    if (references.length === 0) {
+    // Fallback: use top 3 scored FAQs only if the LLM omitted the REFS line entirely
+    if (!refsMatch && references.length === 0) {
       references = topFaqs.slice(0, 3).map(s => ({
         id: s.faq.id,
         question: s.faq.question,

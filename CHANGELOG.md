@@ -2,6 +2,16 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.2.0 — 2026-11-06 — Marcie chatbot + reply references fix
+
+> Reversibility: baseline `v4.1.0`. Revert with `git checkout v4.1.0 -- apps/ve-faq/`. This tag is also the baseline for the hub-wide UI revamp.
+
+### Changed
+- **Chatbot renamed Privy T-3000 → Marcie** (`apps/ve-faq/src/components/FAQChatbot.jsx`, system prompt in `apps/ve-faq/api/index.js`): owl sticker icon `apps/ve-faq/src/assets/marcie.png` (wording and background removed) on the floating button, panel header and reply avatars; avatar padding tightened in `index.css`
+
+### Fixed
+- **Stray `---REFS:` line in chatbot replies** — empty or "none" reference lists now parse and are stripped; unrelated top-scored FAQ chips only appear when the model omits the REFS line entirely
+
 ## v4.1.0 — 2026-09-23 — Team Fund page header + latest-first sorting
 
 > Reversibility: baseline `v4.0.0`. Revert with `git checkout v4.0.0 -- apps/teamfundsheets/`.
