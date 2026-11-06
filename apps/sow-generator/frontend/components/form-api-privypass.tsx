@@ -80,7 +80,8 @@ const PRIVYPASS_DEFAULTS = {
     purpose: "",
     digitalIdVersion: "V1",
     identifier: [] as string[],
-    sso: ""
+    sso: "",
+    citizenship: ["WNI", "WNA Permanent", "WNA Temporary"],
 };
 
 const initialFormData = {
@@ -88,6 +89,7 @@ const initialFormData = {
     picBdId: "",
     enterpriseName: "",
     enterpriseInitial: "",
+    enterprisePrivyId: "",
     merchantName: "",
     applicationName: "", // new field for API Privypass
     releaseDate: new Date().toISOString().split("T")[0],
@@ -119,7 +121,8 @@ const initialFormData = {
         isExpirationOther: false,
         digitalIdVersion: PRIVYPASS_DEFAULTS.digitalIdVersion,
         identifier: [...PRIVYPASS_DEFAULTS.identifier],
-        sso: PRIVYPASS_DEFAULTS.sso
+        sso: PRIVYPASS_DEFAULTS.sso,
+        citizenship: [...PRIVYPASS_DEFAULTS.citizenship],
     },
 };
 
@@ -243,6 +246,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                 created_by: getPrivyId(),
                 enterprise_name: data.enterpriseName,
                 enterprise_initial: "",
+                enterprise_privyid: data.enterprisePrivyId,
                 merchant_name: data.merchantName,
                 revision_number: data.revisionNumber,
                 environment: data.envType,
@@ -328,7 +332,8 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
             c.purpose === d.purpose &&
             c.digitalIdVersion === d.digitalIdVersion &&
             JSON.stringify(c.identifier) === JSON.stringify(d.identifier) &&
-            c.sso === d.sso
+            c.sso === d.sso &&
+            JSON.stringify((c as any).citizenship) === JSON.stringify(d.citizenship)
         );
     }
 
@@ -394,7 +399,7 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                     <div className="space-y-1"><Label>Enterprise Name</Label><Input name="enterpriseName" value={data.enterpriseName} onChange={handleInputChange} placeholder="e.g. PT.XYZ" /></div>
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="space-y-1"><Label>Initial (3 Char)</Label><Input name="enterpriseInitial" value={data.enterpriseInitial} onChange={handleInputChange} maxLength={3} className="uppercase font-mono" placeholder="Filled in by Admin" disabled /></div>
+                                        <div className="space-y-1"><Label>Enterprise PrivyID</Label><Input name="enterprisePrivyId" value={data.enterprisePrivyId} onChange={handleInputChange} placeholder="e.g. EIDXXX" /></div>
                                         <div className="space-y-1"><Label>Merchant Name</Label><Input name="merchantName" value={data.merchantName} onChange={handleInputChange} placeholder="e.g. Merchant Name" /></div>
                                     </div>
 
@@ -509,6 +514,27 @@ export default function FormApiPrivypass({ onLogout, currentUser, onBack }: Form
                                                             }}
                                                         >
                                                             <Checkbox checked={data.productConfig.digitalIdVersion === value} />
+                                                            <Label className="text-xs cursor-pointer">{label}</Label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Citizenship */}
+                                            <div className="space-y-3">
+                                                <Label className="font-bold text-foreground text-xs">Citizenship</Label>
+                                                <div className="flex gap-3 flex-wrap">
+                                                    {[
+                                                        { value: "WNI", label: "WNI" },
+                                                        { value: "WNA Permanent", label: "WNA Permanent (with Dukcapil verification)" },
+                                                        { value: "WNA Temporary", label: "WNA Temporary (without Dukcapil verification)" },
+                                                    ].map(({ value, label }) => (
+                                                        <div
+                                                            key={value}
+                                                            className={`flex items-center space-x-2 p-2 px-3 border rounded bg-white cursor-pointer transition-all ${(data.productConfig as any).citizenship?.includes(value) ? 'border-selection ring-1 ring-selection/20' : 'border-border'}`}
+                                                            onClick={() => toggleProductList('citizenship', value)}
+                                                        >
+                                                            <Checkbox checked={(data.productConfig as any).citizenship?.includes(value)} />
                                                             <Label className="text-xs cursor-pointer">{label}</Label>
                                                         </div>
                                                     ))}

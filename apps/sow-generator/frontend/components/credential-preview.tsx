@@ -3,17 +3,21 @@
 import React from "react"
 import { formatDateIndo } from "@/lib/constants"
 
+type UrlEntry = { label: string; url: string }
+
 interface CredentialService {
   service_type: string
   username?: string
   password?: string
   merchant_key?: string
   url?: string
+  url_list?: UrlEntry[]
   api_key?: string
   secret_key?: string
   channel_id?: string
   enterprise_token?: string
   base_url?: string
+  base_urls?: UrlEntry[]
   doc_owner?: string
   ip_address?: string
   avengers?: boolean
@@ -45,6 +49,19 @@ export function CredentialPreview({ data, listPicVe, zoom = 1 }: CredentialPrevi
   }
 
   const listServiceStr = data.services.map(s => s.service_type).join(", ") || "—"
+
+  const renderUrls = (list?: UrlEntry[], fallback?: string) => {
+    const entries = list && list.length > 0 ? list : []
+    if (entries.length === 0) return <span>{fallback || "—"}</span>
+    if (entries.length === 1) return <span className="break-all">{entries[0].url || fallback || "—"}</span>
+    return (
+      <span className="break-all">
+        {entries.map((u, i) => (
+          <span key={i} className="block">{u.label ? <><strong>{u.label}:</strong> {u.url}</> : u.url}</span>
+        ))}
+      </span>
+    )
+  }
 
   // Running header shared across content pages
   const RunningHeader = () => (
@@ -162,7 +179,7 @@ export function CredentialPreview({ data, listPicVe, zoom = 1 }: CredentialPrevi
                     {svc.avengers && (
                       <>
                         <tr><td className="border border-black p-2">Merchant-Key</td><td className="border border-black p-2 font-mono">{svc.merchant_key || "—"}</td></tr>
-                        <tr><td className="border border-black p-2">URL</td><td className="border border-black p-2 break-all">{svc.url || "—"}</td></tr>
+                        <tr><td className="border border-black p-2">URL</td><td className="border border-black p-2">{renderUrls(svc.url_list, svc.url)}</td></tr>
                         <tr><td className="border border-black p-2">Channel Id</td><td className="border border-black p-2 font-mono">{svc.channel_id || "—"}</td></tr>
                       </>
                     )}
@@ -172,7 +189,7 @@ export function CredentialPreview({ data, listPicVe, zoom = 1 }: CredentialPrevi
                         <tr><td className="border border-black p-2">SecretKey</td><td className="border border-black p-2 font-mono">{svc.secret_key || "—"}</td></tr>
                         <tr><td className="border border-black p-2">Channel Id</td><td className="border border-black p-2 font-mono">{svc.channel_id || "—"}</td></tr>
                         <tr><td className="border border-black p-2">enterpriseToken</td><td className="border border-black p-2 font-mono">{svc.enterprise_token || "—"}</td></tr>
-                        <tr><td className="border border-black p-2">Base URL</td><td className="border border-black p-2 break-all">{svc.base_url || "—"}</td></tr>
+                        <tr><td className="border border-black p-2">Base URL</td><td className="border border-black p-2">{renderUrls(svc.base_urls, svc.base_url)}</td></tr>
                         <tr><td className="border border-black p-2">Doc Owner</td><td className="border border-black p-2">{svc.doc_owner || "—"}</td></tr>
                         <tr><td className="border border-black p-2">IP Address</td><td className="border border-black p-2 font-mono">{svc.ip_address || "—"}</td></tr>
                       </>
@@ -181,7 +198,7 @@ export function CredentialPreview({ data, listPicVe, zoom = 1 }: CredentialPrevi
                       <>
                         <tr><td className="border border-black p-2">Merchant-Key</td><td className="border border-black p-2 font-mono">{svc.merchant_key || "—"}</td></tr>
                         <tr><td className="border border-black p-2">Enterprise Token</td><td className="border border-black p-2 font-mono">{svc.enterprise_token || "—"}</td></tr>
-                        <tr><td className="border border-black p-2">Base URL</td><td className="border border-black p-2 break-all">{svc.base_url || "—"}</td></tr>
+                        <tr><td className="border border-black p-2">Base URL</td><td className="border border-black p-2">{renderUrls(svc.base_urls, svc.base_url)}</td></tr>
                       </>
                     )}
                   </tbody>

@@ -258,6 +258,7 @@ class DraftRequest(BaseModel):
     created_by: Optional[str] = None
     enterprise_name: str
     enterprise_initial: Optional[str] = ""
+    enterprise_privyid: Optional[str] = ""
     merchant_name: str
     revision_number: str
     environment: str
@@ -306,6 +307,8 @@ class CredentialService(BaseModel):
     channel_id: str = ""
     enterprise_token: str = ""
     base_url: str = ""
+    base_urls: Optional[List[dict]] = []
+    url_list: Optional[List[dict]] = []
     doc_owner: str = ""
     ip_address: str = ""
     avengers: bool = False
@@ -746,6 +749,8 @@ def admin_generate(submission_id: str, bg_tasks: BackgroundTasks, x_admin_id: Op
                 "prod_request": format_tgl_indo(sub.get("prod_request")),
                 "expected_deliver_prod": format_tgl_indo(sub.get("expected_deliver_prod")),
                 
+                "enterprise_privyid": sub.get("enterprise_privyid", "-") or "-",
+                "citizenship": ", ".join(p_cfg.get("citizenship", [])) if isinstance(p_cfg.get("citizenship"), list) else "-",
                 "subsciption_type": ", ".join(p_cfg.get("subscriptionType", [])) if isinstance(p_cfg.get("subscriptionType"), list) else "-",
                 "digitalid_version": p_cfg.get("digitalIdVersion", "") or "-",
                 "identifier": ", ".join(p_cfg.get("identifier", [])) if isinstance(p_cfg.get("identifier"), list) and p_cfg.get("identifier") else "-",
@@ -1053,6 +1058,23 @@ def admin_credential_generate(
             except Exception: services = []
         else:
             services = services_raw if isinstance(services_raw, list) else []
+
+        # Format url_list / base_urls → string untuk template
+        def format_url_list(entries, fallback):
+            if not entries:
+                return fallback or "-"
+            if len(entries) == 1:
+                return entries[0].get("url", "-") or "-"
+            parts = []
+            for u in entries:
+                label = u.get("label", "")
+                url   = u.get("url", "")
+                parts.append(f"{label}:\n{url}" if label else url)
+            return "\n" + "\n\n".join(parts) + "\n"
+
+        for svc in services:
+            svc["base_url"] = format_url_list(svc.get("base_urls") or [], svc.get("base_url", ""))
+            svc["url"]      = format_url_list(svc.get("url_list") or [],  svc.get("url", ""))
 
         context = {
             "enterprise_name": enterprise_name,

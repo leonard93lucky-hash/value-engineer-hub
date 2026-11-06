@@ -79,6 +79,7 @@ export const DocumentPreviewApi = ({ data, zoom, listPicVe, listPicBd }: Documen
                 <table className="w-full border-collapse border border-black text-xs">
                     <tbody>
                         <tr><td className="border border-black p-2 bg-gray-100 font-bold w-1/3">Enterprise Name</td><td className="border border-black p-2">{data.enterpriseName}</td></tr>
+                        <tr><td className="border border-black p-2 bg-gray-100 font-bold">Enterprise PrivyID</td><td className="border border-black p-2">{data.enterprisePrivyId || "-"}</td></tr>
                         <tr><td className="border border-black p-2 bg-gray-100 font-bold">Merchant Name</td><td className="border border-black p-2">{data.merchantName}</td></tr>
                         <tr><td className="border border-black p-2 bg-gray-100 font-bold">Application Name</td><td className="border border-black p-2">{data.applicationName || "-"}</td></tr>
                     </tbody>
@@ -121,6 +122,17 @@ export const DocumentPreviewApi = ({ data, zoom, listPicVe, listPicBd }: Documen
                                     <ul>
                                         <li><strong>V1:</strong> Redirect Privy Apps</li>
                                         <li><strong>V2:</strong> Non Redirect</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="border border-black p-2 font-semibold">Citizenship</td>
+                                <td className="border border-black p-2">{((data.productConfig as any).citizenship || []).join(", ") || "-"}</td>
+                                <td className="border border-black p-2 text-[8pt] text-gray-700">
+                                    <ul>
+                                        <li><strong>WNI:</strong> Indonesian Citizen</li>
+                                        <li><strong>WNA Permanent:</strong> Foreign national with permanent residency (requires Dukcapil verification)</li>
+                                        <li><strong>WNA Temporary:</strong> Foreign national with temporary residency (no Dukcapil verification)</li>
                                     </ul>
                                 </td>
                             </tr>
