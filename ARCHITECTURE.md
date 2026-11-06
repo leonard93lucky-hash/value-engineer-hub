@@ -46,7 +46,46 @@ cd "apps/sow-generator/backend" && source venv/bin/activate && uvicorn main:app 
 cd "apps/teamfundsheets" && npx next dev -p 3002    # :3002
 ```
 
+**Shortcut:** `.claude/launch.json` defines all 5 servers (`ve-faq`, `ve-faq-api`, `sow-frontend`, `sow-backend`, `team-fund`) for the Claude desktop preview pane. The SOW backend `venv` is broken (shebang points to an old folder name), so it starts with system `python3 -m uvicorn main:app --port 8000`. Recreate the venv to go back to `source venv/bin/activate`.
+
 ⚠️ **CRITICAL**: All 5 servers must be running for local dev. If SOW Admin Backend (:8000) is not started, the SOW Generator iframe will fail auth and redirect to the login page.
+
+## How the hub works (one page, many tools)
+
+The product is **one page**: the VE FAQ app at `:5173` (prod `/login/`) is the shell. After sign-in, `AppNav` switches between sections; SOW, Admin and Team Fund are **iframes** inside that page, kept mounted after first open.
+
+| Nav tab | Rendered by | Visible to |
+|---|---|---|
+| FAQ | `FAQDashboard.jsx` (+ Marcie chatbot) | everyone |
+| Questionnaire | `SendQuestionnaire.jsx` | position contains `vp` or `manager` |
+| SOW Generator | iframe → SOW frontend (`?userId&userName`) | everyone |
+| Team Fund | iframe → Team Fund (`?userId&userName&position`) | everyone |
+| Admin | iframe → SOW `/admin` | position = `support` |
+
+- **Sign-in:** PrivyID or email + 6-digit PIN against the `Users` sheet (`POST /faq-api/auth`); session kept in `sessionStorage` (`ve_hub_user`). SOW re-checks via `POST /api/verify-user` (PrivyID only). Team Fund trusts the URL params.
+- **Data:** everything lives in Google Sheets. Local dev reads and writes the **production** sheets — adding/editing FAQs, payments or SOWs locally changes live data; sending a questionnaire sends a real Gmail email.
+- **Chatbot (Marcie):** `POST /faq-api/chatbot` scores FAQs by token overlap, sends the top 10 to DeepSeek (`deepseek-chat`) with a system prompt (`api/index.js`). The model ends with `---REFS: id, id`; the server strips that line and maps IDs to reference chips. Top-scored fallback chips appear only when the REFS line is missing entirely. Icon: `src/assets/marcie.png`.
+
+## UI conventions (Privy App Design V2, hub revamp from v4.3.0)
+
+- **Every page uses the shared left-aligned header** `apps/ve-faq/src/components/PageHeader.jsx` (`title`, `subtitle`, `actions`; 28px/600 title, one red primary action max). SOW and Team Fund still need the same pattern (revamp phases 3–4 pending).
+- **Page width:** content max 1280px, 32px gutters desktop, 16px at ≤768px (`.dashboard-container`, `.questionnaire-page`).
+- **Controls:** 44px inputs/buttons, 40px chips/nav tabs, 14px control text, 16px body, sentence case everywhere, selection = blue (`--selection`), red only for the primary action and the active-tab underline.
+- **Accessibility:** icon-only buttons need `aria-label`; toggles use `aria-pressed`; tab sets use `role="tablist"`/`aria-selected`; drawers (`StatsDashboard`, `ActivityLog`) are `role="dialog"` and close on Escape.
+- **Where the CSS lives:** `apps/ve-faq/src/index.css` (~3.3k lines). Revamp overrides are appended at the end in blocks labelled `Phase 2: …` — edit those first; they win over older rules by source order.
+
+## Checks
+
+- Builds: `npm run build` in `apps/ve-faq`, `apps/sow-generator/frontend`, `apps/teamfundsheets` (all pass as of v4.3.0).
+- Lint: `npx eslint` in `apps/ve-faq` reports ~50 pre-existing problems. The two Next.js apps have no ESLint installed, so `npx eslint` downloads ESLint 10 and crashes — install a pinned ESLint before relying on lint there.
+- No automated tests exist. Connection checks: `GET /faq-api/debug` (dev only) tests the Sheets connection; SOW `GET /api/master-data`; Team Fund `GET /api/payments`.
+
+## Known risks (not fixed yet)
+
+- `apps/ve-faq/gmail api/client_secret_*.json` is untracked but **not gitignored** — never `git add .`.
+- Write endpoints trust the client-sent `userId`; Team Fund role comes from the `position` URL param; PINs are plain 6 digits with no rate limit; CORS is open on both APIs.
+- The old `.envstg` token remains in GitHub history via tag `v4.0.0` — rotate it and never push all tags (`git push --tags`); push tags by name.
+- Team Fund fetches payments/expenses/targets 3× per load; hub sends some requests twice.
 
 ## Vercel Production — Project Mapping
 
@@ -111,7 +150,10 @@ cd "apps/teamfundsheets" && npx next dev -p 3002    # :3002
 ## Key files
 
 - `apps/ve-faq/src/App.jsx` — Main app, tabs, iframe mounting, `TEAM_FUND_ORIGIN` URL
-- `apps/ve-faq/src/components/AppNav.jsx` — Nav bar with tabs
+- `apps/ve-faq/src/components/AppNav.jsx` — Nav bar with tabs (`<nav>`, `aria-current`, labels visually hidden <600px)
+- `apps/ve-faq/src/components/PageHeader.jsx` — Shared page header used by every hub page
+- `apps/ve-faq/src/components/FAQChatbot.jsx` — Marcie chatbot UI (`BOT_NAME`, icon `src/assets/marcie.png`)
+- `.claude/launch.json` — Local dev server definitions for all 5 servers
 - `apps/ve-faq/api/index.js` — Express API (auth, FAQ, users) — **ESM, NOT CommonJS**
 - `apps/ve-faq/api/google-sheets.js` — Google Sheets CRUD — **ESM, NOT CommonJS**
 - `apps/ve-faq/src/users.json` — Fallback user registry

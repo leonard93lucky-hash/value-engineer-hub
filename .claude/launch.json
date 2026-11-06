@@ -1,0 +1,36 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ve-faq-api",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd apps/ve-faq && node api/index.js"],
+      "port": 3001
+    },
+    {
+      "name": "sow-backend",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd apps/sow-generator/backend && python3 -m uvicorn main:app --port 8000"],
+      "port": 8000
+    },
+    {
+      "name": "sow-frontend",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd apps/sow-generator/frontend && npm run dev -- --webpack"],
+      "port": 3000
+    },
+    {
+      "name": "team-fund",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd apps/teamfundsheets && npx next dev -p 3002"],
+      "port": 3002
+    },
+    {
+      "name": "ve-faq",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": ["-c", "cd apps/ve-faq && npm run dev"],
+      "port": 5173,
+      "url": "http://localhost:5173"
+    }
+  ]
+}

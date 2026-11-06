@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
+import PageHeader from './PageHeader.jsx';
 import {
   FiSearch, FiPlus, FiChevronDown, FiEdit2, FiTrash2,
   FiClock, FiUser, FiFilter, FiX, FiRefreshCw,
@@ -316,50 +317,49 @@ export default function FAQDashboard({
   return (
     <div className="dashboard-container ro-theme animate-fade-in">
 
-      {/* Sub-header bar */}
-      <div className="faq-subheader glass">
-        <div className="faq-subheader-left">
-          <FiClock size={14} />
-          <span>FAQ Knowledge Base</span>
-        </div>
-        <div className="faq-subheader-right">
-          <button className="icon-btn-text" onClick={onShowStats} title="Contributor Leaderboard">
-            <FiBarChart2 /> Leaderboard
-          </button>
-          <button className="icon-btn-text" onClick={onShowLogs} title="Activity Log">
-            <FiClock /> Activity Log
-          </button>
-          <button className="icon-btn" onClick={onRefresh} title="Refresh data" disabled={isLoading}>
-            <FiRefreshCw className={isLoading ? 'spin' : ''} />
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="FAQ knowledge base"
+        subtitle="Find answers your team has written, or add a new one."
+        actions={
+          <>
+            <button className="btn-secondary" onClick={onShowStats}>
+              <FiBarChart2 aria-hidden="true" /> Leaderboard
+            </button>
+            <button className="btn-secondary" onClick={onShowLogs}>
+              <FiClock aria-hidden="true" /> Activity log
+            </button>
+            <button className="icon-btn" onClick={onRefresh} aria-label="Refresh FAQs" title="Refresh FAQs" disabled={isLoading}>
+              <FiRefreshCw className={isLoading ? 'spin' : ''} aria-hidden="true" />
+            </button>
+            <button className="btn-primary" onClick={onAdd} id="add-faq-btn">
+              <FiPlus aria-hidden="true" /> Add FAQ
+            </button>
+          </>
+        }
+      />
 
-      <div className="hero-section">
-        <h2 className="ro-hero-title">How can we help you?</h2>
-        <p className="ro-hero-sub">Search through our frequently asked questions or add new knowledge</p>
-        <div className="search-bar">
-          <FiSearch className="search-icon" />
-          <input
-            id="search-input"
-            type="text"
-            className="input-field search-input glass"
-            placeholder="Search questions, answers, merchants..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button className="search-clear" onClick={() => setSearchQuery('')}><FiX /></button>
-          )}
-        </div>
+      <div className="search-bar">
+        <FiSearch className="search-icon" aria-hidden="true" />
+        <input
+          id="search-input"
+          type="search"
+          className="input-field search-input glass"
+          placeholder="Search questions, answers or merchants"
+          aria-label="Search FAQs"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        {searchQuery && (
+          <button className="search-clear" onClick={() => setSearchQuery('')} aria-label="Clear search"><FiX aria-hidden="true" /></button>
+        )}
       </div>
 
       {/* Top Contributors Section */}
       {contributorsData.list.length > 0 && (
         <div className="contributors-container animate-fade-in">
           <div className="contributors-header">
-            <FiAward className="award-icon" />
-            <span>Top Contributors <strong>{contributorsData.label}</strong></span>
+            <FiAward className="award-icon" aria-hidden="true" />
+            <span>Top contributors <strong>{contributorsData.label}</strong></span>
           </div>
           <div className="contributors-list">
             {contributorsData.list.map((c, i) => (
@@ -376,12 +376,13 @@ export default function FAQDashboard({
       {/* Category Filters & Add Button */}
       <div className="toolbar">
         <div className="category-filters">
-          <FiFilter className="filter-icon" />
+          <FiFilter className="filter-icon" aria-hidden="true" />
           {['All', ...categories.map(normalizeCategory).filter((v, i, a) => a.indexOf(v) === i)].map(cat => (
             <button
               key={cat}
               className={`category-chip ${activeCategory === cat ? 'active' : ''} ${cat !== 'All' ? (CATEGORY_COLORS[cat] || 'cat-general') : ''}`}
               onClick={() => { setActiveCategory(cat); setShowLowRated(false); }}
+              aria-pressed={activeCategory === cat && !showLowRated}
               id={`filter-${cat.toLowerCase().replace(/\s+/g, '-')}`}
             >
               {cat}
@@ -391,10 +392,11 @@ export default function FAQDashboard({
             className={`category-chip low-rated-chip ${showLowRated ? 'active-warning' : ''}`}
             onClick={() => { setShowLowRated(prev => !prev); setActiveCategory('All'); }}
             title="Show FAQs with negative ratings that need review"
+            aria-pressed={showLowRated}
             id="filter-low-rated"
           >
             <FiAlertTriangle style={{ marginRight: '0.3rem', fontSize: '0.75rem' }} />
-            Low Rated
+            Low rated
             {lowRatedFaqIds.size > 0 && (
               <span className="low-rated-badge">{lowRatedFaqIds.size}</span>
             )}
@@ -408,32 +410,30 @@ export default function FAQDashboard({
               value={activeContributor}
               onChange={(e) => setActiveContributor(e.target.value)}
               className="contributor-select"
+              aria-label="Filter by contributor"
               id="contributor-filter-select"
             >
-              <option value="All">All Contributors</option>
+              <option value="All">All contributors</option>
               {uniqueContributors.map(c => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
 
-          <div className="sort-control glass">
-            <button className={`sort-btn ${sortOrder === 'desc' ? 'active' : ''}`} onClick={() => setSortOrder('desc')} title="Newest first">
+          <div className="sort-control glass" role="group" aria-label="Sort FAQs">
+            <button className={`sort-btn ${sortOrder === 'desc' ? 'active' : ''}`} aria-pressed={sortOrder === 'desc'} onClick={() => setSortOrder('desc')} title="Newest first">
               <FiArrowDown /><span>Latest</span>
             </button>
-            <button className={`sort-btn ${sortOrder === 'asc' ? 'active' : ''}`} onClick={() => setSortOrder('asc')} title="Oldest first">
+            <button className={`sort-btn ${sortOrder === 'asc' ? 'active' : ''}`} aria-pressed={sortOrder === 'asc'} onClick={() => setSortOrder('asc')} title="Oldest first">
               <FiArrowUp /><span>Oldest</span>
             </button>
-            <button className={`sort-btn ${sortOrder === 'top-rated' ? 'active' : ''}`} onClick={() => setSortOrder('top-rated')} title="Highest rated">
-              <FiStar /><span>Top Rated</span>
+            <button className={`sort-btn ${sortOrder === 'top-rated' ? 'active' : ''}`} aria-pressed={sortOrder === 'top-rated'} onClick={() => setSortOrder('top-rated')} title="Highest rated">
+              <FiStar /><span>Top rated</span>
             </button>
-            <button className={`sort-btn ${sortOrder === 'most-voted' ? 'active' : ''}`} onClick={() => setSortOrder('most-voted')} title="Most reviews">
-              <FiTrendingUp /><span>Most Reviewed</span>
+            <button className={`sort-btn ${sortOrder === 'most-voted' ? 'active' : ''}`} aria-pressed={sortOrder === 'most-voted'} onClick={() => setSortOrder('most-voted')} title="Most reviews">
+              <FiTrendingUp /><span>Most reviewed</span>
             </button>
           </div>
-          <button className="btn-primary add-btn" onClick={onAdd} id="add-faq-btn">
-            <FiPlus style={{ marginRight: '0.5rem' }} />Add FAQ
-          </button>
         </div>
       </div>
 

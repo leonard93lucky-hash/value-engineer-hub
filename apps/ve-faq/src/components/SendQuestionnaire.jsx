@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FiMail, FiUser, FiSend, FiClock, FiCheckCircle, FiRefreshCw, FiList, FiBarChart2, FiMessageSquare, FiStar, FiDownload, FiFilter, FiCalendar, FiLoader, FiCopy } from 'react-icons/fi';
+import { FiMail, FiUser, FiSend, FiClock, FiCheckCircle, FiRefreshCw, FiBarChart2, FiMessageSquare, FiStar, FiDownload, FiLoader, FiCopy } from 'react-icons/fi';
+import PageHeader from './PageHeader.jsx';
 import { fetchOfficers, fetchQuestionnaireQuestions, sendQuestionnaire, fetchQuestionnaireLogs, fetchSubmissions } from '../api.js';
 
 export default function SendQuestionnaire({ userId, userName, showToast }) {
@@ -258,22 +259,30 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
 
   return (
     <div className="questionnaire-page animate-fade-in">
+      <PageHeader
+        title="Client questionnaire"
+        subtitle="Send an evaluation form to a partner, then review their answers."
+      />
 
       {/* Tabs */}
-      <div className="q-tabs">
+      <div className="q-tabs" role="tablist" aria-label="Questionnaire views">
         <button
           className={`q-tab ${activeTab === 'send' ? 'active' : ''}`}
           onClick={() => setActiveTab('send')}
           id="tab-send"
+          role="tab"
+          aria-selected={activeTab === 'send'}
         >
-          <FiSend /> Send Questionnaire
+          <FiSend aria-hidden="true" /> Send questionnaire
         </button>
         <button
           className={`q-tab ${activeTab === 'results' ? 'active' : ''}`}
           onClick={() => setActiveTab('results')}
           id="tab-results"
+          role="tab"
+          aria-selected={activeTab === 'results'}
         >
-          <FiBarChart2 /> Submission Results {submissions.length > 0 && <span className="q-tab-badge">{submissions.length}</span>}
+          <FiBarChart2 aria-hidden="true" /> Submission results {submissions.length > 0 && <span className="q-tab-badge">{submissions.length}</span>}
         </button>
       </div>
 
@@ -282,14 +291,14 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
         <div className="q-content-grid">
           {/* Form Card */}
           <div className="q-card glass">
-            <h3><FiSend style={{ marginRight: '0.5rem', verticalAlign: 'middle', color: 'var(--primary)' }} /> Send Evaluation Form</h3>
+            <h3>Send evaluation form</h3>
 
             {loading ? (
               <div className="q-loading"><FiLoader className="spin" size={16} /> Loading setup...</div>
             ) : (
               <form onSubmit={handleSubmit} className="q-form">
                 <div className="q-input-group">
-                  <label htmlFor="receiver-email"><FiMail /> Receiver Email Address</label>
+                  <label htmlFor="receiver-email">Receiver email address</label>
                   <input
                     id="receiver-email"
                     type="email"
@@ -302,7 +311,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
                 </div>
 
                 <div className="q-input-group">
-                  <label htmlFor="officer-select"><FiUser /> Select Integration Officer</label>
+                  <label htmlFor="officer-select">Integration officer</label>
                   <select
                     id="officer-select"
                     value={selectedOfficer}
@@ -310,7 +319,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
                     disabled={submitting}
                     required
                   >
-                    <option value="">-- Choose Officer --</option>
+                    <option value="">Choose an officer</option>
                     {officers.length === 0 ? (
                       <option disabled>No officers found in registry</option>
                     ) : (
@@ -324,8 +333,8 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
                 </div>
 
                 <div className="q-input-group">
-                  <label><FiList /> Select Questions to Send</label>
-                  <div className="q-questions-picker">
+                  <span className="q-group-label" id="questions-label">Questions to send</span>
+                  <div className="q-questions-picker" role="group" aria-labelledby="questions-label">
                     <label className={`q-question-check select-all-check ${allSelected ? 'selected' : someSelected ? 'partial' : ''}`}>
                       <input
                         type="checkbox"
@@ -335,7 +344,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
                         disabled={submitting}
                       />
                       <span className="q-check-label">
-                        <strong>Select All</strong>
+                        <strong>Select all</strong>
                         <small>{selectedQuestions.length}/{allQuestions.length} selected</small>
                       </span>
                     </label>
@@ -363,7 +372,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
                 <button type="submit" className="btn-primary q-send-btn" disabled={submitting || selectedQuestions.length === 0}>
                   {submitting
                     ? <><FiLoader className="spin" size={16} /> Generating link...</>
-                    : <><FiSend style={{ marginRight: '0.4rem' }} /> Send Questionnaire Link</>}
+                    : <><FiSend aria-hidden="true" /> Send questionnaire link</>}
                 </button>
               </form>
             )}
@@ -382,8 +391,8 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
           {/* History Log Card */}
           <div className="q-card glass">
             <div className="history-title-row">
-              <h3><FiClock style={{ marginRight: '0.5rem', verticalAlign: 'middle', color: 'var(--primary)' }} /> Sent History</h3>
-              <button className="icon-btn-small" onClick={handleRefreshLogs} disabled={refreshingLogs || loading} title="Refresh logs">
+              <h3>Sent history</h3>
+              <button className="icon-btn-small" onClick={handleRefreshLogs} disabled={refreshingLogs || loading} title="Refresh sent history" aria-label="Refresh sent history">
                 <FiRefreshCw className={refreshingLogs ? 'spin' : ''} />
               </button>
             </div>
@@ -430,13 +439,14 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
           <div className="q-export-controls">
             <div className="q-filters-row">
               <div className="q-filter-group">
-                <label className="q-filter-label"><FiFilter /> Filter by Officer</label>
+                <label className="q-filter-label" htmlFor="q-officer-filter">Officer</label>
                 <select
+                  id="q-officer-filter"
                   className="q-filter-select"
                   value={selectedOfficerFilter}
                   onChange={(e) => setSelectedOfficerFilter(e.target.value)}
                 >
-                  <option value="">All Officers</option>
+                  <option value="">All officers</option>
                   {Array.from(new Set(submissions.map(s => s.officerName))).sort().map(officer => (
                     <option key={officer} value={officer}>{officer}</option>
                   ))}
@@ -444,14 +454,14 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
               </div>
               
               <div className="q-filter-group">
-                <label className="q-filter-label"><FiCalendar /> Date Range</label>
+                <span className="q-filter-label">Submitted between (WIB)</span>
                 <div className="q-date-range">
                   <input
                     type="date"
                     className="q-date-input"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    title="From date"
+                    title="From date" aria-label="From date"
                   />
                   <span className="q-date-divider">to</span>
                   <input
@@ -459,24 +469,19 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
                     className="q-date-input"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    title="To date"
+                    title="To date" aria-label="To date"
                   />
                 </div>
               </div>
               
-              {(selectedOfficerFilter || dateFrom || dateTo) && (
-                <button className="q-clear-filters" onClick={handleClearFilters}>
-                  Clear Filters
-                </button>
-              )}
             </div>
             
             <div className="q-export-actions">
               <button className="q-export-btn secondary" onClick={handleClearFilters}>
-                <FiRefreshCw /> Reset
+                <FiRefreshCw aria-hidden="true" /> Reset filters
               </button>
               <button className="q-export-btn" onClick={handleExportCSV}>
-                <FiDownload /> Export CSV ({filteredSubmissions.length})
+                <FiDownload aria-hidden="true" /> Export CSV ({filteredSubmissions.length})
               </button>
             </div>
           </div>
@@ -485,12 +490,12 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
               Showing {filteredSubmissions.length} of {submissions.length} submission{submissions.length !== 1 ? 's' : ''}
               {(selectedOfficerFilter || dateFrom || dateTo) && (
-                <span style={{ marginLeft: '0.5rem', color: 'var(--primary)' }}>
-                  (Filtered)
+                <span style={{ marginLeft: '0.5rem' }}>
+                  (filtered)
                 </span>
               )}
             </p>
-            <button className="icon-btn-small" onClick={loadSubmissions} disabled={submissionsLoading} title="Refresh results">
+            <button className="icon-btn-small" onClick={loadSubmissions} disabled={submissionsLoading} title="Refresh results" aria-label="Refresh results">
               <FiRefreshCw className={submissionsLoading ? 'spin' : ''} />
             </button>
           </div>
@@ -499,7 +504,7 @@ export default function SendQuestionnaire({ userId, userName, showToast }) {
             <div className="q-loading"><FiLoader className="spin" size={16} /> Loading results...</div>
           ) : filteredSubmissions.length === 0 ? (
             <div className="no-results-message">
-              <FiBarChart2 size={48} style={{ color: 'var(--text-muted)', marginBottom: '1rem' }} />
+              <FiBarChart2 size={40} aria-hidden="true" style={{ color: 'var(--text-muted)', marginBottom: '1rem' }} />
               <h4>No submissions found</h4>
               <p>
                 {submissions.length === 0 

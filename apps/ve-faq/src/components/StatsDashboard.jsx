@@ -1,8 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { FiX, FiAward, FiStar, FiCalendar, FiUser, FiTrendingUp, FiThumbsUp, FiAlertTriangle, FiThumbsDown } from 'react-icons/fi';
 
 export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) {
   const [activeTab, setActiveTab] = useState('all-time');
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
 
   // Helper to parse dates consistently
   const parseDate = (dateStr) => {
@@ -96,10 +104,10 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
 
   return (
     <div className="activity-log-overlay" onClick={onClose}>
-      <div className="activity-log-panel glass animate-slide-in" onClick={e => e.stopPropagation()} style={{ width: '480px' }}>
+      <div className="activity-log-panel glass animate-slide-in" onClick={e => e.stopPropagation()} style={{ width: '480px' }} role="dialog" aria-modal="true" aria-labelledby="stats-title">
         <div className="activity-log-header">
-          <h2><FiAward style={{ marginRight: '0.5rem', color: 'var(--primary)' }} /> Contributor Leaderboard</h2>
-          <button className="close-btn" onClick={onClose} id="stats-close-btn">
+          <h2 id="stats-title"><FiAward aria-hidden="true" style={{ marginRight: '0.5rem' }} /> Contributor leaderboard</h2>
+          <button className="close-btn" onClick={onClose} id="stats-close-btn" aria-label="Close leaderboard">
             <FiX />
           </button>
         </div>
@@ -107,27 +115,31 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
         <div className="stats-tabs">
           <button
             className={`stats-tab ${activeTab === 'all-time' ? 'active' : ''}`}
+            aria-pressed={activeTab === 'all-time'}
             onClick={() => setActiveTab('all-time')}
           >
-            <FiTrendingUp /><span>Top 10 All-Time</span>
+            <FiTrendingUp /><span>Top 10 all time</span>
           </button>
           <button
             className={`stats-tab ${activeTab === 'quarterly' ? 'active' : ''}`}
+            aria-pressed={activeTab === 'quarterly'}
             onClick={() => setActiveTab('quarterly')}
           >
             <FiCalendar /><span>Quarterly</span>
           </button>
           <button
             className={`stats-tab ${activeTab === 'top-rated' ? 'active' : ''}`}
+            aria-pressed={activeTab === 'top-rated'}
             onClick={() => setActiveTab('top-rated')}
           >
-            <FiThumbsUp /><span>Top Rated</span>
+            <FiThumbsUp /><span>Top rated</span>
           </button>
           <button
             className={`stats-tab ${activeTab === 'low-rated' ? 'active' : ''}`}
+            aria-pressed={activeTab === 'low-rated'}
             onClick={() => setActiveTab('low-rated')}
           >
-            <FiAlertTriangle /><span>Needs Review {lowRatedFaqs.length > 0 && <span className="low-rated-badge" style={{marginLeft:'0.3rem'}}>{lowRatedFaqs.length}</span>}</span>
+            <FiAlertTriangle /><span>Needs review {lowRatedFaqs.length > 0 && <span className="low-rated-badge" style={{marginLeft:'0.3rem'}}>{lowRatedFaqs.length}</span>}</span>
           </button>
         </div>
 
@@ -216,7 +228,7 @@ export default function StatsDashboard({ isOpen, onClose, faqs, ratings = {} }) 
                           </span>
                         </div>
                         <div className="leaderboard-progress-bg">
-                          <div className="leaderboard-progress-bar" style={{ width: `${Math.max(percent, 4)}%`, background: 'var(--warning)' }} />
+                          <div className="leaderboard-progress-bar" style={{ width: `${Math.max(percent, 4)}%`, background: 'var(--success)' }} />
                         </div>
                       </div>
                     </div>

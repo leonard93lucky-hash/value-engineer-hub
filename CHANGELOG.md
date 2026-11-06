@@ -2,6 +2,24 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.3.0 — 2026-11-06 — Hub UI revamp phases 1–2 (nav, shared header, FAQ, Questionnaire)
+
+> Reversibility: baseline `v4.2.0`. Revert with `git checkout v4.2.0 -- apps/ve-faq/src/`. SOW and Team Fund are unchanged in this release (phases 3–4 pending).
+
+### Added
+- **Shared page header** `apps/ve-faq/src/components/PageHeader.jsx` + `.page-header` CSS: left-aligned 28px title, subtitle, actions on the right
+- `.claude/launch.json` — local definitions for all 5 dev servers
+
+### Changed
+- **Nav** (`AppNav.jsx`): `<nav aria-label>`, `aria-current` on the active tab, 14px/40px tabs, labels visually hidden below 600px (still read by screen readers), "Log out" accessible name
+- **FAQ page**: centered banner + utility strip replaced by the shared header (Leaderboard, Activity log, Refresh, Add FAQ as the single red action); full-width search; contributors as a compact row; 40px category chips (one scrollable row on mobile); sentence-case labels and badges; `aria-pressed` on filters and sort; 16px answers; content max 1280px with 32px/16px gutters
+- **Leaderboard / Activity log drawers**: close on Escape, `role="dialog"`, sentence-case titles and tabs; top-rated bars use success green instead of warning brown
+- **Questionnaire page**: shared header ("Client questionnaire"), tablist semantics, 44px inputs, blue question selection, sentence-case filter labels, "Submitted between (WIB)" date range, duplicate "Clear Filters" removed, filters stack full width on mobile
+- `ARCHITECTURE.md`: how the one-page hub works, UI conventions, checks, known risks
+
+### Fixed
+- Long URLs in FAQ answers overflowed the card (now wrap)
+
 ## v4.2.0 — 2026-11-06 — Marcie chatbot + reply references fix
 
 > Reversibility: baseline `v4.1.0`. Revert with `git checkout v4.1.0 -- apps/ve-faq/`. This tag is also the baseline for the hub-wide UI revamp.

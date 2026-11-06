@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { FiClock, FiPlus, FiEdit2, FiTrash2, FiX, FiRefreshCw } from 'react-icons/fi';
 
 const ACTION_ICONS = {
@@ -31,18 +32,25 @@ function formatTimestamp(ts) {
 }
 
 export default function ActivityLog({ isOpen, onClose, logs, onRefresh }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div className="activity-log-overlay" onClick={onClose}>
       <div className="activity-log-panel glass animate-slide-in" onClick={e => e.stopPropagation()}>
         <div className="activity-log-header">
-          <h2><FiClock style={{ marginRight: '0.5rem' }} /> Activity Log</h2>
+          <h2 id="log-title"><FiClock aria-hidden="true" style={{ marginRight: '0.5rem' }} /> Activity log</h2>
           <div className="activity-log-actions">
-            <button className="icon-btn" onClick={onRefresh} title="Refresh" id="log-refresh-btn">
+            <button className="icon-btn" onClick={onRefresh} title="Refresh activity" aria-label="Refresh activity" id="log-refresh-btn">
               <FiRefreshCw />
             </button>
-            <button className="close-btn" onClick={onClose} id="log-close-btn">
+            <button className="close-btn" onClick={onClose} id="log-close-btn" aria-label="Close activity log">
               <FiX />
             </button>
           </div>
