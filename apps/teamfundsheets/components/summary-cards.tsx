@@ -21,7 +21,7 @@ export default function SummaryCards({ totalIncome, totalExpenses, paymentCount,
           <div className="bg-success-surface p-2 rounded-lg">
             <TrendingUp className="text-success" size={24} />
           </div>
-          <span className="text-muted-foreground text-sm font-medium">Total Income</span>
+          <span className="text-muted-foreground text-sm font-medium">Total income</span>
         </div>
         <div className="text-2xl sm:text-3xl font-semibold text-success mb-1 tabular-nums">
           Rp {totalIncome.toLocaleString("id-ID")}
@@ -35,7 +35,7 @@ export default function SummaryCards({ totalIncome, totalExpenses, paymentCount,
           <div className="bg-danger-surface p-2 rounded-lg">
             <TrendingDown className="text-danger" size={24} />
           </div>
-          <span className="text-muted-foreground text-sm font-medium">Total Expenses</span>
+          <span className="text-muted-foreground text-sm font-medium">Total expenses</span>
         </div>
         <div className="text-2xl sm:text-3xl font-semibold text-danger mb-1 tabular-nums">
           Rp {totalExpenses.toLocaleString("id-ID")}
@@ -49,7 +49,7 @@ export default function SummaryCards({ totalIncome, totalExpenses, paymentCount,
           <div className="bg-white/15 p-2 rounded-lg">
             <BarChart3 className="text-white" size={24} />
           </div>
-          <span className="text-white/80 text-sm font-medium">Net Balance</span>
+          <span className="text-white/80 text-sm font-medium">Net balance</span>
         </div>
         <div className="text-2xl sm:text-3xl font-semibold text-white mb-3 tabular-nums">Rp {netBalance.toLocaleString("id-ID")}</div>
         <div className="w-full bg-white/20 rounded-full h-2">
@@ -58,7 +58,7 @@ export default function SummaryCards({ totalIncome, totalExpenses, paymentCount,
             style={{ width: `${Math.min(percentageUsed, 100)}%` }}
           />
         </div>
-        <p className="text-white/70 text-xs mt-2">{percentageUsed.toFixed(1)}% of income used</p>
+        <p className="text-white/85 text-sm mt-2">{percentageUsed.toFixed(1)}% of income used</p>
       </div>
     </div>
   )

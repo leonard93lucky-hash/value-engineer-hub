@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react"
 import Header from "@/components/header"
 import SummaryCards from "@/components/summary-cards"
 import MonthlyChart from "@/components/monthly-chart"
+import ExpenseDonut from "@/components/expense-donut"
 import IncomeModal from "@/components/income-modal"
 import ExpenseModal from "@/components/expense-modal"
 import TransactionHistory from "@/components/transaction-history"
@@ -268,7 +269,7 @@ export default function HomeContent() {
         onRefresh={fetchData}
         refreshing={refreshing}
       />
-      <div className="px-4 py-8 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
+      <div className="mx-auto w-full max-w-[1280px] space-y-6 px-8 pb-16 max-md:px-4 max-md:pb-12">
         <SummaryCards
           totalIncome={totalIncome}
           totalExpenses={totalExpenses}
@@ -278,8 +279,8 @@ export default function HomeContent() {
 
         <section className="bg-card p-6 rounded-lg border border-border">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg sm:text-xl font-semibold">
-              Income Goal Progress
+            <h2 className="text-xl font-semibold text-foreground">
+              Income goal progress
               <span className="text-sm font-normal text-muted-foreground ml-2">
                 ({currentYear})
               </span>
@@ -289,8 +290,8 @@ export default function HomeContent() {
                 onClick={() => setShowTargetsConfig(true)}
                 className="flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-sm text-muted-foreground hover:text-foreground hover:bg-canvas rounded-lg transition-colors"
               >
-                <Settings size={16} />
-                Targets
+                <Settings size={16} aria-hidden="true" />
+                Edit targets
               </button>
             )}
           </div>
@@ -316,7 +317,7 @@ export default function HomeContent() {
                           style={{ width: `${percentage}%` }}
                         />
                       </div>
-                      <span className={`text-xs font-medium tabular-nums whitespace-nowrap ${isGoalReached ? "text-success" : "text-muted-foreground"}`}>
+                      <span className={`text-sm font-medium tabular-nums whitespace-nowrap ${isGoalReached ? "text-success" : "text-muted-foreground"}`}>
                         {isGoalReached ? "Goal reached" : `${percentage.toFixed(1)}%`}
                       </span>
                     </div>
@@ -327,7 +328,10 @@ export default function HomeContent() {
           )}
         </section>
 
-        <MonthlyChart payments={formattedPaymentsForChart} expenses={expenses} />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+          <MonthlyChart payments={formattedPaymentsForChart} expenses={expenses} />
+          <ExpenseDonut expenses={expenses} />
+        </div>
 
         <TransactionHistory
           payments={payments}

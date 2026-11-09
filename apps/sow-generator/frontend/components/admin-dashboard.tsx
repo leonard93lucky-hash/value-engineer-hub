@@ -20,6 +20,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { API_BASE_URL, LOGO_URL, ENV_TYPE_OPTIONS, formatDateIndo } from "@/lib/constants"
+import { PageHeader } from "@/components/page-header"
 
 // ----- ADMIN ID → FRIENDLY NAME MAPPING -----
 const ADMIN_DISPLAY_NAMES: Record<string, string> = {
@@ -505,7 +506,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
   // ----- TABLE HEADER -----
   const SortableTh = ({ label, field }: { label: string; field: SortKey }) => (
     <th
-      className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer select-none hover:text-foreground transition-colors whitespace-nowrap"
+      className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground cursor-pointer select-none hover:text-foreground transition-colors whitespace-nowrap"
       onClick={() => handleSort(field)}
     >
       <div className="flex items-center gap-1">
@@ -531,26 +532,24 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
   // ----- RENDER -----
   return (
     <div className="h-screen bg-canvas flex flex-col font-sans overflow-hidden">
-      {/* TOP BAR */}
-      <header className="border-b border-border px-3 sm:px-6 py-3 flex items-center justify-between bg-white sticky top-0 z-40 shadow-sm gap-2">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <span className="hidden sm:inline text-sm font-semibold text-foreground truncate">Admin VE Support</span>
-          <Badge className="hidden sm:inline-flex bg-danger-surface text-danger border-danger/30 text-[10px]">Dashboard</Badge>
-        </div>
-        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-          <Button variant="ghost" size="sm" onClick={() => fetchSubmissions()}
-            className="text-muted-foreground hover:text-foreground hover:bg-muted gap-1.5 cursor-pointer px-2 sm:px-3">
-            <RefreshCw className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Refresh</span>
-          </Button>
-          <Button variant="ghost" size="icon" onClick={() => setUpdateManagerOpen(true)}
-            className="text-muted-foreground hover:text-danger hover:bg-danger-surface h-8 w-8 cursor-pointer shrink-0"
-            title="Manage Update Notes">
-            <Megaphone className="w-4 h-4" />
-          </Button>
-        </div>
-      </header>
+      <div className="mx-auto w-full max-w-[1440px] shrink-0 px-8 max-md:px-4">
+        <PageHeader
+          title="SOW admin"
+          subtitle="Review submissions, assign initials and generate documents."
+          actions={
+            <>
+              <Button variant="outline" onClick={() => fetchSubmissions()} className="h-11 gap-2 cursor-pointer">
+                <RefreshCw className="w-4 h-4" aria-hidden="true" /> Refresh
+              </Button>
+              <Button variant="outline" onClick={() => setUpdateManagerOpen(true)} className="h-11 gap-2 cursor-pointer">
+                <Megaphone className="w-4 h-4" aria-hidden="true" /> Update notes
+              </Button>
+            </>
+          }
+        />
+      </div>
       {/* MAIN — flex-col, overflow-hidden, fill remaining height */}
-      <main className="flex-1 p-3 sm:p-4 lg:p-6 w-full max-w-full overflow-hidden flex flex-col min-h-0">
+      <main className="flex-1 px-8 pb-6 max-md:px-4 w-full max-w-[1440px] mx-auto overflow-hidden flex flex-col min-h-0">
         {/* 1. STATS — 1 row, 3 kolom */}
         {(() => {
           const filterLabel = filterMode === "all" ? "All Time"
@@ -567,9 +566,9 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               {/* Kolom 1: Pending */}
               <div className="bg-white border border-border rounded-xl p-2.5 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1">
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-warning">{totalPending}</div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Pending</div>
+                <div className="text-xs text-muted-foreground">Pending</div>
                 {pendingCredentialSubmissions.length > 0 && (
-                  <div className="text-[9px] text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     {pendingSubmissions.length} SOW/API · {pendingCredentialSubmissions.length} Cred
                   </div>
                 )}
@@ -577,8 +576,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               {/* Kolom 2: Generated */}
               <div className="bg-white border border-border rounded-xl p-2.5 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1">
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-success">{totalGenerated}</div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Generated</div>
-                <div className="text-[9px] text-muted-foreground">
+                <div className="text-xs text-muted-foreground">Generated</div>
+                <div className="text-xs text-muted-foreground">
                   {sdkCount + apiCount} SOW/API · {credCount} Cred
                 </div>
               </div>
@@ -589,8 +588,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                   <Package className="w-4 h-4 text-info flex-shrink-0" />
                   <div className="flex items-baseline gap-2 min-w-0">
                     <div className="text-lg font-bold text-info leading-none">{sdkCount}</div>
-                    <div className="text-[10px] font-semibold text-muted-foreground truncate">SDK Liveness</div>
-                    <div className="text-[9px] text-muted-foreground uppercase tracking-wide truncate">{filterLabel}</div>
+                    <div className="text-xs font-semibold text-muted-foreground truncate">SDK Liveness</div>
+                    <div className="text-xs text-muted-foreground truncate">{filterLabel}</div>
                   </div>
                 </div>
                 {/* API PrivyPass */}
@@ -598,8 +597,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                   <Shield className="w-4 h-4 text-info flex-shrink-0" />
                   <div className="flex items-baseline gap-2 min-w-0">
                     <div className="text-lg font-bold text-info leading-none">{apiCount}</div>
-                    <div className="text-[10px] font-semibold text-muted-foreground truncate">API PrivyPass</div>
-                    <div className="text-[9px] text-muted-foreground uppercase tracking-wide truncate">{filterLabel}</div>
+                    <div className="text-xs font-semibold text-muted-foreground truncate">API PrivyPass</div>
+                    <div className="text-xs text-muted-foreground truncate">{filterLabel}</div>
                   </div>
                 </div>
                 {/* Credential */}
@@ -607,8 +606,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                   <Shield className="w-4 h-4 text-success flex-shrink-0" />
                   <div className="flex items-baseline gap-2 min-w-0">
                     <div className="text-lg font-bold text-success leading-none">{credCount}</div>
-                    <div className="text-[10px] font-semibold text-muted-foreground truncate">Credential</div>
-                    <div className="text-[9px] text-muted-foreground uppercase tracking-wide truncate">{filterLabel}</div>
+                    <div className="text-xs font-semibold text-muted-foreground truncate">Credential</div>
+                    <div className="text-xs text-muted-foreground truncate">{filterLabel}</div>
                   </div>
                 </div>
               </div>
@@ -649,7 +648,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <Filter className="w-3.5 h-3.5" />
-              <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider">Time:</span>
+              <span className="text-xs sm:text-xs font-semibold">Time:</span>
             </div>
             {([
               { key: "all", label: "All" },
@@ -660,7 +659,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               <button
                 key={f.key}
                 onClick={() => setFilterMode(f.key)}
-                className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer border ${filterMode === f.key
+                className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer border ${filterMode === f.key
                   ? "bg-danger-surface text-danger border-danger/30 shadow"
                   : "bg-white text-muted-foreground border-border hover:text-foreground hover:bg-canvas"
                   }`}
@@ -696,7 +695,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
             {filterMode !== "all" && (
               <button
                 onClick={() => setFilterMode("all")}
-                className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
+                className="flex items-center gap-1 px-2 py-1 rounded-md text-xs text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
               >
                 <X className="w-3 h-3" /> Reset
               </button>
@@ -710,7 +709,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               <>
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <BarChart3 className="w-3.5 h-3.5" />
-                  <span className="text-[11px] font-semibold uppercase tracking-wider">Category:</span>
+                  <span className="text-xs font-semibold">Category:</span>
                 </div>
                 {([
                   { key: "all", label: "All" },
@@ -720,7 +719,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                   <button
                     key={k.key}
                     onClick={() => setFilterKategori(k.key as any)}
-                    className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer border ${filterKategori === k.key
+                    className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer border ${filterKategori === k.key
                         ? "bg-danger-surface text-danger border-danger/30 shadow"
                         : "bg-white text-muted-foreground border-border hover:text-foreground hover:bg-canvas"
                       }`}
@@ -736,7 +735,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
               <>
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <BarChart3 className="w-3.5 h-3.5" />
-                  <span className="text-[11px] font-semibold uppercase tracking-wider">Type:</span>
+                  <span className="text-xs font-semibold">Type:</span>
                 </div>
                 {([
                   { key: "all", label: "All" },
@@ -746,7 +745,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                   <button
                     key={k.key}
                     onClick={() => setFilterDocType(k.key)}
-                    className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer border ${filterDocType === k.key
+                    className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer border ${filterDocType === k.key
                         ? "bg-danger-surface text-danger border-danger/30 shadow"
                         : "bg-white text-muted-foreground border-border hover:text-foreground hover:bg-canvas"
                       }`}
@@ -795,7 +794,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     </>
                   )}
                   <SortableTh label="Status" field="status" />
-                  <th className="px-4 py-3 text-right text-[10px] font-bold text-muted-foreground uppercase">Action</th>
+                  <th className="px-4 py-3 text-right text-xs font-bold text-muted-foreground">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -843,7 +842,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                           </td>
                           <td className="px-4 py-3">
                             <div className="text-sm font-medium text-foreground">{sub.enterprise_name}</div>
-                            <div className="text-[10px] text-muted-foreground mt-0.5">{sub.enterprise_initial}</div>
+                            <div className="text-xs text-muted-foreground mt-0.5">{sub.enterprise_initial}</div>
                           </td>
                           <td className="px-4 py-3 text-sm text-muted-foreground">{sub.merchant_name || "-"}</td>
                           <td className="px-4 py-3 text-sm text-muted-foreground">{sub.pic_ve_name}</td>
@@ -855,8 +854,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                             <div className="flex items-center justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                               {confirmDeleteId === sub.submission_id ? (
                                 <div className="flex items-center gap-1 bg-danger-surface p-0.5 rounded-lg border border-danger/30">
-                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-[10px] font-bold hover:bg-danger hover:text-white rounded cursor-pointer">YES</button>
-                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-[10px] hover:bg-muted rounded cursor-pointer">NO</button>
+                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-xs font-bold hover:bg-danger hover:text-white rounded cursor-pointer">YES</button>
+                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-xs hover:bg-muted rounded cursor-pointer">NO</button>
                                 </div>
                               ) : (
                                 <button
@@ -886,7 +885,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                           </td>
                           <td className="px-4 py-3 font-medium text-foreground text-sm">
                             {sub.enterprise_name}
-                            <div className="text-[10px] text-muted-foreground font-normal">by {getAdminDisplayName(sub.created_by)}</div>
+                            <div className="text-xs text-muted-foreground font-normal">by {getAdminDisplayName(sub.created_by)}</div>
                           </td>
                           <td className="px-4 py-3">
                             {sub.enterprise_initial ? (
@@ -894,7 +893,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                                 {sub.enterprise_initial}
                               </span>
                             ) : (
-                              <span className="text-[10px] italic text-warning/70 bg-warning-surface border border-warning/20 px-2 py-0.5 rounded">
+                              <span className="text-xs italic text-warning/70 bg-warning-surface border border-warning/20 px-2 py-0.5 rounded">
                                 Empty
                               </span>
                             )}
@@ -902,7 +901,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                           <td className="px-4 py-3 text-sm text-muted-foreground">{sub.merchant_name || "-"}</td>
                           <td className="px-4 py-3 text-sm text-muted-foreground">{sub.pic_ve_name}</td>
                           <td className="px-4 py-3">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production"
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production"
                               ? "bg-info-surface text-info border-info/30"
                               : "bg-info-surface text-info border-info/30"
                               }`}>
@@ -923,7 +922,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                               <button
                                 onClick={() => handleGenerate(sub)}
                                 disabled={!!generatingId}
-                                className={`p-1.5 rounded-lg transition-all flex items-center gap-1 text-[10px] font-bold px-2 ${sub.enterprise_initial?.trim()
+                                className={`p-1.5 rounded-lg transition-all flex items-center gap-1 text-xs font-bold px-2 ${sub.enterprise_initial?.trim()
                                   ? "bg-success-surface hover:bg-success-surface text-success border border-success/30"
                                   : "bg-canvas text-muted-foreground/60 border border-border cursor-not-allowed"
                                   }`}
@@ -934,8 +933,8 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
 
                               {confirmDeleteId === sub.submission_id ? (
                                 <div className="flex items-center gap-1 bg-danger-surface p-0.5 rounded-lg border border-danger/30">
-                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-[10px] font-bold hover:bg-danger hover:text-white rounded cursor-pointer">YES</button>
-                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-[10px] hover:bg-muted rounded cursor-pointer">NO</button>
+                                  <button onClick={() => handleDelete(sub.submission_id, sub.kategori)} className="px-2 py-1 text-danger text-xs font-bold hover:bg-danger hover:text-white rounded cursor-pointer">YES</button>
+                                  <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-xs hover:bg-muted rounded cursor-pointer">NO</button>
                                 </div>
                               ) : (
                                 <button onClick={() => setConfirmDeleteId(sub.submission_id)} className="p-1.5 rounded-lg bg-danger-surface hover:bg-danger-surface text-danger border border-danger/30 cursor-pointer">
@@ -981,20 +980,20 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                 {editingId === sub.submission_id ? (
                   /* --- MOBILE: INLINE EDIT FORM --- */
                   <div className="p-4 bg-danger-surface border-l-4 border-danger/50 space-y-3">
-                    <div className="text-[10px] font-bold text-danger uppercase tracking-widest mb-2">Editing Submission</div>
+                    <div className="text-xs font-bold text-danger mb-2">Editing submission</div>
                     <div className="space-y-2">
-                      <Label className="text-[11px] text-muted-foreground">Enterprise Name</Label>
+                      <Label className="text-xs text-muted-foreground">Enterprise Name</Label>
                       <Input value={editForm.enterprise_name || ""} onChange={e => setEditForm({ ...editForm, enterprise_name: e.target.value })}
                         className="h-9 text-sm bg-white" placeholder="Enterprise Name" />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-muted-foreground">Initial</Label>
+                        <Label className="text-xs text-muted-foreground">Initial</Label>
                         <Input value={editForm.enterprise_initial || ""} onChange={e => setEditForm({ ...editForm, enterprise_initial: e.target.value.toUpperCase() })}
                           maxLength={3} className="h-9 text-sm font-mono uppercase bg-danger-surface border-danger/40 text-danger" placeholder="XXX" />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-muted-foreground">Environment</Label>
+                        <Label className="text-xs text-muted-foreground">Environment</Label>
                         <Select value={editForm.environment || "Staging"} onValueChange={v => setEditForm({ ...editForm, environment: v })}>
                           <SelectTrigger className="h-9 text-sm bg-white"><SelectValue /></SelectTrigger>
                           <SelectContent>{ENV_TYPE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
@@ -1002,24 +1001,24 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Merchant Name</Label>
+                      <Label className="text-xs text-muted-foreground">Merchant Name</Label>
                       <Input value={editForm.merchant_name || ""} onChange={e => setEditForm({ ...editForm, merchant_name: e.target.value })}
                         className="h-9 text-sm bg-white" placeholder="Merchant Name" />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-muted-foreground">Revision</Label>
+                        <Label className="text-xs text-muted-foreground">Revision</Label>
                         <Input value={editForm.revision_number || ""} onChange={e => setEditForm({ ...editForm, revision_number: e.target.value })}
                           className="h-9 text-sm bg-white" />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-muted-foreground">Release Date</Label>
+                        <Label className="text-xs text-muted-foreground">Release Date</Label>
                         <Input type="date" value={editForm.release_date || ""} onChange={e => setEditForm({ ...editForm, release_date: e.target.value })}
                           className="h-9 text-sm bg-white" />
                       </div>
                     </div>
                     <details className="bg-white rounded-md border border-border">
-                      <summary className="px-3 py-2 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider cursor-pointer">Timeline (tap to expand)</summary>
+                      <summary className="px-3 py-2 text-xs font-semibold text-muted-foreground cursor-pointer">Timeline (tap to expand)</summary>
                       <div className="p-3 grid grid-cols-2 gap-2 border-t border-border">
                         {[
                           { label: "Plan STG", field: "plan_stg" as keyof Submission },
@@ -1033,7 +1032,7 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                           { label: "Deliver PROD", field: "expected_deliver_prod" as keyof Submission },
                         ].map(({ label, field }) => (
                           <div key={field} className="space-y-1">
-                            <Label className="text-[10px] text-muted-foreground">{label}</Label>
+                            <Label className="text-xs text-muted-foreground">{label}</Label>
                             <Input type="date"
                               value={editForm[field] !== undefined && editForm[field] !== null ? String(editForm[field]) : ""}
                               onChange={e => setEditForm({ ...editForm, [field]: e.target.value })}
@@ -1064,23 +1063,23 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-foreground">{sub.enterprise_name}</div>
-                      <div className="text-[11px] text-muted-foreground">{sub.enterprise_initial}</div>
+                      <div className="text-xs text-muted-foreground">{sub.enterprise_initial}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Merchant</div>
+                        <div className="text-xs text-muted-foreground">Merchant</div>
                         <div className="text-foreground">{sub.merchant_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">PIC VE</div>
+                        <div className="text-xs text-muted-foreground">PIC VE</div>
                         <div className="text-foreground">{sub.pic_ve_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Rev</div>
+                        <div className="text-xs text-muted-foreground">Rev</div>
                         <div className="text-foreground font-mono">{formatRevision(sub.revision_number)}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Created</div>
+                        <div className="text-xs text-muted-foreground">Created</div>
                         <div className="text-foreground">{formatDateIndo(sub.submitted_at || "")}</div>
                       </div>
                     </div>
@@ -1104,40 +1103,40 @@ export function AdminDashboard({ adminId, onLogout }: AdminDashboardProps) {
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="text-sm font-semibold text-foreground break-words">{sub.enterprise_name}</div>
-                        <div className="text-[10px] text-muted-foreground">by {getAdminDisplayName(sub.created_by)}</div>
+                        <div className="text-xs text-muted-foreground">by {getAdminDisplayName(sub.created_by)}</div>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
                         <StatusBadge status={sub.status} />
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production" ? "bg-info-surface text-info border-info/30" : "bg-info-surface text-info border-info/30"}`}>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${sub.environment === "Production" ? "bg-info-surface text-info border-info/30" : "bg-info-surface text-info border-info/30"}`}>
                           {sub.environment}
                         </span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Initial</div>
+                        <div className="text-xs text-muted-foreground">Initial</div>
                         {sub.enterprise_initial ? (
                           <span className="inline-block font-mono text-xs font-bold text-danger bg-danger-surface border border-danger/30 px-2 py-0.5 rounded mt-0.5">{sub.enterprise_initial}</span>
                         ) : (
-                          <span className="inline-block text-[10px] italic text-warning bg-warning-surface border border-warning/30 px-2 py-0.5 rounded mt-0.5">Empty</span>
+                          <span className="inline-block text-xs italic text-warning bg-warning-surface border border-warning/30 px-2 py-0.5 rounded mt-0.5">Empty</span>
                         )}
                       </div>
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Merchant</div>
+                        <div className="text-xs text-muted-foreground">Merchant</div>
                         <div className="text-foreground">{sub.merchant_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">PIC VE</div>
+                        <div className="text-xs text-muted-foreground">PIC VE</div>
                         <div className="text-foreground">{sub.pic_ve_name || "-"}</div>
                       </div>
                       <div>
-                        <div className="text-[10px] text-muted-foreground uppercase tracking-wider">Date</div>
+                        <div className="text-xs text-muted-foreground">Date</div>
                         <div className="text-foreground">{formatDateIndo(sub.submitted_at?.split(" ")[0] || "")}</div>
                       </div>
                     </div>
                     <button
                       onClick={() => setDetailId(detailId === sub.submission_id ? null : sub.submission_id)}
-                      className="text-[11px] text-muted-foreground hover:text-foreground flex items-center gap-1"
+                      className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
                     >
                       <ChevronRight className={`w-3.5 h-3.5 transition-transform ${detailId === sub.submission_id ? "rotate-90" : ""}`} />
                       {detailId === sub.submission_id ? "Hide details" : "Show details"}
@@ -1193,7 +1192,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
 
   const dateRow = (label: string, val?: string) => (
     <div className="space-y-0.5">
-      <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
       <div className="text-xs text-foreground font-medium">
         {val && val !== "-" ? val : <span className="text-muted-foreground/60 italic">—</span>}
       </div>
@@ -1203,7 +1202,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
   const boolBadge = (val?: string | boolean) => {
     const isTrue = String(val).toLowerCase() === "true"
     return (
-      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${isTrue ? "bg-success-surface text-success border-success/30" : "bg-muted text-muted-foreground border-border"
+      <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${isTrue ? "bg-success-surface text-success border-success/30" : "bg-muted text-muted-foreground border-border"
         }`}>{isTrue ? "Yes" : "No"}</span>
     )
   }
@@ -1214,7 +1213,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
       {sub.status === "GENERATED" && (
         <div className="bg-success-surface border border-success/30 rounded-lg p-4 flex justify-between items-center">
           <div>
-            <div className="text-[10px] text-success/70 uppercase font-bold tracking-widest">Document Status</div>
+            <div className="text-xs text-success/70 font-bold">Document status</div>
             <div className="text-lg font-mono font-bold text-success">{sub.nomor_surat}</div>
           </div>
           <Badge className="bg-success text-white border-none">GENERATED</Badge>
@@ -1225,7 +1224,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
       <div>
         <div className="flex items-center gap-2 mb-3">
           <User className="w-3.5 h-3.5 text-danger" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Basic Information</span>
+          <span className="text-xs font-bold text-muted-foreground">Basic information</span>
         </div>
         <div className="grid grid-cols-4 gap-x-8 gap-y-4 bg-canvas p-4 rounded-xl border border-border">
           {dateRow("Submission ID", sub.submission_id)}
@@ -1238,7 +1237,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
           {dateRow("Initial Merchant", sub.enterprise_initial || "Not Set")}
 
           <div className="space-y-1">
-            <div className="text-[10px] text-muted-foreground uppercase tracking-wider">RASP / RGB</div>
+            <div className="text-xs text-muted-foreground">RASP / RGB</div>
             <div className="flex gap-2">
               {boolBadge(sub.rasp)}
               {boolBadge(sub.rgb)}
@@ -1251,7 +1250,7 @@ function DetailPanel({ sub }: { sub: Submission }) {
       <div>
         <div className="flex items-center gap-2 mb-3">
           <CalendarDays className="w-3.5 h-3.5 text-info" />
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Project Timeline</span>
+          <span className="text-xs font-bold text-muted-foreground">Project timeline</span>
         </div>
         <div className="grid grid-cols-5 gap-4">
           {dateRow("Release Date", formatDateIndo(sub.release_date || ""))}
@@ -1267,11 +1266,11 @@ function DetailPanel({ sub }: { sub: Submission }) {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Settings className="w-3.5 h-3.5 text-info" />
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">System Configuration Preview</span>
+            <span className="text-xs font-bold text-muted-foreground">System configuration preview</span>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-canvas rounded-lg p-3 border border-border">
-              <div className="text-[10px] text-info font-bold mb-2 uppercase">Liveness Setup</div>
+              <div className="text-xs text-info font-bold mb-2">Liveness setup</div>
               <div className="text-xs text-muted-foreground">
                 Threshold: {productConfig.basic?.livenessThreshold || "-"} <br />
                 Providers: {Array.isArray(productConfig.basic?.livenessProviders) ? productConfig.basic.livenessProviders.join(", ") : "-"}
@@ -1340,7 +1339,7 @@ function EditRow({
                     maxLength={3}
                   />
                 </TooltipTrigger>
-                <TooltipContent side="top" className="bg-warning text-white border-0 text-[10px] leading-snug max-w-[160px]">
+                <TooltipContent side="top" className="bg-warning text-white border-0 text-xs leading-snug max-w-[160px]">
                   ⚠️ Initial <b>{typedInitial}</b> is already used by{" "}
                   <span className="font-semibold">{conflict?.enterprise_name}</span>.
                   Please use a different initial.
@@ -1377,7 +1376,7 @@ function EditRow({
       {/* Row 2: timeline fields */}
       <tr className="bg-danger-surface border-l-2 border-danger/40">
         <td colSpan={9} className="px-6 py-3">
-          <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-3">Edit Timeline &amp; Configuration</div>
+          <div className="text-xs font-bold text-muted-foreground mb-3">Edit Timeline &amp; Configuration</div>
           <div className="grid grid-cols-5 gap-3">
             {[
               { label: "Revision", field: "revision_number" as keyof Submission },
@@ -1393,7 +1392,7 @@ function EditRow({
               { label: "Deliver PROD", field: "expected_deliver_prod" as keyof Submission, type: "date" },
             ].map(({ label, field, type }) => (
               <div key={field} className="space-y-1">
-                <Label className="text-[10px] text-muted-foreground">{label}</Label>
+                <Label className="text-xs text-muted-foreground">{label}</Label>
                 <Input
                   type={type || "text"}
                   value={editForm[field] !== undefined && editForm[field] !== null ? String(editForm[field]) : ""}

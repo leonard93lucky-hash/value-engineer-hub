@@ -2,6 +2,22 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.4.0 — 2026-11-09 — Hub UI revamp phases 3–4 (SOW Generator, Team Fund) + expense donut
+
+> Reversibility: baseline `v4.3.0`. Revert with `git checkout v4.3.0 -- apps/sow-generator/frontend/ apps/teamfundsheets/`.
+
+### Added
+- **SOW** `components/page-header.tsx`: `PageHeader` (same layout as the hub) and `EditorHeader` (44px back button + title) for the split-screen editors
+- **SOW landing**: two columns on desktop. Left: "Document types" rows with description, "You will fill in" field chips and a "Create document" button. Right: "How it works" (3 steps with icons) and "Latest updates" (every note from `/api/updates` with its description, one scroll list with an always-visible scrollbar). Both columns end on the same line; one column below 1024px
+- **Team Fund** `components/page-header.tsx` and `components/expense-donut.tsx`: "Expenses by category" donut, year to date in WIB, total + entry count in the center, hover tooltip, and a table with amount and share per category (validated categorical colors in fixed category order; unknown categories fold into Other)
+
+### Changed
+- **SOW forms** (SDK Liveness, API PrivyPass, Credential): shared `EditorHeader`, form panel 45% wide in all three, doubled side padding removed, section headings 16px sentence case
+- **SOW admin**: shared page header ("SOW admin") with labelled Refresh and Update notes buttons; content max 1440px
+- **SOW text**: 9–11px text raised to 12px and all-caps labels removed across forms, admin and update notes (document previews unchanged on purpose)
+- **Team Fund**: left-aligned shared header ("Team fund") with Export CSV / Refresh / Add expense / Add income; content 1280px with 32px/16px gutters; sentence-case headings and card labels; status text 14px; monthly chart Y axis widened with id-ID number format
+- `ARCHITECTURE.md`: UI conventions now cover SOW and Team Fund
+
 ## v4.3.0 — 2026-11-06 — Hub UI revamp phases 1–2 (nav, shared header, FAQ, Questionnaire)
 
 > Reversibility: baseline `v4.2.0`. Revert with `git checkout v4.2.0 -- apps/ve-faq/src/`. SOW and Team Fund are unchanged in this release (phases 3–4 pending).

@@ -68,8 +68,9 @@ The product is **one page**: the VE FAQ app at `:5173` (prod `/login/`) is the s
 
 ## UI conventions (Privy App Design V2, hub revamp from v4.3.0)
 
-- **Every page uses the shared left-aligned header** `apps/ve-faq/src/components/PageHeader.jsx` (`title`, `subtitle`, `actions`; 28px/600 title, one red primary action max). SOW and Team Fund still need the same pattern (revamp phases 3–4 pending).
-- **Page width:** content max 1280px, 32px gutters desktop, 16px at ≤768px (`.dashboard-container`, `.questionnaire-page`).
+- **Every page uses the shared left-aligned header** (`title`, `subtitle`, `actions`; 28px/600 title, one red primary action max). Three copies keep the same layout: `apps/ve-faq/src/components/PageHeader.jsx`, `apps/sow-generator/frontend/components/page-header.tsx` (also `EditorHeader` for the form editors), `apps/teamfundsheets/components/page-header.tsx`. Change all three together.
+- **Charts:** categorical colors come from the dataviz default palette in fixed order and are validated with its script; every chart value is also shown as text (table or labels). Example: `apps/teamfundsheets/components/expense-donut.tsx`.
+- **Page width:** content max 1280px (SOW admin 1440px), 32px gutters desktop, 16px at ≤768px (`.dashboard-container`, `.questionnaire-page`, `max-w-[1280px] px-8 max-md:px-4` in the Next.js apps).
 - **Controls:** 44px inputs/buttons, 40px chips/nav tabs, 14px control text, 16px body, sentence case everywhere, selection = blue (`--selection`), red only for the primary action and the active-tab underline.
 - **Accessibility:** icon-only buttons need `aria-label`; toggles use `aria-pressed`; tab sets use `role="tablist"`/`aria-selected`; drawers (`StatsDashboard`, `ActivityLog`) are `role="dialog"` and close on Escape.
 - **Where the CSS lives:** `apps/ve-faq/src/index.css` (~3.3k lines). Revamp overrides are appended at the end in blocks labelled `Phase 2: …` — edit those first; they win over older rules by source order.

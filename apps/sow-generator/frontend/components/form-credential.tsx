@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import { API_BASE_URL } from "@/lib/constants"
 import { CredentialPreview } from "./credential-preview"
+import { EditorHeader } from "@/components/page-header"
 
 type ServiceCategory = "avengers" | "general" | "connect"
 type SelectedService = { name: string; category: ServiceCategory }
@@ -277,26 +278,13 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
   return (
     <div className="flex h-screen bg-background font-sans overflow-hidden">
       {/* --- LEFT PANEL: FORM --- */}
-      <div className="w-full md:w-[500px] bg-white md:border-r flex flex-col z-10  h-full">
-        <div className="p-5 border-b bg-white flex items-center gap-3">
-          {onBack && (
-            <button
-              onClick={onBack}
-              className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-              title="Back to Product Selection"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-            </button>
-          )}
-          <h2 className="flex items-center gap-2 font-bold text-foreground text-xl">
-            <LockIcon className="w-6 h-6 text-success" /> Credential Document
-          </h2>
-        </div>
+      <div className="w-full md:w-[45%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 h-full">
+        <EditorHeader title="Credential document" onBack={onBack} />
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
           {/* Section 1: Basic Info */}
           <section className="space-y-4">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Basic Info</h3>
+            <h3 className="text-base font-semibold text-foreground border-b pb-2">Basic info</h3>
             
             <div className="space-y-1">
               <Label>PIC VE</Label>
@@ -345,13 +333,13 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
           {/* Section 2: Services */}
           <section className="space-y-4">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Select Services</h3>
+            <h3 className="text-base font-semibold text-foreground border-b pb-2">Select services</h3>
             
             <div className="space-y-3">
               {/* Two-step dropdown: Category → Sub-service (with "Other" option) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Service</Label>
+                  <Label className="text-xs text-muted-foreground font-bold">Service</Label>
                   <Select
                     value={dropdownCategory}
                     onValueChange={v => {
@@ -372,7 +360,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Sub-Service</Label>
+                  <Label className="text-xs text-muted-foreground font-bold">Sub-service</Label>
                   <Select
                     value={dropdownSubService}
                     onValueChange={handleSubServicePick}
@@ -401,7 +389,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
               {/* Custom input — only when "Other" is picked */}
               {dropdownSubService === "__OTHER__" && dropdownCategory && (
                 <div className="p-3 bg-success-surface border border-dashed border-success/40 rounded-lg space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <div className="text-[10px] uppercase tracking-widest text-success font-bold">
+                  <div className="text-xs text-success font-bold">
                     Custom service name for {CATEGORY_LABEL[dropdownCategory]}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
@@ -441,7 +429,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
                     return (
                       <div key={`${svc.category}:${svc.name}`} className="flex items-center gap-1.5 bg-success-surface text-success px-3 py-1 rounded-full text-xs font-semibold border border-success/20 shadow-sm animate-in fade-in zoom-in duration-200">
                         <span>{svc.name}</span>
-                        <span className="text-[9px] uppercase tracking-wider bg-success-surface text-success px-1.5 py-0.5 rounded-full">
+                        <span className="text-xs bg-success-surface text-success px-1.5 py-0.5 rounded-full">
                           {CATEGORY_LABEL[svc.category]}{isCustom ? " · custom" : ""}
                         </span>
                         <button
@@ -460,7 +448,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
             {/* Service Credentials — grouped by category */}
             {selectedServicesTemp.some(s => s.category === "avengers") && (
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Avengers Credentials</h3>
+                <h3 className="text-base font-semibold text-foreground border-b pb-2">Avengers credentials</h3>
                 <div className="p-4 bg-canvas border border-border rounded-xl space-y-3">
                   <div className="text-xs text-muted-foreground font-medium">
                     {selectedServicesTemp.filter(s => s.category === "avengers").map(s => s.name).join(", ")}
@@ -483,7 +471,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
             {selectedServicesTemp.some(s => s.category === "general") && (
               <div className="mt-4 space-y-3">
-                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">General Credentials</h3>
+                <h3 className="text-base font-semibold text-foreground border-b pb-2">General credentials</h3>
                 <div className="p-4 bg-canvas border border-border rounded-xl space-y-3">
                   <div className="text-xs text-muted-foreground font-medium">
                     {selectedServicesTemp.filter(s => s.category === "general").map(s => s.name).join(", ")}
@@ -516,7 +504,7 @@ export default function FormCredential({ onLogout, currentUser, onBack }: FormCr
 
             {selectedServicesTemp.some(s => s.category === "connect") && (
               <div className="mt-4 space-y-3">
-                <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Connect Credentials</h3>
+                <h3 className="text-base font-semibold text-foreground border-b pb-2">Connect credentials</h3>
                 <div className="p-4 bg-canvas border border-border rounded-xl space-y-3">
                   <div className="text-xs text-muted-foreground font-medium">
                     {selectedServicesTemp.filter(s => s.category === "connect").map(s => s.name).join(", ")}
@@ -614,7 +602,7 @@ function UrlListInput({ label, entries, onChange, suggestions = [] }: { label: s
           </div>
         ))}
       </div>
-      <button type="button" onClick={add} className="flex items-center gap-1 text-[10px] text-success hover:text-success/80 font-semibold mt-1">
+      <button type="button" onClick={add} className="flex items-center gap-1 text-xs text-success hover:text-success/80 font-semibold mt-1">
         <Plus className="w-3 h-3" /> Add URL
       </button>
     </div>

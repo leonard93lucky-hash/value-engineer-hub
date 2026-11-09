@@ -2,6 +2,7 @@
 
 import { Plus, Download, RotateCw } from "lucide-react"
 import { useAuth } from "@/app/providers"
+import { PageHeader } from "@/components/page-header"
 
 interface HeaderProps {
   onIncomeClick: () => void
@@ -11,57 +12,46 @@ interface HeaderProps {
   refreshing: boolean
 }
 
+const secondaryBtn =
+  "inline-flex items-center gap-2 px-4 min-h-[44px] bg-card border border-input hover:bg-canvas text-foreground rounded-lg font-medium transition-colors text-[15px] disabled:opacity-50 max-sm:px-3"
+
 export default function Header({ onIncomeClick, onExpenseClick, onExportClick, onRefresh, refreshing }: HeaderProps) {
   const { isSupport, userName } = useAuth()
 
-  const secondaryBtn =
-    "flex items-center gap-2 px-3 sm:px-4 min-h-[44px] bg-card border border-input hover:bg-canvas text-foreground rounded-lg font-medium transition-colors text-sm sm:text-base"
-
   return (
-    <div className="px-4 pt-6 pb-1 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-      <h1 className="text-[28px] leading-tight font-semibold text-foreground tracking-tight">Value Engineer Team Fund</h1>
-      <p className="text-base text-muted-foreground mt-1">Track team income, expenses, and goal progress</p>
-      {userName && (
-        <p className="text-sm text-muted-foreground mt-1">Signed in as {userName}</p>
-      )}
-
-      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-4">
-        <button
-          onClick={onExportClick}
-          className={secondaryBtn}
-          title="Export report as CSV"
-        >
-          <Download size={18} />
-          <span className="hidden sm:inline">Export</span>
-        </button>
-        <button
-          onClick={onRefresh}
-          disabled={refreshing}
-          className={`${secondaryBtn} disabled:opacity-50`}
-          title="Refresh data"
-        >
-          <RotateCw size={18} className={refreshing ? "animate-spin" : ""} />
-          <span className="hidden sm:inline">{refreshing ? "Refreshing..." : "Refresh"}</span>
-        </button>
-        {isSupport && (
+    <div className="mx-auto w-full max-w-[1280px] px-8 max-md:px-4">
+      <PageHeader
+        title="Team fund"
+        subtitle={`Track team income, expenses and goal progress.${userName ? ` Signed in as ${userName}.` : ""}`}
+        actions={
           <>
-            <button
-              onClick={onIncomeClick}
-              className="flex items-center gap-2 px-3 sm:px-4 min-h-[44px] bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
-            >
-              <Plus size={18} />
-              <span className="hidden sm:inline">Income</span>
+            <button onClick={onExportClick} className={secondaryBtn} aria-label="Export report as CSV" title="Export report as CSV">
+              <Download size={18} aria-hidden="true" />
+              <span className="max-sm:sr-only">Export CSV</span>
             </button>
-            <button
-              onClick={onExpenseClick}
-              className={secondaryBtn}
-            >
-              <Plus size={18} />
-              <span className="hidden sm:inline">Expense</span>
+            <button onClick={onRefresh} disabled={refreshing} className={secondaryBtn} aria-label={refreshing ? "Refreshing data" : "Refresh data"} title="Refresh data">
+              <RotateCw size={18} className={refreshing ? "animate-spin" : ""} aria-hidden="true" />
+              <span className="max-sm:sr-only">{refreshing ? "Refreshing…" : "Refresh"}</span>
             </button>
+            {isSupport && (
+              <>
+                <button onClick={onExpenseClick} className={secondaryBtn} aria-label="Add expense">
+                  <Plus size={18} aria-hidden="true" />
+                  <span className="max-sm:sr-only">Add expense</span>
+                </button>
+                <button
+                  onClick={onIncomeClick}
+                  aria-label="Add income"
+                  className="inline-flex items-center gap-2 px-4 min-h-[44px] bg-primary hover:bg-primary-hover text-white rounded-lg font-medium transition-colors text-[15px] max-sm:px-3"
+                >
+                  <Plus size={18} aria-hidden="true" />
+                  <span className="max-sm:sr-only">Add income</span>
+                </button>
+              </>
+            )}
           </>
-        )}
-      </div>
+        }
+      />
     </div>
   )
 }

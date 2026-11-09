@@ -190,7 +190,7 @@ export default function TransactionHistory({
   return (
     <div className="bg-card border border-border rounded-lg p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-foreground">Transaction History</h2>
+        <h2 className="text-xl font-semibold text-foreground">Transaction history</h2>
 
         <div className="flex flex-wrap items-center gap-3">
           <FilterBar />

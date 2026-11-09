@@ -91,7 +91,7 @@ export function UpdateNotesPopup() {
         <Megaphone className="w-3.5 h-3.5" />
         <span>What&apos;s New</span>
         {unseenIds.length > 0 && (
-          <span className="bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+          <span className="bg-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
             {unseenIds.length}
           </span>
         )}
@@ -110,7 +110,7 @@ export function UpdateNotesPopup() {
             </div>
             <div>
               <div className="text-sm font-bold text-foreground">What&apos;s New</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              <div className="text-xs text-muted-foreground">
                 {updates.length} update{updates.length !== 1 ? "s" : ""}
                 {unseenIds.length > 0 && ` · ${unseenIds.length} new`}
               </div>
@@ -133,14 +133,14 @@ export function UpdateNotesPopup() {
                 <div key={u.id} className={`p-3 rounded-xl border ${isNew ? "border-danger/30 bg-danger-surface" : "border-border bg-canvas"}`}>
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${meta.cls}`}>
+                      <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${meta.cls}`}>
                         {meta.icon} {meta.label}
                       </span>
                       {isNew && (
-                        <span className="text-[9px] font-bold bg-primary text-white px-1.5 py-0.5 rounded-full">NEW</span>
+                        <span className="text-xs font-bold bg-primary text-white px-1.5 py-0.5 rounded-full">NEW</span>
                       )}
                     </div>
-                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">{formatPostedAt(u.posted_at)}</span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">{formatPostedAt(u.posted_at)}</span>
                   </div>
                   <div className="text-sm font-semibold text-foreground">{u.title}</div>
                   {u.description && (

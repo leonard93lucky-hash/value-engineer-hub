@@ -28,6 +28,7 @@ import {
     LOGO_HEADER      // TAMBAHKAN INI SEKALIAN
 } from "@/lib/constants";
 import { DocumentPreview } from "./document-preview"; // Import preview
+import { EditorHeader } from "@/components/page-header"
 
 // ─── Komponen DateTBC — Field tanggal dengan toggle TBC ───────────────────────
 function DateTBC({
@@ -65,7 +66,7 @@ function DateTBC({
                     type="button"
                     onClick={() => onToggleTbc(!isTbc)}
                     title={isTbc ? "Click to enter a date" : "Click if the date is not yet confirmed"}
-                    className={`shrink-0 px-2.5 py-1 rounded-md text-[10px] font-bold border transition-all duration-150 ${heightCls} ${isTbc
+                    className={`shrink-0 px-2.5 py-1 rounded-md text-xs font-bold border transition-all duration-150 ${heightCls} ${isTbc
                         ? "bg-warning border-warning text-white"
                         : "bg-white border-input text-muted-foreground hover:border-warning hover:text-warning"
                         }`}
@@ -356,9 +357,9 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
         const isDefault = JSON.stringify(current) === JSON.stringify(defaultValue);
 
         return isDefault ? (
-            <span className="ml-2 text-[10px] bg-success-surface text-success px-2 py-0.5 rounded-full border border-success/30">Default</span>
+            <span className="ml-2 text-xs bg-success-surface text-success px-2 py-0.5 rounded-full border border-success/30">Default</span>
         ) : (
-            <span className="ml-2 text-[10px] bg-warning-surface text-warning px-2 py-0.5 rounded-full border border-warning/30">Custom</span>
+            <span className="ml-2 text-xs bg-warning-surface text-warning px-2 py-0.5 rounded-full border border-warning/30">Custom</span>
         );
     };
 
@@ -390,33 +391,20 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
         <div className="flex h-screen bg-background font-sans overflow-hidden">
 
             {/* --- LEFT PANEL: FORM INPUT --- */}
-            <div className="w-full md:w-[40%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10 ">
-                <div className="p-5 border-b bg-white flex items-center gap-3">
-                    {onBack && (
-                        <button
-                            onClick={onBack}
-                            className="p-1 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                            title="Back to Product Selection"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                        </button>
-                    )}
-                    <h2 className="flex items-center gap-2 font-bold text-foreground text-xl">
-                        <FileText className="w-6 h-6 text-primary" /> SOW SDK Liveness
-                    </h2>
-                </div>
+            <div className="w-full md:w-[45%] md:min-w-[500px] bg-white md:border-r flex flex-col z-10">
+                <EditorHeader title="SOW SDK Liveness" onBack={onBack} />
 
-                <div className="flex-1 overflow-hidden flex flex-col px-6">
+                <div className="flex-1 overflow-hidden flex flex-col">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
-                        <div className="sticky top-0 z-30 bg-white px-6 pt-4 pb-2 shadow-sm">
+                        <div className="sticky top-0 z-30 bg-white px-6 pt-4 pb-2 border-b border-border">
                             <TabsList className="grid w-full grid-cols-2 bg-muted">
-                                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                                <TabsTrigger value="basic">Basic info</TabsTrigger>
                                 <TabsTrigger value="product" className="gap-2">
                                     Product Config
                                     {/* Logika sederhana untuk badge di tab utama */}
                                     <Badge
                                         variant={JSON.stringify(data.productConfig) === JSON.stringify(DEFAULTS) ? 'secondary' : 'destructive'}
-                                        className="h-4 text-[10px]"
+                                        className="h-4 text-xs"
                                     >
                                         {JSON.stringify(data.productConfig) === JSON.stringify(DEFAULTS) ? 'Default' : 'Custom'}
                                     </Badge>
@@ -478,11 +466,11 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                 {/* GROUP 2: CONFIGURATION */}
                                 <section className="space-y-4">
-                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">System Config</h3>
+                                    <h3 className="text-base font-semibold text-foreground border-b pb-2">System Config</h3>
 
                                     {/* SDK Platforms */}
                                     <div>
-                                        <Label className="mb-3 block font-semibold text-xs text-muted-foreground">SDK PLATFORM</Label>
+                                        <Label className="mb-3 block font-medium text-sm text-foreground">SDK platform</Label>
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                             {["ios", "android", "web"].map(p => (
                                                 <div key={p} className={`flex items-center gap-2 border px-3 py-2 rounded cursor-pointer transition-colors ${data.sdkType.includes(p) ? 'bg-selection-surface border-selection' : 'bg-canvas border-border'}`} onClick={() => toggleList("sdkType", p)}>
@@ -568,7 +556,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
 
                                 {/* GROUP 3: TIMELINE */}
                                 <section className="space-y-4">
-                                    <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider border-b pb-2">Timeline</h3>
+                                    <h3 className="text-base font-semibold text-foreground border-b pb-2">Timeline</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <DateTBC label="Trial Plan on STG" name="trialPlanStg" value={data.trialPlanStg} isTbc={!!data.tbcFields?.trialPlanStg} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, trialPlanStg: v })} onChange={handleInputChange} />
                                         <DateTBC label="UAT" name="uat" value={data.uat} isTbc={!!data.tbcFields?.uat} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, uat: v })} onChange={handleInputChange} />
@@ -579,7 +567,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                     </div>
 
                                     <div className="p-4 bg-canvas rounded-lg border border-border space-y-3 mt-2">
-                                        <h4 className="text-xs font-bold text-primary uppercase tracking-wide border-b border-selection/20 pb-2">Internal VE Timeline</h4>
+                                        <h4 className="text-xs font-bold text-primary border-b border-selection/20 pb-2">Internal VE Timeline</h4>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <DateTBC label="STG Request" name="stgRequest" value={data.stgRequest} isTbc={!!data.tbcFields?.stgRequest} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, stgRequest: v })} onChange={handleInputChange} small />
                                             <DateTBC label="Expected Approved" name="expectedApproved" value={data.expectedApproved} isTbc={!!data.tbcFields?.expectedApproved} onToggleTbc={v => handleChange("tbcFields", { ...data.tbcFields, expectedApproved: v })} onChange={handleInputChange} small />
@@ -601,7 +589,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                     <AccordionItem value="provider" className="border rounded-lg bg-canvas overflow-hidden">
                                         <AccordionTrigger className="flex items-center justify-between py-4 px-5 hover:no-underline group data-[state=open]:border-b data-[state=open]:bg-white transition-all">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Basic Setup</span>
+                                                <span className="text-xs font-bold text-muted-foreground">Basic Setup</span>
                                                 {getStatusBadge('basic')} {/* TAMBAHKAN INI */}
                                             </div>
                                         </AccordionTrigger>
@@ -704,7 +692,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                     <AccordionItem value="ui-setup" className="border rounded-lg bg-canvas overflow-hidden">
                                         <AccordionTrigger className="flex items-center justify-between py-4 px-5 hover:no-underline group data-[state=open]:border-b data-[state=open]:bg-white transition-all">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">UI Customization</span>
+                                                <span className="text-xs font-bold text-muted-foreground">UI Customization</span>
                                                 {getStatusBadge('ui')} {/* TAMBAHKAN INI */}
                                             </div>
                                         </AccordionTrigger>
@@ -783,7 +771,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                             onChange={(e) => handleProductChange('ui', 'buttonColor', e.target.value)}
                                                         />
                                                         <Input
-                                                            className="h-7 text-[10px] border-none p-0 focus-visible:ring-0"
+                                                            className="h-7 text-xs border-none p-0 focus-visible:ring-0"
                                                             placeholder="#Hex..."
                                                             value={data.productConfig.ui.buttonColor === 'Red' ? '' : data.productConfig.ui.buttonColor}
                                                             onChange={(e) => handleProductChange('ui', 'buttonColor', e.target.value)}
@@ -805,7 +793,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                     </div>
                                                     <div className={`flex-1 flex items-center space-x-2 p-2 border rounded bg-white ${data.productConfig.ui.buttonWording !== "I'm Ready!" ? 'border-selection' : ''}`}>
                                                         <Input
-                                                            className="h-7 text-[10px] border-none p-0 focus-visible:ring-0"
+                                                            className="h-7 text-xs border-none p-0 focus-visible:ring-0"
                                                             placeholder="Custom wording..."
                                                             value={data.productConfig.ui.buttonWording === "I'm Ready!" ? '' : data.productConfig.ui.buttonWording}
                                                             onChange={(e) => handleProductChange('ui', 'buttonWording', e.target.value)}
@@ -1044,7 +1032,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                         }`}
                                                                 >
                                                                     <Checkbox checked={isDefault} />
-                                                                    <Label className="text-[11px] cursor-pointer">{defaultLabel}</Label>
+                                                                    <Label className="text-xs cursor-pointer">{defaultLabel}</Label>
                                                                 </div>
 
                                                                 {/* OPSI CUSTOM / OTHER */}
@@ -1057,7 +1045,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                                 if (isDefault) handleProductChange('assets', key, "Other");
                                                                             }}
                                                                         />
-                                                                        <Label className="text-[11px]">Other</Label>
+                                                                        <Label className="text-xs">Other</Label>
                                                                     </div>
 
                                                                     {!isDefault && (
@@ -1066,13 +1054,13 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                                 // Layout Dua Input untuk Legal (ID & EN) 
                                                                                 <>
                                                                                     <Input
-                                                                                        className="h-7 text-[10px] bg-canvas"
+                                                                                        className="h-7 text-xs bg-canvas"
                                                                                         placeholder="(Link File ID)"
                                                                                         value={data.productConfig.assets[`${key}ID`]}
                                                                                         onChange={(e) => handleProductChange('assets', `${key}ID`, e.target.value)}
                                                                                     />
                                                                                     <Input
-                                                                                        className="h-7 text-[10px] bg-canvas"
+                                                                                        className="h-7 text-xs bg-canvas"
                                                                                         placeholder="(Link File EN)"
                                                                                         value={data.productConfig.assets[`${key}EN`]}
                                                                                         onChange={(e) => handleProductChange('assets', `${key}EN`, e.target.value)}
@@ -1081,7 +1069,7 @@ export default function FormValueEngineer({ onLogout, currentUser, onBack }: For
                                                                             ) : (
                                                                                 // Layout Satu Input untuk Asset Gambar 
                                                                                 <Input
-                                                                                    className="h-7 text-[10px] bg-canvas"
+                                                                                    className="h-7 text-xs bg-canvas"
                                                                                     placeholder="Link File Custom..."
                                                                                     value={data.productConfig.assets[key] === "Other" ? "" : data.productConfig.assets[key]}
                                                                                     onChange={(e) => handleProductChange('assets', key, e.target.value)}

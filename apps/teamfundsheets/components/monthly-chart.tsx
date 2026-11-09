@@ -33,9 +33,9 @@ export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) 
   })
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 sm:p-6 mb-8">
+    <div className="h-full bg-card border border-border rounded-lg p-4 sm:p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg sm:text-xl font-semibold text-foreground">Income vs Expenses</h2>
+        <h2 className="text-xl font-semibold text-foreground">Income vs expenses</h2>
         <span className="text-muted-foreground text-sm">Monthly comparison</span>
       </div>
 
@@ -50,10 +50,11 @@ export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) 
               tick={{ fill: '#66545E', fontSize: 12 }}
             />
             <YAxis 
+              width={104}
               axisLine={false}
               tickLine={false}
               tick={{ fill: '#66545E', fontSize: 12 }}
-              tickFormatter={(value) => `Rp ${value.toLocaleString()}`}
+              tickFormatter={(value) => `Rp ${value.toLocaleString("id-ID")}`}
             />
             <Tooltip
               cursor={{ fill: 'rgba(67,10,35,0.04)' }}

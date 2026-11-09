@@ -182,6 +182,16 @@
   background: #B9AEB5;
 }
 
+/* Always-visible scrollbar for the SOW "Latest updates" box (macOS hides overlay scrollbars) */
+.updates-scroll { scrollbar-gutter: stable; }
+@supports not selector(::-webkit-scrollbar) {
+  .updates-scroll { scrollbar-width: thin; scrollbar-color: #B9AEB5 #F2E8DD; }
+}
+.updates-scroll::-webkit-scrollbar { width: 8px; }
+.updates-scroll::-webkit-scrollbar-track { background: #F2E8DD; border-radius: 4px; }
+.updates-scroll::-webkit-scrollbar-thumb { background: #B9AEB5; border-radius: 4px; }
+.updates-scroll::-webkit-scrollbar-thumb:hover { background: #8E7D87; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

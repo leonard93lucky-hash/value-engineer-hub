@@ -72,7 +72,7 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
           {/* Left Side — Info */}
           <div className="space-y-8">
             <div className="space-y-5">
-              <div className="inline-flex items-center gap-2 bg-danger-surface border border-danger/30 text-danger text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 bg-danger-surface border border-danger/30 text-danger text-xs font-bold px-3 py-1.5 rounded-full">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Restricted Access
               </div>

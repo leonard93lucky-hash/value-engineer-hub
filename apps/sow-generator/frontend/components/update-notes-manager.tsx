@@ -123,7 +123,7 @@ export function UpdateNotesManager({ adminId, open, onClose }: UpdateNotesManage
             </div>
             <div>
               <div className="text-sm font-bold text-foreground">Manage Update Notes</div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
+              <div className="text-xs text-muted-foreground">
                 Publish changelog to all users
               </div>
             </div>
@@ -137,7 +137,7 @@ export function UpdateNotesManager({ adminId, open, onClose }: UpdateNotesManage
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
           {/* Add new form */}
           <section className="p-4 bg-success-surface border border-success/30 rounded-xl space-y-3">
-            <div className="text-[10px] uppercase tracking-widest text-success font-bold">Publish New Update</div>
+            <div className="text-xs text-success font-bold">Publish New Update</div>
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_140px] gap-2">
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Title</Label>
@@ -185,10 +185,10 @@ export function UpdateNotesManager({ adminId, open, onClose }: UpdateNotesManage
           {/* List existing */}
           <section className="space-y-2">
             <div className="flex items-center justify-between">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
+              <div className="text-xs text-muted-foreground font-bold">
                 Published ({updates.length})
               </div>
-              <button onClick={fetchUpdates} className="text-[10px] text-muted-foreground hover:text-foreground underline">
+              <button onClick={fetchUpdates} className="text-xs text-muted-foreground hover:text-foreground underline">
                 Refresh
               </button>
             </div>
@@ -209,18 +209,18 @@ export function UpdateNotesManager({ adminId, open, onClose }: UpdateNotesManage
                     <div key={u.id} className="p-3 rounded-xl border border-border bg-white hover:border-input transition-colors">
                       <div className="flex items-start justify-between gap-2 mb-1.5">
                         <div className="flex items-center gap-2 flex-wrap min-w-0">
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${meta.cls}`}>
+                          <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${meta.cls}`}>
                             {meta.icon} {meta.label}
                           </span>
-                          <span className="text-[10px] text-muted-foreground">{formatPostedAt(u.posted_at)}</span>
+                          <span className="text-xs text-muted-foreground">{formatPostedAt(u.posted_at)}</span>
                           {u.posted_by && (
-                            <span className="text-[10px] text-muted-foreground">· by {u.posted_by}</span>
+                            <span className="text-xs text-muted-foreground">· by {u.posted_by}</span>
                           )}
                         </div>
                         {confirmDeleteId === u.id ? (
                           <div className="flex items-center gap-1 bg-danger-surface p-0.5 rounded-lg border border-danger/30 shrink-0">
-                            <button onClick={() => handleDelete(u.id)} className="px-2 py-1 text-danger text-[10px] font-bold hover:bg-danger hover:text-white rounded">YES</button>
-                            <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-[10px] hover:bg-muted rounded">NO</button>
+                            <button onClick={() => handleDelete(u.id)} className="px-2 py-1 text-danger text-xs font-bold hover:bg-danger hover:text-white rounded">YES</button>
+                            <button onClick={() => setConfirmDeleteId(null)} className="px-2 py-1 text-muted-foreground text-xs hover:bg-muted rounded">NO</button>
                           </div>
                         ) : (
                           <button
