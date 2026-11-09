@@ -74,7 +74,7 @@ export default function ExpenseDonut({ expenses }: ExpenseDonutProps) {
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">No expenses recorded in {year} yet.</p>
       ) : (
-        <div className="flex flex-1 flex-col items-center gap-6 sm:flex-row lg:flex-col xl:flex-row">
+        <div className="flex min-w-0 flex-1 flex-col items-center gap-6 sm:flex-row lg:flex-col">
           <div className="relative h-[220px] w-[220px] shrink-0">
             <PieChart width={220} height={220}>
               <Pie
@@ -109,20 +109,20 @@ export default function ExpenseDonut({ expenses }: ExpenseDonutProps) {
             </div>
           </div>
 
-          <table className="w-full text-sm">
+          <table className="w-full min-w-0 table-fixed text-sm">
             <caption className="sr-only">Year-to-date expenses by category, amount and share of total</caption>
             <thead>
               <tr className="text-left text-muted-foreground">
                 <th scope="col" className="pb-2 font-medium">Category</th>
-                <th scope="col" className="pb-2 text-right font-medium">Amount</th>
-                <th scope="col" className="pb-2 text-right font-medium">Share</th>
+                <th scope="col" className="w-[42%] pb-2 text-right font-medium">Amount</th>
+                <th scope="col" className="w-[18%] pb-2 text-right font-medium">Share</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {rows.map(r => (
                 <tr key={r.name}>
                   <th scope="row" className="py-2 pr-2 text-left font-normal text-foreground">
-                    <span className="flex items-center gap-2">
+                    <span className="flex min-w-0 items-center gap-2">
                       <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: r.color }} aria-hidden="true" />
                       {r.name}
                     </span>

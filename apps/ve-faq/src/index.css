@@ -301,7 +301,7 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
 
 /* SOW Iframe */
 .sow-iframe-container {
-  position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+  position: fixed; top: var(--app-nav-height, 56px); left: 0; right: 0; bottom: 0;
   background: #fff;
 }
 .sow-iframe {
@@ -315,7 +315,6 @@ textarea.input-field { resize: vertical; min-height: 100px; line-height: 1.6; }
   .app-nav-user span { display: none; }
   .page-header { padding-top: 16px; }
   .page-header-title { font-size: 24px; }
-  .sow-iframe-container { top: 48px; }
 }
 @media (max-width: 600px) {
   .app-nav-tab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

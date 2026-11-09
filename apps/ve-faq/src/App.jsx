@@ -111,6 +111,20 @@ function App() {
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
+  // Keep iframe containers aligned with the real nav height
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const nav = document.querySelector('.app-nav');
+    if (!nav) return;
+    const updateNavHeight = () => {
+      document.documentElement.style.setProperty('--app-nav-height', `${nav.getBoundingClientRect().height}px`);
+    };
+    updateNavHeight();
+    const observer = new ResizeObserver(updateNavHeight);
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, [isAuthenticated]);
+
   // --- Handlers ---
   // LoginScreen fully handles authentication steps and calls onLogin with the resolved user
   const handleLogin = (result) => {

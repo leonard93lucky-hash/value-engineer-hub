@@ -277,8 +277,8 @@ export default function HomeContent() {
           expenseCount={expenses.length}
         />
 
-        <section className="bg-card p-6 rounded-lg border border-border">
-          <div className="flex items-center justify-between mb-6">
+        <section className="bg-card p-4 sm:p-6 rounded-lg border border-border">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
             <h2 className="text-xl font-semibold text-foreground">
               Income goal progress
               <span className="text-sm font-normal text-muted-foreground ml-2">
@@ -298,20 +298,20 @@ export default function HomeContent() {
           {incomeByPerson.length === 0 ? (
             <p className="text-muted-foreground text-sm">No payments recorded yet</p>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
               {incomeByPerson.map(([name, total]) => {
                 const percentage = Math.min((total / monthlyTarget) * 100, 100)
                 const isGoalReached = total >= monthlyTarget
                 return (
-                  <div key={name} className="space-y-2">
-                    <div className="flex justify-between text-sm font-medium gap-3">
-                      <span className="truncate">{name}</span>
+                  <div key={name} className="min-w-0 space-y-2">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-sm font-medium">
+                      <span className="min-w-0 truncate">{name}</span>
                       <span className="tabular-nums text-muted-foreground whitespace-nowrap">
                         Rp {total.toLocaleString("id-ID")} / Rp {monthlyTarget.toLocaleString("id-ID")}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="relative h-2.5 flex-1 bg-muted rounded-full border border-border overflow-hidden">
+                      <div className="relative h-2.5 min-w-0 flex-1 bg-muted rounded-full border border-border overflow-hidden">
                         <div
                           className={`h-full transition-all duration-1000 ${isGoalReached ? "bg-success" : "bg-info"}`}
                           style={{ width: `${percentage}%` }}

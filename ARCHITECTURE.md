@@ -141,6 +141,11 @@ The product is **one page**: the VE FAQ app at `:5173` (prod `/login/`) is the s
 
 ## Deploy Rules (MUST FOLLOW)
 
+> **Git credentials on this Mac:** `~/.gitconfig` has stale `credential.https://github.com.helper` entries pointing to a deleted temp `gh` binary, so a plain `git push` stops at "Username for https://github.com". Until that is fixed, push with
+> `git -c credential.https://github.com.helper= -c credential.https://github.com.helper=osxkeychain push origin main`
+> and push release tags by name the same way (never `--tags`).
+> **Which project redeploys:** changes under `apps/ve-faq/` and `apps/sow-generator/` redeploy **ve-hub**; changes under `apps/teamfundsheets/` redeploy **v0-team-fund-idr-tracker**. A push to `main` triggers both.
+
 1. **Deploy ONLY via GitHub push** — never use `vercel --prod` CLI command. Push commits to `main` branch, Vercel auto-deploys both projects.
 2. **Never convert API to CommonJS** — `apps/ve-faq/api/index.js` and `google-sheets.js` must remain ESM (`.js` extension with `import`/`export`). Converting to `.cjs` breaks the deployment.
 3. **Team Fund root directory** — on `v0-team-fund-idr-tracker` Vercel project, root directory MUST be `apps/teamfundsheets`. If it's `.`, it will deploy the hub code instead.

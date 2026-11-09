@@ -2,6 +2,20 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.4.1 — 2026-11-09 — Team Fund mobile overflow fixes + hub iframe offset
+
+> Reversibility: baseline `v4.4.0`. Revert with `git checkout v4.4.0 -- apps/teamfundsheets/components/ apps/ve-faq/src/index.css apps/ve-faq/src/App.jsx`.
+
+### Fixed
+- **Team Fund on phones**: no more horizontal overflow (page was 454px wide inside a 375px iframe) — goal rows wrap the amount to the next line, grid items/bar tracks are `min-w-0`, card padding `p-4 sm:p-6`
+- **Transaction history**: pagination row and page buttons wrap on narrow widths
+- **Expenses by category**: donut and table stack inside the card on lg+ and no longer overflow; `table-fixed` with fixed amount/share column widths; category rows truncate safely
+- **Monthly chart**: shortened Y axis labels (`Rp 350 rb`, `Rp 1,05 jt`), axis width 76px; tooltip still shows full amounts
+- **Hub iframes**: SOW / Admin / Team Fund iframes now start exactly below the nav at every width — the offset comes from a measured CSS variable `--app-nav-height` (62px ≤768px, ~65px desktop) instead of a hardcoded 56px
+
+### Changed
+- `ARCHITECTURE.md`: documented the broken gh credential helper workaround and which Vercel project redeploys per app
+
 ## v4.4.0 — 2026-11-09 — Hub UI revamp phases 3–4 (SOW Generator, Team Fund) + expense donut
 
 > Reversibility: baseline `v4.3.0`. Revert with `git checkout v4.3.0 -- apps/sow-generator/frontend/ apps/teamfundsheets/`.

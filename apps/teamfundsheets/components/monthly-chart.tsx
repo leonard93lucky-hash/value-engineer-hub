@@ -3,6 +3,13 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import type { Payment, Expense } from "@/lib/types"
 
+/** Short axis labels in Indonesian units: Rp 350 rb, Rp 1,4 jt. Tooltips keep full amounts. */
+function formatAxisRp(value: number): string {
+  if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 })} jt`
+  if (value >= 1_000) return `Rp ${(value / 1_000).toLocaleString("id-ID", { maximumFractionDigits: 0 })} rb`
+  return `Rp ${value}`
+}
+
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 interface MonthlyChartProps {
@@ -50,11 +57,11 @@ export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) 
               tick={{ fill: '#66545E', fontSize: 12 }}
             />
             <YAxis 
-              width={104}
+              width={76}
               axisLine={false}
               tickLine={false}
               tick={{ fill: '#66545E', fontSize: 12 }}
-              tickFormatter={(value) => `Rp ${value.toLocaleString("id-ID")}`}
+              tickFormatter={formatAxisRp}
             />
             <Tooltip
               cursor={{ fill: 'rgba(67,10,35,0.04)' }}

@@ -128,7 +128,7 @@ export default function TransactionHistory({
     const tp = totalPages(total)
     if (total === 0) return null
     return (
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-border">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>Rows:</span>
           <select
@@ -145,7 +145,7 @@ export default function TransactionHistory({
             {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} of {total}
           </span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1">
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page <= 1}
