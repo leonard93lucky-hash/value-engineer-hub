@@ -2,6 +2,18 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.5.2 — 2026-11-12 — Hub mobile layout fix
+
+> Reversibility: baseline `v4.5.1`. Revert with `git checkout v4.5.1 -- apps/ve-faq/src/index.css`.
+
+### Fixed
+- FAQ page was ~2,545px wide on a 375px phone: the one-line category row (a flex child with `min-width: auto`) stretched the toolbar, contributor filter and sort buttons. Toolbar and grid children now have `min-width: 0`.
+- Questionnaire send card was 449px wide on phones (long select options).
+- Top menu with 5 tabs ran past the screen edge: icon tabs and no name chip on phones, tighter tabs on tablets.
+
+### Changed
+- Sort options show as a 2 × 2 grid on screens up to 768px; the category row scrolls without a visible scrollbar; long FAQ questions and related chips wrap.
+
 ## v4.5.1 — 2026-11-12 — Games: no error box after a try
 
 > Reversibility: baseline `v4.5.0`. Revert with `git checkout v4.5.0 -- apps/ve-faq/src/components/GamesPage.jsx apps/ve-faq/src/components/games/MarcieFlight.jsx apps/ve-faq/src/index.css apps/teamfundsheets/lib/games.ts`.

@@ -3366,3 +3366,40 @@ body:has(.ro-theme) ::-webkit-scrollbar-thumb:hover {
 @keyframes games-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .games-spinner { animation-duration: 2.4s; } }
 .games-best { min-height: 24px; }
+
+/* ===== Mobile layout fixes (page was ~2,500px wide on phones) ===== */
+/* Flex children default to min-width: auto, so the one-line category row made the whole toolbar as wide as all chips. */
+.dashboard-container, .questionnaire-page, .games-page { min-width: 0; max-width: min(1280px, 100%); }
+.ro-theme .toolbar, .ro-theme .toolbar > *, .ro-theme .category-filters, .ro-theme .toolbar-actions { min-width: 0; max-width: 100%; }
+.related-chips { min-width: 0; max-width: 100%; }
+.related-chip-group { max-width: 100%; min-width: 0; }
+.related-chip { min-width: 0; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.faq-question-left { min-width: 0; }
+.faq-question-text { overflow-wrap: anywhere; }
+
+@media (max-width: 768px) {
+  .app-nav { grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px; }
+  .app-nav-tab { padding: 0 8px; }
+  .ro-theme .toolbar-actions { width: 100%; }
+  /* 4 sort options as a 2 × 2 grid: no hidden horizontal scroll */
+  .ro-theme .sort-control { width: 100%; height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .ro-theme .sort-btn { justify-content: center; min-height: 40px; padding: 0 8px; }
+  .ro-theme .category-filters { scrollbar-width: none; }
+  .ro-theme .category-filters::-webkit-scrollbar { display: none; }
+  .ro-theme .contributor-filter-container { width: 100%; }
+  .ro-theme .contributor-select { width: 100%; min-width: 0; }
+}
+
+/* Top menu with 5 tabs on small phones: icons only, no name chip */
+@media (max-width: 600px) {
+  .app-nav { grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px; padding: 0.5rem 8px; }
+  .app-nav-divider, .app-nav-user { display: none; }
+  .app-nav-logo { height: 18px; }
+  .app-nav-center { gap: 0; justify-content: center; min-width: 0; }
+  .app-nav-tab { padding: 0 8px; min-width: 40px; justify-content: center; }
+  .app-nav-icon-btn { width: 40px; height: 40px; }
+}
+/* Questionnaire: grid items default to min-width: auto, so long select options widened the card past the screen */
+.q-content-grid > * { min-width: 0; }
+.q-input-group input, .q-input-group select { width: 100%; max-width: 100%; min-width: 0; }
+.q-log-item, .q-log-info, .q-result-card { min-width: 0; overflow-wrap: anywhere; }
