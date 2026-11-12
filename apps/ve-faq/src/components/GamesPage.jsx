@@ -72,33 +72,46 @@ function Leaderboard({ state, userId }) {
 export default function GamesPage({ userId, userName, showToast }) {
   const [gameId, setGameId] = useState(GAMES[0].id);
   const [state, setState] = useState(null);
-  const [loadError, setLoadError] = useState('');
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [tryId, setTryId] = useState(null);
   const game = GAMES.find(g => g.id === gameId) || GAMES[0];
 
+  // Load tries + leaderboard. Retries quietly; once the page has data, a failed refresh
+  // keeps the current view and tries again in the background instead of showing an error.
   const load = useCallback(async ({ reset = false } = {}) => {
-    if (reset) setState(null);
-    try {
-      setLoadError('');
-      setState(await fetchGameState(gameId, userId));
-    } catch (err) {
-      setLoadError("We couldn't load your tries and the leaderboard. Check your connection and try again.");
-      console.warn('Games state error:', err.message);
+    if (reset) { setState(null); setLoadFailed(false); }
+    setRefreshing(true);
+    const delays = [0, 800, 2000];
+    for (let i = 0; i < delays.length; i++) {
+      if (delays[i]) await new Promise(r => setTimeout(r, delays[i]));
+      try {
+        const next = await fetchGameState(gameId, userId);
+        setState(next);
+        setLoadFailed(false);
+        setRefreshing(false);
+        return next;
+      } catch (err) {
+        console.warn(`Games state attempt ${i + 1} failed:`, err.message);
+      }
     }
+    setRefreshing(false);
+    setLoadFailed(true);
+    return null;
   }, [gameId, userId]);
 
   useEffect(() => { load({ reset: true }); }, [load]);
 
   const handleStart = useCallback(async () => {
-    setBusy(true);
+    setBusy('starting');
     try {
       const res = await startGameTry(gameId, userId, userName);
       setTryId(res.tryId);
       setState(s => (s ? { ...s, triesLeft: res.triesLeft, triesUsed: s.maxTries - res.triesLeft } : s));
       return true;
     } catch (err) {
-      showToast?.(err.status === 429 ? "You've used all 3 tries today." : "We couldn't start the game. Try again.", 'error');
+      showToast?.(err.status === 429 ? "You've used all 3 tries today." : "The game didn't start. Please press Start again.", err.status === 429 ? 'info' : 'error');
       load();
       return false;
     } finally {
@@ -114,14 +127,26 @@ export default function GamesPage({ userId, userName, showToast }) {
       finishGameTry(gameId, userId, id, score, { keepalive: true }).catch(() => {});
       return;
     }
-    setBusy(true);
-    try {
-      await finishGameTry(gameId, userId, id, score);
-    } catch (err) {
-      showToast?.("We couldn't save that score. It won't count on the leaderboard.", 'error');
-      console.warn('Games finish error:', err.message);
-    } finally {
-      setBusy(false);
+    setBusy('saving');
+    // Show the new best right away; the server response confirms it.
+    setState(s => (s ? { ...s, bestToday: Math.max(s.bestToday || 0, score) } : s));
+    let saved = null;
+    for (let i = 0; i < 2 && !saved; i++) {
+      try {
+        saved = await finishGameTry(gameId, userId, id, score);
+      } catch (err) {
+        console.warn(`Games finish attempt ${i + 1} failed:`, err.message);
+        if (err.status && err.status < 500) break; // rejected, retrying will not help
+        await new Promise(r => setTimeout(r, 800));
+      }
+    }
+    setBusy(false);
+    if (!saved) {
+      showToast?.("That score couldn't be saved, so it won't count on the leaderboard.", 'info');
+      load();
+    } else if (saved.state) {
+      setState(saved.state);
+    } else {
       load();
     }
   }, [tryId, gameId, userId, showToast, load]);
@@ -163,17 +188,18 @@ export default function GamesPage({ userId, userName, showToast }) {
             )}
           </div>
 
-          {loadError ? (
-            <div className="games-error">
-              <p>{loadError}</p>
-              <button type="button" className="btn-secondary" onClick={() => load()}>Try again</button>
+          {!state ? (
+            <div className="games-waiting" role="status">
+              <span className="games-spinner" aria-hidden="true" />
+              <p>{loadFailed ? 'Still connecting to the game. This can take a few seconds after a quiet period.' : 'Loading your tries…'}</p>
+              {loadFailed && <button type="button" className="btn-secondary" onClick={() => load()}>Retry now</button>}
             </div>
-          ) : !state ? (
-            <p className="games-loading">Loading your tries…</p>
           ) : (
             <>
               <GameComponent triesLeft={triesLeft} onStart={handleStart} onFinish={handleFinish} busy={busy} />
-              {state.bestToday > 0 && <p className="games-best">Your best today: <strong>{state.bestToday}</strong></p>}
+              <p className="games-best" aria-live="polite">
+                {busy === 'saving' ? 'Saving your score…' : refreshing ? 'Updating the leaderboard…' : state.bestToday > 0 ? <>Your best today: <strong>{state.bestToday}</strong></> : '\u00A0'}
+              </p>
             </>
           )}
         </section>

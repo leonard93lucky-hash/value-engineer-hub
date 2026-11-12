@@ -3359,3 +3359,10 @@ body:has(.ro-theme) ::-webkit-scrollbar-thumb:hover {
 
 @media (max-width: 1024px) { .games-layout { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .games-stage, .games-board { padding: 16px; } }
+
+.games-waiting { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 320px; padding: 24px; text-align: center; color: var(--text-muted); font-size: 15px; background: var(--privy-canvas-warm); border-radius: 12px; }
+.games-waiting p { max-width: 320px; }
+.games-spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--surface-border); border-top-color: var(--privy-burgundy); animation: games-spin 0.9s linear infinite; }
+@keyframes games-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .games-spinner { animation-duration: 2.4s; } }
+.games-best { min-height: 24px; }

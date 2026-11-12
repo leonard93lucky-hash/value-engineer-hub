@@ -2,6 +2,17 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.5.1 — 2026-11-12 — Games: no error box after a try
+
+> Reversibility: baseline `v4.5.0`. Revert with `git checkout v4.5.0 -- apps/ve-faq/src/components/GamesPage.jsx apps/ve-faq/src/components/games/MarcieFlight.jsx apps/ve-faq/src/index.css apps/teamfundsheets/lib/games.ts`.
+
+### Fixed
+- After each try the page reloaded tries and the leaderboard with a second request; one failed reload replaced the game with a red "Try again" box. `POST /api/games/finish` now returns the fresh state, loads retry 3 times quietly, and a failed refresh keeps the current view.
+
+### Changed
+- First load shows a neutral spinner panel ("Loading your tries…", then "Still connecting…" with Retry now) instead of an error.
+- Buttons say "Starting…" / "Saving score…"; a status line under the game shows saving, leaderboard updates and today's best. Score saves retry once on network or server errors.
+
 ## v4.5.0 — 2026-11-12 — Games page (Marcie's flight) + Team Fund year selector
 
 > Reversibility: baseline `v4.4.1`. Revert with `git checkout v4.4.1 -- apps/ve-faq/src/ apps/teamfundsheets/` (then delete `apps/teamfundsheets/app/api/games/`, `apps/teamfundsheets/lib/games.ts`, `apps/teamfundsheets/lib/cors.ts`, `apps/ve-faq/src/components/GamesPage.jsx`, `apps/ve-faq/src/components/games/`). The `GameScores` tab in the Team Fund sheet stays; it is harmless without the page.

@@ -129,6 +129,16 @@ export async function startTry(game: string, userId: string, userName: string) {
     return { tryId: id, triesLeft: MAX_TRIES_PER_DAY - used - 1 };
 }
 
+/** Fresh state after a write, so the page does not need a second request. */
+async function stateAfterWrite(game: string, userId: string) {
+    try {
+        return await getGameState(game, userId);
+    } catch (err) {
+        console.error('Game state after write failed:', err);
+        return null;
+    }
+}
+
 export async function finishTry(game: string, userId: string, tryId: string, score: number) {
     const rules = GAMES[game];
     if (!rules) throw new GameError('Unknown game', 404);
@@ -143,5 +153,5 @@ export async function finishTry(game: string, userId: string, tryId: string, sco
     row.set('score', score);
     row.set('finishedAt', new Date().toISOString());
     await row.save();
-    return { score };
+    return { score, state: await stateAfterWrite(game, userId) };
 }

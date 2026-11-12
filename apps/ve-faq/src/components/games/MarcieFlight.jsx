@@ -378,7 +378,7 @@ export default function MarcieFlight({ triesLeft, onStart, onFinish, busy }) {
             <p className="mf-done">You've used all 3 tries today. New tries at 00:00 WIB.</p>
           ) : (
             <button type="button" className="btn-primary mf-start" onClick={start} disabled={busy}>
-              {busy ? 'Saving…' : phase === 'over' ? `Play again (${triesLeft} ${triesLeft === 1 ? 'try' : 'tries'} left)` : `Start (${triesLeft} ${triesLeft === 1 ? 'try' : 'tries'} left)`}
+              {busy === 'starting' ? 'Starting…' : busy === 'saving' ? 'Saving score…' : phase === 'over' ? `Play again (${triesLeft} ${triesLeft === 1 ? 'try' : 'tries'} left)` : `Start (${triesLeft} ${triesLeft === 1 ? 'try' : 'tries'} left)`}
             </button>
           )}
         </div>
