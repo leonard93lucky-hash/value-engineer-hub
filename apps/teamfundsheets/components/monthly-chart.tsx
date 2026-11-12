@@ -15,9 +15,10 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 interface MonthlyChartProps {
   payments: Payment[]
   expenses: Expense[]
+  year?: number
 }
 
-export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) {
+export default function MonthlyChart({ payments, expenses, year }: MonthlyChartProps) {
   const chartData = MONTHS.map((month, index) => {
     // 1. Calculate Income for the month
     const income = payments
@@ -43,7 +44,7 @@ export default function MonthlyChart({ payments, expenses }: MonthlyChartProps) 
     <div className="h-full bg-card border border-border rounded-lg p-4 sm:p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-foreground">Income vs expenses</h2>
-        <span className="text-muted-foreground text-sm">Monthly comparison</span>
+        <span className="text-muted-foreground text-sm">Monthly comparison{year ? `, ${year}` : ""}</span>
       </div>
 
       <div className="h-[300px] w-full">

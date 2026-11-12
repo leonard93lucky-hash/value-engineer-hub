@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import Header from "@/components/header"
 import SummaryCards from "@/components/summary-cards"
 import MonthlyChart from "@/components/monthly-chart"
@@ -28,6 +28,10 @@ export default function HomeContent() {
   const { isSupport } = useAuth()
 
   const currentYear = new Date().getFullYear()
+  // Year shown in goal progress, the monthly chart and the donut. Totals at the top stay all time.
+  const [selectedYear, setSelectedYear] = useState(currentYear)
+  const selectedYearRef = useRef(selectedYear)
+  selectedYearRef.current = selectedYear
 
   const fetchData = async (allowRetry = false) => {
     setRefreshing(true)
@@ -37,7 +41,7 @@ export default function HomeContent() {
       const [paymentsRes, expensesRes, targetsRes] = await Promise.allSettled([
         fetch(apiPath("/api/payments")),
         fetch(apiPath("/api/expenses")),
-        fetch(apiPath(`/api/targets?year=${currentYear}`)),
+        fetch(apiPath(`/api/targets?year=${selectedYearRef.current}`)),
       ])
 
       if (paymentsRes.status === "fulfilled" && paymentsRes.value.ok) {
@@ -92,20 +96,43 @@ export default function HomeContent() {
     fetchData(true)
   }, [])
 
+  // Each year has its own target row; reload it when the selected year changes.
+  useEffect(() => {
+    let cancelled = false
+    fetch(apiPath(`/api/targets?year=${selectedYear}`))
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => { if (!cancelled && data) setMonthlyTarget(data.monthlyTarget || 600000) })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [selectedYear])
+
+  // Payments belong to the year of their transfer date (YYYY-MM-DD); expenses to the year of their date.
+  const yearOf = (d: string) => parseInt(String(d || "").slice(0, 4), 10)
+
+  const availableYears = useMemo(() => {
+    const years = new Set<number>([currentYear])
+    payments.forEach(p => { const y = yearOf(p.transferDate); if (!isNaN(y)) years.add(y) })
+    expenses.forEach(e => { const y = yearOf(e.date); if (!isNaN(y)) years.add(y) })
+    return Array.from(years).sort((a, b) => b - a)
+  }, [payments, expenses, currentYear])
+
+  const yearPayments = useMemo(() => payments.filter(p => yearOf(p.transferDate) === selectedYear), [payments, selectedYear])
+  const yearExpenses = useMemo(() => expenses.filter(e => yearOf(e.date) === selectedYear), [expenses, selectedYear])
+
   const formattedPaymentsForChart = useMemo(() => {
-    return payments.map((p) => ({
+    return yearPayments.map((p) => ({
       ...p,
       name: "Income",
     }))
-  }, [payments])
+  }, [yearPayments])
 
   const incomeByPerson = useMemo(() => {
     const totals: Record<string, number> = {}
-    payments.forEach((p) => {
+    yearPayments.forEach((p) => {
       totals[p.name] = (totals[p.name] || 0) + p.amount
     })
     return Object.entries(totals)
-  }, [payments])
+  }, [yearPayments])
 
   const handleAddPayment = async (payment: Payment) => {
     try {
@@ -268,6 +295,9 @@ export default function HomeContent() {
         onExportClick={handleExportCSV}
         onRefresh={fetchData}
         refreshing={refreshing}
+        years={availableYears}
+        selectedYear={selectedYear}
+        onYearChange={setSelectedYear}
       />
       <div className="mx-auto w-full max-w-[1280px] space-y-6 px-8 pb-16 max-md:px-4 max-md:pb-12">
         <SummaryCards
@@ -282,7 +312,7 @@ export default function HomeContent() {
             <h2 className="text-xl font-semibold text-foreground">
               Income goal progress
               <span className="text-sm font-normal text-muted-foreground ml-2">
-                ({currentYear})
+                ({selectedYear})
               </span>
             </h2>
             {isSupport && (
@@ -296,7 +326,7 @@ export default function HomeContent() {
             )}
           </div>
           {incomeByPerson.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No payments recorded yet</p>
+            <p className="text-muted-foreground text-sm">No payments recorded in {selectedYear}.</p>
           ) : (
             <div className="grid gap-x-8 gap-y-5 md:grid-cols-2">
               {incomeByPerson.map(([name, total]) => {
@@ -329,8 +359,8 @@ export default function HomeContent() {
         </section>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-          <MonthlyChart payments={formattedPaymentsForChart} expenses={expenses} />
-          <ExpenseDonut expenses={expenses} />
+          <MonthlyChart payments={formattedPaymentsForChart} expenses={yearExpenses} year={selectedYear} />
+          <ExpenseDonut expenses={expenses} year={selectedYear} />
         </div>
 
         <TransactionHistory

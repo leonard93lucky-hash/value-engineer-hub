@@ -15,6 +15,7 @@ import SendQuestionnaire from './components/SendQuestionnaire.jsx';
 import ClientQuestionnaire from './components/ClientQuestionnaire.jsx';
 import AppNav from './components/AppNav.jsx';
 import FAQChatbot from './components/FAQChatbot.jsx';
+import GamesPage from './components/GamesPage.jsx';
 import { 
   fetchFAQs, addFAQ, updateFAQ, deleteFAQ, fetchLogs, 
   fetchCategories, addCategory, deleteCategory,
@@ -321,6 +322,10 @@ function App() {
             allow="clipboard-read; clipboard-write"
           />
         </div>
+      )}
+
+      {currentScreen === 'games' && (
+        <GamesPage userId={userId} userName={userName} showToast={showToast} />
       )}
 
       {currentScreen === 'send-questionnaire' && isAuthorizedForQuestionnaire && (

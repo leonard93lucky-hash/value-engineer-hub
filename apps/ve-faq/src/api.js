@@ -340,3 +340,35 @@ export async function fetchSubmissions(officerName = '', dateFrom = '', dateTo =
   return [];
 }
 
+
+// --- Games (scores live in the Team Fund spreadsheet; the Team Fund app serves /api/games) ---
+const GAMES_API = import.meta.env.PROD
+  ? (import.meta.env.VITE_TEAM_FUND_URL || 'https://v0-team-fund-idr-tracker-leonard93lucky-2074s-projects.vercel.app')
+  : 'http://localhost:3002';
+
+async function gamesRequest(path, options = {}) {
+  const res = await fetch(`${GAMES_API}/api/games${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  let body = null;
+  try { body = await res.json(); } catch { /* empty body */ }
+  if (!res.ok) {
+    const err = new Error(body?.error || `Games API error: ${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
+  return body;
+}
+
+export function fetchGameState(game, userId) {
+  return gamesRequest(`/state?game=${encodeURIComponent(game)}&userId=${encodeURIComponent(userId)}`);
+}
+
+export function startGameTry(game, userId, userName) {
+  return gamesRequest('/start', { method: 'POST', body: JSON.stringify({ game, userId, userName }) });
+}
+
+export function finishGameTry(game, userId, tryId, score, { keepalive = false } = {}) {
+  return gamesRequest('/finish', { method: 'POST', keepalive, body: JSON.stringify({ game, userId, tryId, score }) });
+}

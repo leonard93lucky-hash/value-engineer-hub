@@ -26,7 +26,7 @@ export default function SummaryCards({ totalIncome, totalExpenses, paymentCount,
         <div className="text-2xl sm:text-3xl font-semibold text-success mb-1 tabular-nums">
           Rp {totalIncome.toLocaleString("id-ID")}
         </div>
-        <p className="text-muted-foreground text-sm">{paymentCount} payments recorded</p>
+        <p className="text-muted-foreground text-sm">{paymentCount} payments recorded, all time</p>
       </div>
 
       {/* Total Expenses */}
@@ -40,7 +40,7 @@ export default function SummaryCards({ totalIncome, totalExpenses, paymentCount,
         <div className="text-2xl sm:text-3xl font-semibold text-danger mb-1 tabular-nums">
           Rp {totalExpenses.toLocaleString("id-ID")}
         </div>
-        <p className="text-muted-foreground text-sm">{expenseCount} expense entries</p>
+        <p className="text-muted-foreground text-sm">{expenseCount} expense entries, all time</p>
       </div>
 
       {/* Net Balance */}

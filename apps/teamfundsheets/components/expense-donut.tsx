@@ -31,12 +31,16 @@ function formatDay(iso: string): string {
 
 interface ExpenseDonutProps {
   expenses: Expense[]
+  /** Calendar year to show. The current year runs to today; past years cover 1 Jan – 31 Dec. */
+  year?: number
 }
 
-export default function ExpenseDonut({ expenses }: ExpenseDonutProps) {
-  const today = todayWib()
-  const year = today.slice(0, 4)
+export default function ExpenseDonut({ expenses, year: yearProp }: ExpenseDonutProps) {
+  const todayStr = todayWib()
+  const year = yearProp ? String(yearProp) : todayStr.slice(0, 4)
+  const isCurrentYear = year === todayStr.slice(0, 4)
   const start = `${year}-01-01`
+  const today = isCurrentYear ? todayStr : `${year}-12-31`
 
   const { rows, total, count } = useMemo(() => {
     const sums: Record<string, { amount: number; entries: number }> = {}
@@ -68,7 +72,7 @@ export default function ExpenseDonut({ expenses }: ExpenseDonutProps) {
     <section className="flex h-full flex-col rounded-lg border border-border bg-card p-4 sm:p-6" aria-labelledby="expense-donut-title">
       <div className="mb-4">
         <h2 id="expense-donut-title" className="text-xl font-semibold text-foreground">Expenses by category</h2>
-        <p className="text-sm text-muted-foreground">Year to date, {formatDay(start)} – {formatDay(today)} (WIB)</p>
+        <p className="text-sm text-muted-foreground">{isCurrentYear ? "Year to date" : `Full year ${year}`}, {formatDay(start)} – {formatDay(today)} (WIB)</p>
       </div>
 
       {rows.length === 0 ? (

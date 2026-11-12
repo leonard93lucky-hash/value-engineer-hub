@@ -2,6 +2,16 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.5.0 — 2026-11-12 — Games page (Marcie's flight) + Team Fund year selector
+
+> Reversibility: baseline `v4.4.1`. Revert with `git checkout v4.4.1 -- apps/ve-faq/src/ apps/teamfundsheets/` (then delete `apps/teamfundsheets/app/api/games/`, `apps/teamfundsheets/lib/games.ts`, `apps/teamfundsheets/lib/cors.ts`, `apps/ve-faq/src/components/GamesPage.jsx`, `apps/ve-faq/src/components/games/`). The `GameScores` tab in the Team Fund sheet stays; it is harmless without the page.
+
+### Added
+- **Games tab** in the hub nav → `GamesPage.jsx`: daily mini games, 3 tries per person per game per day (WIB), leaderboard "This month" / "All time" (best score per person, top 10 + your row). Built to hold more games (`GAMES` list).
+- **Marcie's flight** (`components/games/MarcieFlight.jsx`): original one-tap canvas flying game; side-view Marcie drawn in canvas (cap, goggles, scarf, flapping wing). Space / Arrow up / tap to flap; one point per tower.
+- **Game score API in the Team Fund app** (`lib/games.ts`, `lib/cors.ts`, `app/api/games/{state,start,finish}`): stores tries in a new `GameScores` tab of the Team Fund spreadsheet; a try is recorded on start, its score on finish; impossible scores for the time played are rejected; CORS allows only the hub origins (`HUB_ORIGINS` env overrides).
+- **Team Fund year selector** in the header: goal progress, the monthly chart and the expenses donut follow the chosen year (current year by default; past years show the full year); top totals stay all time and say so.
+
 ## v4.4.1 — 2026-11-09 — Team Fund mobile overflow fixes + hub iframe offset
 
 > Reversibility: baseline `v4.4.0`. Revert with `git checkout v4.4.0 -- apps/teamfundsheets/components/ apps/ve-faq/src/index.css apps/ve-faq/src/App.jsx`.

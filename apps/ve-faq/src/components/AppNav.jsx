@@ -1,4 +1,4 @@
-import { FiBookOpen, FiFileText, FiPenTool, FiShield, FiLogOut, FiUser, FiDollarSign } from 'react-icons/fi';
+import { FiPlayCircle, FiBookOpen, FiFileText, FiPenTool, FiShield, FiLogOut, FiUser, FiDollarSign } from 'react-icons/fi';
 import privyLogo from '../assets/Privy_Logo_Red.png';
 
 export default function AppNav({
@@ -61,6 +61,15 @@ export default function AppNav({
         >
           <FiDollarSign size={16} aria-hidden="true" />
           <span>Team Fund</span>
+        </button>
+
+        <button
+          className={`app-nav-tab ${currentScreen === 'games' ? 'active' : ''}`}
+          aria-current={currentScreen === 'games' ? 'page' : undefined}
+          onClick={() => onNavigate('games')}
+        >
+          <FiPlayCircle size={16} aria-hidden="true" />
+          <span>Games</span>
         </button>
 
         {isAuthorizedForAdmin && (

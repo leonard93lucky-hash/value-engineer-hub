@@ -60,11 +60,21 @@ The product is **one page**: the VE FAQ app at `:5173` (prod `/login/`) is the s
 | Questionnaire | `SendQuestionnaire.jsx` | position contains `vp` or `manager` |
 | SOW Generator | iframe → SOW frontend (`?userId&userName`) | everyone |
 | Team Fund | iframe → Team Fund (`?userId&userName&position`) | everyone |
+| Games | `GamesPage.jsx` (scores via Team Fund API) | everyone |
 | Admin | iframe → SOW `/admin` | position = `support` |
 
 - **Sign-in:** PrivyID or email + 6-digit PIN against the `Users` sheet (`POST /faq-api/auth`); session kept in `sessionStorage` (`ve_hub_user`). SOW re-checks via `POST /api/verify-user` (PrivyID only). Team Fund trusts the URL params.
 - **Data:** everything lives in Google Sheets. Local dev reads and writes the **production** sheets — adding/editing FAQs, payments or SOWs locally changes live data; sending a questionnaire sends a real Gmail email.
 - **Chatbot (Marcie):** `POST /faq-api/chatbot` scores FAQs by token overlap, sends the top 10 to DeepSeek (`deepseek-chat`) with a system prompt (`api/index.js`). The model ends with `---REFS: id, id`; the server strips that line and maps IDs to reference chips. Top-scored fallback chips appear only when the REFS line is missing entirely. Icon: `src/assets/marcie.png`.
+
+## Games (daily mini games, from v4.5.0)
+
+- Hub tab **Games** → `apps/ve-faq/src/components/GamesPage.jsx`; games live in `apps/ve-faq/src/components/games/` and are listed in its `GAMES` array.
+- Scores: Team Fund spreadsheet, tab **`GameScores`** (id, game, date WIB, userId, userName, score, startedAt, finishedAt). One row per try.
+- API: served by the **Team Fund app** (it already has the sheet credentials): `GET /api/games/state?game&userId`, `POST /api/games/start`, `POST /api/games/finish`. Logic in `apps/teamfundsheets/lib/games.ts` (3 tries/day, per-game score limits in `GAMES`), CORS in `lib/cors.ts`. The hub calls it via `GAMES_API` in `apps/ve-faq/src/api.js` (localhost:3002 in dev, the Team Fund URL in prod).
+- **Adding a game:** add a component in `components/games/`, add it to `GAMES` in `GamesPage.jsx`, and add its id + limits to `GAMES` in `lib/games.ts`.
+- **Resetting someone's tries:** change `game` on their rows for that date (e.g. `marcie-flight-reset`); do not delete rows.
+- Limits: scores are reported by the browser and identity is the hub `userId`, so a determined user could fake a score.
 
 ## UI conventions (Privy App Design V2, hub revamp from v4.3.0)
 
