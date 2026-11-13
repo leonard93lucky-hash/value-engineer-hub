@@ -63,6 +63,7 @@ The product is **one page**: the VE FAQ app at `:5173` (prod `/login/`) is the s
 | Games | `GamesPage.jsx` (scores via Team Fund API) | everyone |
 | Admin | iframe → SOW `/admin` | position = `support` |
 
+- **Addresses:** each tab has its own path — `/faq`, `/questionnaire`, `/sow`, `/team-fund`, `/games`, `/sow-admin` (`SCREEN_PATHS` in `App.jsx`); signed out is `/login`. The hub's files stay under `/login/`; `vercel.json` (rewrite `/:screen(faq|questionnaire|sow|team-fund|games|sow-admin)`) and `vite.config.js` (`hub-paths` plugin) serve the hub for those paths. A new tab needs an entry in all three places. `/admin` belongs to the SOW app, hence `/sow-admin`.
 - **Sign-in:** PrivyID or email + 6-digit PIN against the `Users` sheet (`POST /faq-api/auth`); session kept in `sessionStorage` (`ve_hub_user`). SOW re-checks via `POST /api/verify-user` (PrivyID only). Team Fund trusts the URL params.
 - **Data:** everything lives in Google Sheets. Local dev reads and writes the **production** sheets — adding/editing FAQs, payments or SOWs locally changes live data; sending a questionnaire sends a real Gmail email.
 - **Chatbot (Marcie):** `POST /faq-api/chatbot` scores FAQs by token overlap, sends the top 10 to DeepSeek (`deepseek-chat`) with a system prompt (`api/index.js`). The model ends with `---REFS: id, id`; the server strips that line and maps IDs to reference chips. Top-scored fallback chips appear only when the REFS line is missing entirely. Icon: `src/assets/marcie.png`.
@@ -110,6 +111,7 @@ The product is **one page**: the VE FAQ app at `:5173` (prod `/login/`) is the s
 | Route | App | Build |
 |-------|-----|-------|
 | `/login/*` | VE FAQ (Vite) | `@vercel/static-build` |
+| `/faq`, `/questionnaire`, `/sow`, `/team-fund`, `/games`, `/sow-admin` | VE FAQ `index.html` (hub tabs) | rewrite |
 | `/faq-api/*` | Express API | `@vercel/node` |
 | `/api/*` | SOW Admin (FastAPI) | `@vercel/python` |
 | `/*` (catch-all) | SOW Generator (Next.js) | `@vercel/next` |

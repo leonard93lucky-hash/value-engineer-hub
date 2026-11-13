@@ -22,6 +22,21 @@ import {
   fetchRatings, rateFAQ, fetchRelated, addRelated, removeRelated
 } from './api.js';
 
+// Each hub tab has its own address. The hub's files live under /login/; these paths are
+// sent to the hub's index.html by vercel.json (production) and vite.config.js (local dev).
+const SCREEN_PATHS = {
+  faq: '/faq',
+  'send-questionnaire': '/questionnaire',
+  sow: '/sow',
+  'team-fund': '/team-fund',
+  games: '/games',
+  'sow-admin': '/sow-admin',
+};
+const screenFromPath = (pathname) => {
+  const path = (pathname || '').replace(/\/+$/, '');
+  return Object.keys(SCREEN_PATHS).find(k => SCREEN_PATHS[k] === path) || null;
+};
+
 function App() {
   // Restore session from sessionStorage on load
   const storedAuth = (() => {
@@ -46,16 +61,19 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   // UI state
-  const [currentScreen, setCurrentScreen] = useState('faq'); // 'faq' | 'send-questionnaire' | 'sow'
+  const initialScreen = screenFromPath(window.location.pathname);
+  // Tab to open after sign-in when someone arrives at e.g. /games while signed out
+  const pendingScreenRef = useRef(initialScreen);
+  const [currentScreen, setCurrentScreen] = useState(initialScreen || 'faq'); // see SCREEN_PATHS
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingFaq, setEditingFaq] = useState(null);
   const [deletingFaq, setDeletingFaq] = useState(null);
   const [isLogOpen, setIsLogOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [toast, setToast] = useState(null);
-  const [sowMounted, setSowMounted] = useState(false);
-  const [adminMounted, setAdminMounted] = useState(false);
-  const [teamFundMounted, setTeamFundMounted] = useState(false);
+  const [sowMounted, setSowMounted] = useState(initialScreen === 'sow');
+  const [adminMounted, setAdminMounted] = useState(initialScreen === 'sow-admin');
+  const [teamFundMounted, setTeamFundMounted] = useState(initialScreen === 'team-fund');
   const [scrollToFaqId, setScrollToFaqId] = useState(null);
 
   const showToast = useCallback((message, type = 'success') => {
@@ -101,16 +119,57 @@ function App() {
     }
   }, [isAuthenticated, loadData]);
 
+  // Show a tab and put its address in the browser bar (push = new history entry, replace = same entry)
+  const openScreen = useCallback((screen, { replace = false } = {}) => {
+    if (screen === 'sow') setSowMounted(true);
+    if (screen === 'sow-admin') setAdminMounted(true);
+    if (screen === 'team-fund') setTeamFundMounted(true);
+    setCurrentScreen(screen);
+    const path = SCREEN_PATHS[screen];
+    if (path && window.location.pathname !== path) {
+      window.history[replace ? 'replaceState' : 'pushState']({ screen }, '', path);
+    }
+  }, []);
+
+  // Keep the address bar in step with sign-in state: signed out → /login, signed in → the tab's path
+  useEffect(() => {
+    if (window.location.pathname.includes('/privy-officer-performance-questionnaire')) return;
+    if (!isAuthenticated) {
+      if (window.location.pathname !== '/login') window.history.replaceState({}, '', '/login' + window.location.search);
+      return;
+    }
+    const role = (userPosition || '').toLowerCase();
+    const blocked =
+      (currentScreen === 'send-questionnaire' && !(role.includes('vp') || role.includes('manager'))) ||
+      (currentScreen === 'sow-admin' && role !== 'support');
+    openScreen(blocked ? 'faq' : currentScreen, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, userPosition]);
+
+  // Browser back / forward between tabs
+  useEffect(() => {
+    const onPop = () => {
+      if (!isAuthenticated) return;
+      const screen = screenFromPath(window.location.pathname) || 'faq';
+      if (screen === 'sow') setSowMounted(true);
+      if (screen === 'sow-admin') setAdminMounted(true);
+      if (screen === 'team-fund') setTeamFundMounted(true);
+      setCurrentScreen(screen);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [isAuthenticated]);
+
   // Listen for postMessage from SOW iframe
   useEffect(() => {
     const handleMessage = (e) => {
       if (e.data === 'open-activity-log') setIsLogOpen(true);
       if (e.data === 'open-leaderboard') setIsStatsOpen(true);
-      if (e.data === 'back-to-faq') setCurrentScreen('faq');
+      if (e.data === 'back-to-faq') openScreen('faq');
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [openScreen]);
 
   // Keep iframe containers aligned with the real nav height
   useEffect(() => {
@@ -133,7 +192,11 @@ function App() {
     setUserName(result.name);
     setUserPosition(result.position || '');
     setIsAuthenticated(true);
-    setCurrentScreen('faq');
+    const target = pendingScreenRef.current || 'faq';
+    pendingScreenRef.current = null;
+    setCurrentScreen(target);
+    if (target === 'team-fund') setTeamFundMounted(true);
+    if (target === 'sow-admin') setAdminMounted(true);
     setSowMounted(true);
     // Persist session so navigating back from SOW generator doesn't log out
     sessionStorage.setItem('ve_hub_user', JSON.stringify({
@@ -149,7 +212,9 @@ function App() {
     setUserId('');
     setUserName('');
     setUserPosition('');
-    setCurrentScreen('hub');
+    setCurrentScreen('faq');
+    pendingScreenRef.current = null;
+    window.history.replaceState({}, '', '/login');
     setFaqs([]);
     setLogs([]);
     setRatings({});
@@ -283,10 +348,7 @@ function App() {
         userPosition={userPosition}
         onNavigate={(screen) => {
           if (screen === 'send-questionnaire' && !isAuthorizedForQuestionnaire) return;
-          if (screen === 'sow') setSowMounted(true);
-          if (screen === 'sow-admin') setAdminMounted(true);
-          if (screen === 'team-fund') setTeamFundMounted(true);
-          setCurrentScreen(screen);
+          openScreen(screen);
         }}
         onLogout={handleLogout}
       />

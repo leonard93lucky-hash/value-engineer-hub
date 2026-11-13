@@ -70,6 +70,10 @@
       "destination": "apps/ve-faq/index.html"
     },
     {
+      "source": "/:screen(faq|questionnaire|sow|team-fund|games|sow-admin)",
+      "destination": "apps/ve-faq/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "apps/sow-generator/frontend/$1"
     }

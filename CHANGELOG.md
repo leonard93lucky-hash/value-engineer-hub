@@ -2,6 +2,14 @@
 
 All notable changes are tracked here. Versioning: `vX.Y.Z` git tags at the repo root (tags mark reversible checkpoints — `git checkout vX.Y.Z -- <path>` or `git revert <commit>` restores a version).
 
+## v4.6.0 — 2026-11-13 — Hub tab addresses (/faq, /games, /sow …)
+
+> Reversibility: baseline `v4.5.2`. Revert with `git checkout v4.5.2 -- apps/ve-faq/src/App.jsx apps/ve-faq/vite.config.js vercel.json`.
+
+### Added
+- Each hub tab has its own address: `/faq`, `/questionnaire`, `/sow`, `/team-fund`, `/games`, `/sow-admin`; signed out shows `/login`. Tab clicks update the address, browser back/forward switch tabs, reload keeps the tab, and a signed-out visit to a tab address opens that tab after sign-in. Tabs the user's role cannot open fall back to `/faq`.
+- `vercel.json` rewrite sends those paths to the hub (`apps/ve-faq/index.html`) before the SOW catch-all; `vite.config.js` `hub-paths` plugin does the same in local dev.
+
 ## v4.5.2 — 2026-11-12 — Hub mobile layout fix
 
 > Reversibility: baseline `v4.5.1`. Revert with `git checkout v4.5.1 -- apps/ve-faq/src/index.css`.
